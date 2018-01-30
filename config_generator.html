@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>BioLockJ</title>
+<style type="text/css">
+/* colors found at http://advancement.uncc.edu/sites/advancement.uncc.edu/files/media/identity-standards-guide.pdf */
+
+/* This block is for the nav-bar */
+.nav-bar {
+    overflow: hidden;
+    background-color: rgb(0,112,60);/* uncc charlotte green */
+    font-family: Arial;
+}
+.nav-bar a {
+    float: left;
+    font-size: 16px;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+.banner {
+  text-align: center;
+  font-size: 24px;
+  color: rgb(243,144,29);
+  padding: 0px 0px;
+  margin-bottom: 5px;
+  margin-top: 11px;
+}
+.dropdown {
+    float: left;
+    overflow: hidden;
+}
+.dropdown .dropbtn {
+    cursor: pointer;
+    font-size: 16px;
+    border: none;
+    outline: none;
+    color: white;
+    padding: 10px 16px;
+    background-color: inherit;
+}
+.nav-bar a:hover, .dropdown:hover .dropbtn {
+    background-color: rgb(195,215,164);
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    /*z-index: 1;*/
+}
+.dropdown-content a {
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+.dropdown-content a:hover {
+    background-color: rgb(255,246,220);
+}
+.show {
+    display: block;
+}
+
+.hidden{
+  display: none;
+}
+
+
+/* for menu and tabbed buttons of menu */
+.menu {
+    padding: 14px 10px;
+    background-color: rgb(255,246,220);
+    border: 1px solid black;
+    margin: 10px 30px 20px 30px;
+    display: none; /*hidden until "new" is clicked */
+}
+/* Style the tab */
+div.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+/* Style the buttons inside the tab */
+div.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 10px;
+    transition: 0.3s;
+    font-size: 17px;
+}
+/* Change background color of buttons on hover */
+div.tab button:hover {
+    background-color: #ddd;
+}
+/* Create an active/current tablink class */
+div.tab button.active {
+    background-color: #ccc;
+}
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 3px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+/*for module options*/
+.modChoosen {
+  background-color: green !important;
+  color: white;
+}
+
+/*for disabled modules in the module tab*/
+.disabledMod {
+  color: silver;
+  font-style: italic;
+  /*font-size: 10px;*/
+  pointer-events: none;
+}
+
+select[multiple] {
+    width: 20em;
+}
+
+.recentConfigs {
+  text-align: right !important;
+}
+
+/*for the list elements of the module tab*/
+div#module li {
+list-style-type:none;
+padding:4px;
+margin:2px;
+background-color:#FFFFFF;
+border:2px double #CCCCCC;
+position: relative;
+display: block;
+/*transition-timing-function: ease;*/
+}
+/*li:hover{
+  transform: scaleX(1);
+  transition: transform 0.5s ease;
+}*/
+
+div#module ul{
+  padding-left: 5;
+}
+
+div#module{
+  max-width: 525px;
+  float: left;
+  margin: 5px;
+
+}
+div#module span{
+  position: relative;
+  text-align: center;
+}
+
+div#moduleInfo{
+  max-width: 300px;
+  position: relative;
+  text-align: left;
+  display: inline;
+  margin: 15px;
+}
+div#moduleInfoDiv {
+  position: relative;
+  display: inline;
+  padding: 10, 10, 10, 10;
+}
+</style>
+</head>
+
+<body>
+<!--file button-->
+<div class="nav-bar">
+  <div class="dropdown">
+    <button class="dropbtn" onclick="projectOptions()">Projects</button>
+    <div class="dropdown-content" id="projects">
+      <a onclick="newProj()" href="#">New</a>
+      <a onclick="openProjDisplay()" href="#">Open local config file</a>
+      <a id="recent" href="#">Recent</a>
+    </div>
+  </div>
+</div>
+
+<div class="banner">BioLockJ</div>
+
+<div id="openConfig" class="menu">
+  <form>
+    Select BiolockJ configuration file
+    <input type="file" name="localFile" id="localFile">
+    <button type="button" id="submitLocalFile" onclick="loadLocalFile()">Submit</button>
+  </form>
+</div>
+
+
+<!--options for control panel-->
+<div class="menu" id='mainMenu'>
+  <div class="tab">
+    <button id="defaultOpen" class="tablinks" onclick="openTab(event, 'projectTab')">Project</button>
+    <button class="tablinks" onclick="openTab(event, 'moduleTab')">Modules</button>
+    <button class="tablinks" onclick="openTab(event, 'inputTab')">Input</button>
+    <button class="tablinks" onclick="openTab(event, 'clusterTab')">Cluster</button>
+    <button class="tablinks" onclick="openTab(event, 'scriptTab')">Script</button>
+    <!--<button class="tablinks" onclick="openTab(event, 'metadataTab')">Metadata</button>-->
+    <button class="tablinks" onclick="openTab(event, 'reportTab')">Report</button>
+    <button class="tablinks" onclick="openTab(event, 'mailTab')">E-mail</button>
+    <button class="tablinks" onclick="openTab(event, 'rTab')">R</button>
+    <button class="tablinks" onclick="openTab(event, 'exeTab')">Exe</button>
+    <button class="tablinks" onclick="openTab(event, 'rdpTab')">RDP</button>
+    <button class="tablinks" onclick="openTab(event, 'qiimeTab')">QIIME</button>
+    <button class="tablinks" onclick="openTab(event, 'krakenTab')">Kraken</button>
+    <button class="tablinks" onclick="openTab(event, 'slimmTab')">SLIMM</button>
+  </div>
+
+  <!--tabbed menu-->
+
+  <div id="projectTab" class="tabcontent">
+    <!--<h3>Project</h3>-->
+    <form id="project">
+      <p>Configuration file name<input type="text" name="configFile" required></p>
+      <p>Project name:
+        <input type="text" name="name" required><br></p>
+      <p>Root directory: <input type="text" name="rootDir" required><br>
+        <h5>(The root directory is the parent directory for BioLockJ project run directories)</h5></p>
+      <p>Copy input files into the parent directory:<br>
+        <input type="radio" name="copyInput" value="Y" required> Yes<br>
+        <input type="radio" name="copyInput" value="N"> No<br></p>
+      <p>Delete temporary files:<br>
+        <input type="radio" name="deleteTempFiles" value="Y" required> Yes<br>
+        <input type="radio" name="deleteTempFiles" value="N"> No<br></p>
+      <!--  -->
+      <p>Path to default properties file:
+        <input type="text" name="defaultProps"><br> add file picker here
+        <i>(Path to a default BioLockJ configuration file containing default
+        property values that are overridden if defined in the primary
+        configuration file.)</i></p>
+      <p>Log level: <br><i>Determines log level sensitivity.</i><br>
+        <input type="radio" name="logLevel" value="DEBUG">DEBUG<br>
+        <input type="radio" name="logLevel" value="INFO">INFO<br>
+        <input type="radio" name="logLevel" value="WARN">WARN<br>
+        <input type="radio" name="logLevel" value="ERROR">ERROR<br></p>
+      <!--<p>Classifier type:<br>
+        <input type="radio" name="classifierType" value="rdp" required> 16S Classifier: Ribosomal Database Project (RDP)<br>
+        <input type="radio" name="classifierType" value="qiime"> QIIME<br>
+        <input type="radio" name="classifierType" value="kraken"> Kraken<br>
+        <input type="radio" name="classifierType" value="metaphlan"> MetaPhlAnn<br>
+        <input type="radio" name="classifierType" value="slimm"> SLIMM<br></p>-->
+      <button onclick="saveTab(this.parentNode.id)">Save</button>
+      <button type='button' class="nextTab">Save and move to next tab</button>
+    </form>
+  </div>
+
+  <div id="moduleTab" class="tabcontent">
+    <button type="button" onclick="modulesToCurrentConfig()">Save</button>
+    <button type="button" class="nextTab">Save and move to next tab</button>
+    <fieldset>
+      <!--<form id="module">-->
+      <legend>Module options</legend>
+      <div id="module">
+        <span> <center> Drag module options to reorder them.<br>
+          Only highlighted (green) modules will be added to your config file. <br> </center>
+        </span>
+        <ul style="padding-left: 5px">
+          <!--figureout how to put the styling into css stylesheet";-->
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="Demultiplex samples into separate files"
+            data-link="https://github.com/mikesioda/BioLockJ_Dev/blob/master/src/biolockj/module/seq/Demultiplexer.java">#BioModule biolockj.module.ImportMetadata</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="This BioModule splits multiplexed data into a separate file or pair of files (for paired reads) for each sample. The
+          sample ID must be included in the header of each read. If not, run SetMultiplexedHeaders as a prerequisite module.
+Config properties input.trimPrefix and input.trimSuffix are used to parse the sample ID from the header in the same
+way as when used to parse sample IDs from demultiplexed file names. Paired reads are accepted in 2 multiplexed
+formats. Forward and reverse reads can be partitioned into 2 separate files identified by identified by
+input.forwardFileSuffix and input.reverseFileSuffix. Alternately, forward and reverse reads can be combined in a
+single file with read direction indicated by key strings (1:N: and 2:N:)">#BioModule biolockj.module.seq.Demultiplexer</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="This BioModule uses awk and gzip to convert input sequence files into a decompressed fasta file format.">#BioModule biolockj.module.seq.FastaConverter</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="This BioModule will merge forward and reverse fastq files using <a href=https://sco.h-its.org/exelixis/web/software/pear/doc.html>PEAR</a>">#BioModule biolockj.module.seq.MergePairedReads</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="This BioModule imposes a minimum and/or maximum
+          number of reads per sample. Samples below the minimum are discarded. Samples above the maximum are limited by selecting
+          random reads up to the maximum value.">#BioModule biolockj.module.seq.Rarefier</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="This BioModule parses sequence file to count
+          the number of reads per sample. The data is stored in a new column NUM_READS. If no metadata file exists, it is created with 2 columns: SAMPLE_ID and NUM_READS.">
+            #BioModule biolockj.module.seq.RegisterNumReads</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="This BioModule parses sequence file to count the number of reads per sample. The data is stored in a new column NUM_READS. If no metadata file exists, it is created with 2 columns: SAMPLE_ID and NUM_READS.">#BioModule biolockj.module.seq.SetMultiplexedHeaders</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="This BioModule removes sequence primers, which are defined using regular expressions in a separate file.">#BioModule biolockj.module.seq.TrimPrimers</li>
+          <!--do we need a li for ClassifierModuleImpl?	-->
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="rdpClass" data-info="This BioModule uses RDP to assign taxonomy to 16s sequences.">#BioModule biolockj.module.classifier.r16s.RdpClassifier</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="qiimeClass" data-info="This BioModule generates the bash script used to create QIIME summary scripts, taxonomy-level reports, and add alpha
+ diversity metrics (if configured) to the metadata file. QiimeClassifier is also the superclass for all modules in the
+ biolockj.module.classifier.r16s.qiime package so contains several shared methods.">#BioModule biolockj.module.classifier.r16s.QiimeClassifier</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="qiimeClass" data-info="This BioModule converts the metadata file into a tab delimited QIIME mapping file (if provided). If no metadata file
+ is configured, a new mapping file is generated with only QIIME required columns. The QIIME mapping file is validated
+ by calling QIIME script validate_mapping_file.py
+
+ <ol>
+   QIIME mapping file requirements:
+ <li>#SampleID = Required name of 1st column, holds sample unique identifiers, not nullable
+ <li>BarcodeSequence = Required name of 2nd column, is nullable
+ <li>LinkerPrimerSequence = Required name of 3rd column, is nullable
+ <li>InputFileName = Column is required by add_qiime_labels.py, containing demultiplexed file names, not nullable
+ <li>Description = Required name of last column, not nullable
+ </ol>
+ If metadata file already exists:
+ <ol>
+ <li>Reorder existing QIIME mapping columns, if any are out of order
+ <li>Rename the 1st column (containing sample IDs) to the required value: #SampleID
+ <li>Add missing QIIME mapping columns, if any are missing
+ <li>Rename the validated mapping file to the original metadata file name and save to the module output directory.
+ </ol>">#BioModule biolockj.module.classifier.r16s.qiime.BuildQiimeMapping</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="qiimeClass" data-info="This BioModule executes the QIIME script pick_closed_reference_otus.py on a fasta input files. Unlike open and de
+ novo OTU picking scripts, which require a single multiplexed file for cluster analysis, closed reference OTU picking
+ can be run in batches (output/batch_0, output/batch_1, output/batch_2, etc.).
+ <ul>
+ <li>Config property script.batchSize sets the number of fasta files to process per batch.
+ <li>Config property exe.awk is used to split the metadata into separate batch-specific QIIME mapping files.
+ <li>BioModule biolockj.module.classifier.r16s.qiime.MergeOtuTables must be run as the next module if demultiplexed
+ files were analyzed in more than 1 batch.
+ </ul>">#BioModule biolockj.module.classifier.r16s.qiime.ClosedRefClassifier</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="qiimeClass" data-info="">#BioModule biolockj.module.classifier.r16s.qiime.DeNovoClassifier</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="qiimeClass" data-info="This BioModule can be run immediately after biolockj.module.classifier.r16s.qiime.PickClosedRefOtus to merge the
+ multiple otu_table.biom files created into a single file. This module should not be added to other pipelines.">#BioModule biolockj.module.classifier.r16s.qiime.MergeOtuTables</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="qiimeClass" data-info="">#BioModule biolockj.module.classifier.r16s.qiime.OpenRefClassifier</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="qiimeClass" data-info="">#BioModule biolockj.module.classifier.r16s.qiime.QiimePreprocessor</li>
+
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="metaphlanClass" data-info="">#BioModule biolockj.module.classifier.wgs.MetaphlanClassifier</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="krakenClass" data-info="">#BioModule biolockj.module.classifier.wgs.KrakenClassifier</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="slimmClass" data-info="">#BioModule biolockj.module.classifier.wgs.SlimmClassifier</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="rdpClass" data-info="">#BioModule biolockj.module.parser.r16s.RdpParser</li>
+
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="qiimeClass" data-info="">#BioModule biolockj.module.parser.r16s.QiimeParser</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="metaphlanClass" data-info="">#BioModule biolockj.module.parser.wgs.MetaphlanParser</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="krakenClass" data-info="">#BioModule biolockj.module.parser.wgs.KrakenParser</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="slimmClass">#BioModule biolockj.module.parser.wgs.SlimmParser</li>
+
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="">#BioModule biolockj.module.report.RReport</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="">#BioModule biolockj.module.report.JsonReport</li>
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="">#BioModule biolockj.module.report.Email</li>
+      </div>
+      <div id='moduleInfo'>
+        <center>Hover mouse over module for more information.</center><br>
+        <div id='moduleInfoDiv'>
+          <div>Info will display here!</div>
+          <!--inner div for adding information to-->
+        </div>
+      </div>
+      <!--
+        </select>
+
+        <button type="button" onclick="addModules()">Add</button>
+        <button type="button" onclick="removeModules()">Remove</button>
+        <select size=30 id="modules">
+        <option draggable="true" value="" disabled >Select modules from the right and click "Add"</option>
+        <option draggable="true" value="#biolockJ.module.Email" id="biolockJ.module.Email" class="hidden">Email</option>
+        <option draggable="true" value="#biolockJ.module.ImportMetadata" id="biolockJ.module.ImportMetadata" class="hidden">ImportMetadata</option>
+        <option value="#biolockJ.module.seq.Demultiplexer" id="biolockJ.module.seq.Demultiplexer" class="hidden">seq.Demultiplexer</option>
+        <option value="#biolockJ.module.seq.MergePairedReads" id="biolockJ.module.seq.MergePairedReads" class="hidden">seq.MergePairedReads</option>
+        <option value="#biolockJ.module.seq.Rarefier" id="biolockJ.module.seq.Rarefier" class="hidden">seq.Rarefier</option>
+        <option value="#biolockJ.module.seq.SetMultiplexedHeaders" id="biolockJ.module.seq.SetMultiplexedHeaders" class="hidden">seq.SetMultiplexedHeaders</option>
+        <option value="#biolockJ.module.seq.TrimPrimers" id="biolockJ.module.seq.TrimPrimers" class="hidden">seq.TrimPrimers</option>
+        <option value="#biolockJ.module.report.JsonReport" id="biolockJ.module.report.JsonReport" class="hidden">report.JsonReport</option>
+        <option value="#biolockJ.module.report.RReport" id="biolockJ.module.report.RReport" class="hidden">report.RReport</option>
+        <option value="#biolockJ.module.classifier.r16s.RdpClassifier" id="biolockJ.module.classifier.r16s.RdpClassifier" class="hidden">classifier.r16s.RdpClassifier</option>
+        <option value="#biolockJ.module.classifier.r16s.QiimeClassifier" id="biolockJ.module.classifier.r16s.QiimeClassifier" class="hidden">classifier.r16s.QiimeClassifier</option>
+        <option value="#biolockJ.module.classifier.r16s.qiime.BuildQiimeMapping" id="biolockJ.module.classifier.r16s.qiime.BuildQiimeMapping" class="hidden">classifier.r16s.qiime.BuildQiimeMapping</option>
+        <option value="#biolockJ.module.classifier.r16s.qiime.ClosedRefClassifier" id="biolockJ.module.classifier.r16s.qiime.ClosedRefClassifier" class="hidden">classifier.r16s.qiime.ClosedRefClassifier</option>
+        <option value="#biolockJ.module.classifier.r16s.qiime.DeNovoClassifier" id="biolockJ.module.classifier.r16s.qiime.DeNovoClassifier" class="hidden">classifier.r16s.qiime.DeNovoClassifier</option>
+        <option value="#biolockJ.module.classifier.r16s.qiime.MergeOtuTables" id="biolockJ.module.classifier.r16s.qiime.MergeOtuTables" class="hidden">classifier.r16s.qiime.MergeOtuTables</option>
+        <option value="#biolockJ.module.classifier.r16s.qiime.OpenRefClassifier" id="biolockJ.module.classifier.r16s.qiime.OpenRefClassifier" class="hidden">classifier.r16s.qiime.OpenRefClassifier</option>
+        <option value="#biolockJ.module.classifier.r16s.qiime.QiimePreprocessor" id="biolockJ.module.classifier.r16s.qiime.QiimePreprocessor" class="hidden">classifier.r16s.qiime.QiimePreprocessor</option>
+        <option value="#biolockJ.module.classifier.wgs.MetaphlanClassifier" id="biolockJ.module.classifier.wgs.MetaphlanClassifier" class="hidden">classifier.wgs.MetaphlanClassifier</option>
+        <option value="#biolockJ.module.classifier.wgs.KrakenClassifier" id="biolockJ.module.classifier.wgs.KrakenClassifier" class="hidden">classifier.wgs.KrakenClassifier</option>
+        <option value="#biolockJ.module.classifier.wgs.SlimmClassifier" id="biolockJ.module.classifier.wgs.SlimmClassifier" class="hidden">classifier.wgs.SlimmClassifier</option>
+        <option value="#biolockJ.module.parser.r16s.RdpParser" id="biolockJ.module.parser.r16s.RdpParser" class="hidden">parser.r16s.RdpParser</option>
+        <option value="#biolockJ.module.parser.r16s.QiimeParser" id="biolockJ.module.parser.r16s.QiimeParser" class="hidden">parser.r16s.QiimeParser</option>
+        <option value="#biolockJ.module.parser.wgs.MetaphlanParser" id="biolockJ.module.parser.wgs.MetaphlanParser" class="hidden">parser.wgs.MetaphlanParser</option>
+        <option value="#biolockJ.module.parser.wgs.KrakenParser" id="biolockJ.module.parser.wgs.KrakenParser" class="hidden">classifier.r16s.qiime.OpenRefClassifier</option>
+        <option value="#biolockJ.module.parser.wgs.SlimmParser" id="biolockJ.module.parser.wgs.SlimmParser" class="hidden">parser.wgs.SlimmParser</option>
+        </select>
+      -->
+    </fieldset>
+    <!--</form>-->
+  </div>
+
+  <div id="inputTab" class="tabcontent">
+    <form id="input">
+      <p>Input directory (or directories): <input type="text" name="dirs" required><br>
+        <h5>(Input directory must contain files expected by the first module executed.
+        Multiple directories must be comma-separated.)</h5></p>
+      <p>Files in input directory to ignore: <input type="text" name="ignoreFiles"><br>
+        <h5>(Multiple files must be comma-separated.)</h5></p>
+      <p>Demultiplex: <br>
+        <input type="radio" name="demultiplex" value="Y" required> Yes<br>
+        <input type="radio" name="demultiplex" value="N"> No<br>
+        <h5>(If yes, sequence files include reads from multiple samples
+          and sample IDs must be extracted from the sequence headers.
+          RDP and Kraken classifiers only.  If no, there is one sample per file
+          and the file name must contain the sample ID.)</h5></p>
+      <p>Paired reads: <br>
+        <input type="radio" name="pairedReads" value="Y" required> Yes<br>
+        <input type="radio" name="pairedReads" value="N"> No<br>
+        <h5>(If yes, file names must include input.forwardFileSuffix or
+        input.reverseFileSuffix.)<h5></p>
+      <p><File name suffix to indicate a forward read:
+            <input type="text" name="forwardFileSuffix"><br>
+            File name suffix to indicate a reverse read.
+            <input type="text" name="reverseFileSuffix"><br>
+            </p>
+      <p>Trim prefix:
+        <input type="text" name="trimPrefix"><br>
+      <h5>(For files named by Sample ID, provide the
+        prefix preceding the ID to trim when extracting Sample ID.
+If input.demultiplex=Y, provide any characters in the sequence header preceding the ID.
+For fastq, typically “@”.)<h5></p>
+      <p>Trim suffix:
+        <input type="text" name="trimSuffix"><br>
+        <h5>(For files named by Sample ID, provide the suffix after the ID, often
+           this is just the file extension.  Do not include read direction indicators l
+           isted in input.forwardFileSuffix/reverseFileSuffix.
+           If input.demultiplex=Y, provide 1st character in the sequence header after ID;
+           for fastq, typically “:” char.)</h5></p>
+      <p>Minimum number of sequences per sample (BioLockJ will discard samples with sequences below this.):
+        <input type="number" name="rarefyMin"><br></p>
+      <p>Maximum number of sequences per sample (BioLockJ will discard samples with sequences above this.):
+        <input type="number" name="rarefyMax"><br></p>
+      <p>Path to file containing primers to trim (File must contain only one sequence per line):
+        <input type="text" name="trimSeqPath"><br></p>
+      <p>Metadata file path, <i>must have unique column headers</i>:
+        <input type="text" name="metadata"><br></p>
+      <p>Define how null values are represented in metadata: (input.nullValue)<br>
+        <input type="text" name="nullValue">
+      </p>
+      <p>Define column delimiter for input.metadata (input.columnDelim)<br>
+        <input type="text" name="columnDelim"></p>
+      <p>Barcode in header?<br>
+        <input type="radio" name="barcodeInHeader" value="Y"> Yes<br>
+        <input type="radio" name="barcodeInHeader" value="N"> No<br></p>
+      <!--is thi still there?
+        <p>Discard sequences missing primers:
+          <input type="radio" name="keepSeqsMissingPrimer" value="Y"> Yes<br>
+          <input type="radio" name="keepSeqsMissingPrimer" value="N"> No<br></p>-->
+      <button onclick="saveTab(this.parentNode.id)">Save</button>
+      <button type="button" class="nextTab">Save and move to next tab</button>
+    </form>
+  </div>
+
+  <div id="clusterTab" class="tabcontent">
+    <form id="cluster">
+      <button onclick="saveTab('cluster')">Next</button>
+      <button type="button" class="nextTab">Save and move to next tab</button>
+      <p>Cluster host address (cluster.host):<br>
+        <input type="text" name="host"><br></p>
+      <p>Batch command to submit jobs on the cluster: <br>
+        <input type="text" name="batchCommand"><br>
+      </p>
+      <p>Cluster parameters: <br>
+        <input type="text" name="params"><br></p>
+      <p>Validate cluster parameters: <br>
+        <input type="radio" name="validateParams" value="Y"> Yes<br>
+        <input type="radio" name="validateParams" value="N"> No<br></p>
+      <p>Cluster modules to load before execution: <br>
+        <input type="text" name="modules"><br></p>
+      <p>The email notification will include an scp command to download this BioModule outputDir<br>
+        <input type="text" name="downloadModule"><br></p>
+      <p>A directory on the local workstation where the cluster.downloadModule will be downloaded<br>
+        <input type="text" name="downloadDir"><br></p>
+    </form>
+  </div>
+
+
+  <div id="scriptTab" class="tabcontent">
+    <form id="script">
+      <p>Exit program if errors in script occur: (script.exitOnError)<br>
+        <input type="radio" name="exitOnError" value="Y"> Yes<br>
+        <input type="radio" name="exitOnError" value="N"> No (failures will be logged to failure directory) <br></p>
+      <p>Run on cluster: <br>
+        <input type="radio" name="runOnCluster" value="Y"> Yes<br>
+        <input type="radio" name="runOnCluster" value="N"> No</p>
+      <p>Number of sequence files to process per script:<br>
+        <input type="number" name="batchSize"><br></p>
+      <p>Command to grant script execute permissions:
+        <input type="text" name="chmodCommand" value="chmod 774"><br></p>
+      <p>Number of threads:
+        <input type="text" name="numThreads"><br></p>
+      <button onclick="saveTab(this.parentNode.id)">Save</button>
+      <button type="button" class="nextTab">Save and move to next tab</button>
+    </form>
+  </div>
+
+  <!--  <div id="metadataTab" class="tabcontent">
+    <form id="metadata">
+      <p>Metadata file path (file must have unique column headers):
+        <input type="text" name="file"><br></p>
+      <p>Define how null values are represented in metadata:
+        <input type="text" name="nullValue"><br></p>
+      <p>Define how comments are represented in metadata:
+        <input type="text" name="commentChar"><br></p>
+      <button onclick="saveTab(this.parentNode.id)">Save</button>
+      <button type="button" class="nextTab">Save and move to next tab</button>
+    </form>
+  </div>-->
+
+  <div id="reportTab" class="tabcontent">
+    <form id="report">
+      <p>Include number of hits in output: <br>
+        <input type="radio" name="numHits" value="Y"> Yes<br>
+        <input type="radio" name="numHits" value="N"> No<br></p>
+      <p>Add number of reads to output: <br>
+        <input type="radio" name="numReads" value="Y"> Yes<br>
+        <input type="radio" name="numReads" value="N"> No<br></p>
+      <p>Add full taxonimic names to output:<br>
+        <input type="radio" name="fullTaxonomyNames" value="Y"> Yes<br>
+        <input type="radio" name="fullTaxonomyNames" value="N"> No<br></p>
+      <p>Add genus prefix to species name in output:<br>
+        <i>(If yes, ParserModule adds genus prefix to species name in output tables)</i><br>
+        <input type="radio" name="addGenusToSpeciesName" value="Y">Yes<br>
+        <input type="radio" name="addGenusToSpeciesName" value="N">No
+        <br></p>
+      <p>Add only <strong>first initial</strong> of genus to species name in output:<br>
+        <input type="radio" name="useGenusFirstInitial" value="Y">Yes<br>
+        <input type="radio" name="useGenusFirstInitial" value="N">No
+        <br></p>
+      <p>Metadata attributes for R script to add to statistical models:<br>
+        <input type="text" name="attributes">
+        <br></p>
+      <p>Min threshold for OTU counts (<i>below which they will be ignored</i>):<br>
+        <input type="text" name="minOtuCount"><br></p>
+      <!--  <p>Delimiter to sepearte genus and species:<br>
+        <input type="text" name="emptySpaceDelim"><br></p>-->
+      <p>Taxonomic levels included in report:<br>
+        <input type="checkbox" name="taxonomyLevels" value="domain">Domain<br>
+        <input type="checkbox" name="taxonomyLevels" value="phylum">Phylum<br>
+        <input type="checkbox" name="taxonomyLevels" value="class">Class<br>
+        <input type="checkbox" name="taxonomyLevels" value="order">Order<br>
+        <input type="checkbox" name="taxonomyLevels" value="family">Family<br>
+        <input type="checkbox" name="taxonomyLevels" value="genus">Genus<br>
+        <input type="checkbox" name="taxonomyLevels" value="species">Species<br>
+      </p>
+      <p>Report log base: <br>
+        <input type="radio" name="logBase" value="10">10<br>
+        <input type="radio" name="logBase" value="e">e<br></p>
+      <button onclick="saveTab(this.parentNode.id)">Save</button>
+      <button type="button" class="nextTab">Save and move to next tab</button>
+    </form>
+  </div>
+
+  <div id="mailTab" class="tabcontent">
+    <form id="mail">
+      <!--
+      <p>Attach qsub output and error files to E-mail notifications:<br>
+        <input type="radio" name="sendNotification" value="Y">Yes<br>
+        <input type="radio" name="sendNotification" value="N">No <br>
+      </p>-->
+      <p>Max size for log file attachment (in MB):
+        <input type="text" name="maxAttachmentSizeMB"><br>
+      </p>
+      <p>Encrypted E-mail password:<br>
+        <i>(Encrypted password from email.from account.  If BioLockJ is passed a 2nd parameter
+          (in addition to the config file), the 2nd parameter should be the clear-text password.
+          The password will be encrypted and stored in the prop file for future use.)</i><br>
+        <strong>WARNING: Base64 encryption is only a trivial roadblock for malicious users.
+          This functionality is intended merely to keep clear-text passwords out of the
+          configuration files and should only be used with a disposable email.from account.</strong>
+        <input type="text" name="encryptedPassword"><br>
+        <p>Notification emails sent from this account, provided email.encryptedPassword is valid:
+          <input type="text" name="from"><br>
+          <p>Comma-separated email recipients list:
+            <input type="text" name="to"><br>
+          </p>
+          <p>Email SMTP Host:<br>
+            <input type="text" name="smtp.host"><br>
+          </p>
+          p>Email SMTP port:<br>
+          <input type="text" name="smtp.port"><br>
+        </p>
+        <p>Set the SMTP authorization property.<br>
+          <input type="radio" name="smtp.auth" value="Y">Yes<br>
+          <input type="radio" name="smtp.auth" value="N">No<br></p>
+        <p>Set the SMTP start TLS property.<br>
+          <input type="radio" name="smtp.starttls.enable" value="Y">Yes<br>
+          <input type="radio" name="smtp.starttls.enable" value="N">No<br></p>
+        <button onclick="saveTab(this.parentNode.id)">Save</button>
+        <button type="button" class="nextTab">Save and move to next tab</button>
+    </form>
+  </div>
+
+  <div id="rTab" class="tabcontent">
+    <form id="r">
+      <!--<p>Log normailze data:
+        <input type="radio" name="logNorm" value="Y">Yes<br>
+        <input type="radio" name="logNorm" value="N">No <br>
+      </p>
+      <p>Log base for normalizing data:
+        <input type="radio" name="logNorm" value="Y">Yes<br>
+        <input type="radio" name="logNorm" value="N">No <br>
+      </p>
+      <p>Max title size (OTU names will be trimmed to this size):
+        <input type="text" name="maxTitleSize" value="25" <br>
+      </p>-->
+      <p>If Y, will generate R Script log files:<br>
+        <input type="radio" name="debug" value="Y">Yes<br>
+        <input type="radio" name="debug" value="N">No <br>
+      </p>
+      <p>R script adds nominal statistical models for the listed metadata attributes. (Comma seperated list)<br>
+        <input type="text" name="nominalData"><br>
+      </p>
+      <p>R script adds numeric statistical models for the listed metadata attributes. (Comma seperated list)<br>
+        <input type="text" name="numericData"><br>
+      </p>
+      <p>Rare OTU threshold: <br>
+        <i>If >1, R will filter OTUs below # provided.  If <1, R will treat # as percentage and ignore OTUs not found in that percentage of table rows in each taxa level.</i>
+        <input type="text" name="rareOtuThreshold"><br>
+      </p>
+      <p><strong>Attributes Filter</strong><br>List of attributes for r to report on:
+        <input type="text" name="filterAttributes"><br>
+      </p>
+      <p>List of logical operators to apply to attributes filter:
+        <input type="text" name="filterOperators"><br>
+      </p>
+      <p>Filter values: <br><i><An orrdered list of values to compare with attributes filter)</i>
+        <input type="text" name="filterValues"><br>
+      </p>
+      <p>Rows with NA values for attributes ignored in R script:
+        <input type="text" name="filterNaAttributes">
+      </p>
+      <p>Number of breaks in P-value histograms output by R script:
+        <input type="text" name="numHistogramBreaks">
+      </p>
+      <p>P-value adjustment scope: Used to set the p.adjust "n" parameter for how many simultaneous p-value calculations:<br>
+        <input type="radio" name="adjPvalsScope" value="GLOBAL">GLOBAL<br>
+        <input type="radio" name="adjPvalsScope" value="LOCAL">LOCAL<br>
+        <input type="radio" name="adjPvalsScope" value="TAXA">TAXA<br>
+        <input type="radio" name="adjPvalsScope" value="ATTRIBUTE">ATTRIBUTE<br>
+      </p>
+      <p>This is the base color used for labels & headings in the PDF report:<br>
+        <input type="text" name="baseColor">
+      </p>
+      <p>This color is used to highlight significant attributes:<br>
+        <input type="text" name="highlightColor">
+      </p>
+      <p>Sets the color of scatterplot points:<br>
+        <input type="text" name="pointColor">
+      </p>
+      <p>Sets the p.adjust "method" parameter:<br><a href=https://stat.ethz.ch/R-manual/R-devel/library/stats/html/p.adjust.html>More info</a>
+        <input type="radio" name="pAdjMethod" value="holm">Holm<br>
+        <input type="radio" name="pAdjMethod" value="hochberg">Hochberg<br>
+        <input type="radio" name="pAdjMethod" value="hommel">Hommel<br>
+        <input type="radio" name="pAdjMethod" value="bonferroni">Honferroni<br>
+        <input type="radio" name="pAdjMethod" value="BH">Benjamini & Hochberg (BH)<br>
+        <input type="radio" name="pAdjMethod" value="BY">Benjamini & Yekutieli (BY)<br>
+        <input type="radio" name="pAdjMethod" value="fdr">FDR<br>
+        <input type="radio" name="pAdjMethod" value="none">none<br>
+      </p>
+      <p>Sets the format used in R sprintf() function:<br>
+        <input type="text" name="pValFormat"><br>
+      </p>
+      <p>Set p-value cutoff used to assign label r.highlightColor:<br>
+        <input type="numeric" name="pvalCutoff"><br>
+      </p>
+      <p>Set PDF report plot label maximum width:<br>
+        <input type="numeric" name="plotWidth"><br>
+      </p>
+      <p>Set PDF report plot label position: (r.topRowAdj)<br>
+        <input type="numeric" name="topRowAdj"><br>
+      </p>
+      <p>Set PDF report plot label position: (r.bottomRowAdj)<br>
+        <input type="numeric" name="bottomRowAdj"><br>
+      </p>
+      <p>Set PDF report plot label position: (r.leftColAdj)<br>
+        <input type="numeric" name="leftColAdj"><br>
+      </p>
+      <p>Set PDF report plot label position: (r.rightColAdj)<br>
+        <input type="numeric" name="rightColAdj"><br>
+      </p>
+      <p>Set the size of histogram & boxplot headings in PDF reports<br>
+        <input type="numeric" name="headingLabelSize"><br>
+      </p>
+      <p>Set the size of metadata attribute names in PDF reports<br>
+        <input type="numeric" name="attributeLabelSize"><br>
+      </p>
+      <p># minutes before R Script times out:<br>
+        <input type="numeric" name="timeout"><br>
+      </p>
+      <button onclick="saveTab(this.parentNode.id)">Save</button>
+      <button type="button" class="nextTab">Save and move to next tab</button>
+    </form>
+  </div>
+
+  <div id="exeTab" class="tabcontent">
+    <form id="exe">
+      <p>Classifier executable command:
+        <input type="text" name="classifier">
+      </p>
+      <p>Classifier executable command:
+        <input type="text" name="classifierParams">
+      </p>
+      <p>Executable RScript command:
+        <input type="text" name="rScript">
+      </p>
+      <p>Executable Java command:
+        <input type="text" name="java">
+      </p>
+      <p>Executable python command:
+        <input type="text" name="python">
+      </p>
+      <p>Executable gzip command:
+        <input type="text" name="gzip">
+      </p>
+      <p>Executable awak command:
+        <input type="text" name="awak">
+      </p>
+      <p>Executable bowtie2 command:
+        <input type="text" name="bowtie">
+      </p>
+      <p>Optional bowtie2 parameters:
+        <input type="text" name="bowtieParams">
+      </p>
+      <p>Executable PEAR command:
+        <input type="text" name="pear">
+      </p>
+      <p>Optional PEAR parameters:
+        <input type="text" name="pearParams">
+      </p>
+      <p>Executable samtools command:
+        <input type="text" name="samtools">
+      </p>
+      <p>Executable vsearch command:
+        <input type="text" name="vsearch">
+      </p>
+      <p>Optional PEAR parameters:
+        <input type="text" name="vsearchParams">
+      </p>
+      <button onclick="saveTab(this.parentNode.id)">Save</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <button type="button" class="nextTab">Save and move to next tab</button>
+    </form>
+  </div>
+
+  <div id="rdpTab" class="tabcontent">
+    <form id="rdp">
+      <p>Required RDP minimum threshold score for valid OTUs:
+        <input type="text" name="minThresholdScore">
+      </p>
+      <button onclick="saveTab(this.parentNode.id)">Save</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+    </form>
+  </div>
+
+  <div id="qiimeTab" class="tabcontent">
+    <form id="qiime">
+      <!--<p>QIIME picking strategy:<br>
+        <input type="radio" name="pickOtuScript" value="pick_closed_reference_otus.py"> Closed reference<br>
+        <input type="radio" name="pickOtuScript" value="pick_de_novo_otus.py">De novo<br>
+        <input type="radio" name="pickOtuScript" value="pick_open_reference_otus.py">Open reference OTU<br>
+      </p>-->
+      <p>Alpha diverisity metrics: <br> Options listed online:
+        <a href="http://scikit-bio.org/docs/latest/generated/skbio.diversity.alpha.html">
+          scikit-bio.org/docs/latest/generated/skbio.diversity.alpha.html</a>.<br>
+        <input type="text" name="alphaDiversityMetrics">
+      </p>
+      <!--<p>Format metadata to build QIIME mapping file:<br>
+        <input type="radio" name="formatMetadata" value="Y">Yes<br>
+        <input type="radio" name="formatMetadata" value="N">No <br>
+      </p>
+      <p>Preprocess QIIME input <i>(decompress gzipped files and/or convert fastq files into fasta format, as required by QIIME)</i>:<br>
+        <input type="radio" name="preprocessInput" value="Y">Yes<br>
+        <input type="radio" name="preprocessInput" value="N">No <i>(choose this if they are already properly formatted)</i> <br>
+      </p>
+      <p>Execute qiime.pickOtuScript:<br>
+        <input type="radio" name="pickOtus" value="Y">Yes<br>
+        <input type="radio" name="pickOtus" value="N">No <br>
+      </p>
+      <p>Merge OTU tables generated by batched scripts calling pick_closed_reference_otus.py:<br>
+        <input type="radio" name="mergeOtuTables" value="Y">Yes<br>
+        <input type="radio" name="mergeOtuTables" value="N">No <br>
+      </p>-->
+      <p>Remove chimeras after open or de novo OTU picking:<br>
+        <input type="radio" name="removeChimeras" value="Y">Yes<br>
+        <input type="radio" name="removeChimeras" value="N">No <br>
+      </p>
+      <button onclick="saveTab(this.parentNode.id)">Save</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+    </form>
+  </div>
+
+  <div id="krakenTab" class="tabcontent">
+    <form id="kraken">
+      <p>Path to Kraken database:
+        <input type="text" name="kraken.db">
+      </p>
+      <button onclick="saveTab(this.parentNode.id)">Save</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a id="downloadlink" class="hidden">Download configuration file to default directory</a>
+    </form>
+  </div>
+
+  <div id="slimmTab" class="tabcontent">
+    <form id="slimm">
+      <p>Path to SLIMM database:
+        <input type="text" name="slimm.db">
+      </p>
+      <p>Path the bowtie2 reference genome index:
+        <input type="text" name="refGenomeIndex">
+      </p>
+      <button onclick="saveTab(this.parentNode.id)">Save</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+    </form>
+  </div>
+</div>
+<div class="banner">
+  <!--Working on logo here-->
+  <?xml version="1.0" standalone="No"?>
+  <svg width="150" height="75" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <!--rounded edges rect-->
+    <rect x="60" y="20" rx="10" ry="10" width="30" height="30" stroke="black" fill="transparent" stroke-width="4"/>
+
+    <!--<ellipse cx="75" cy="75" rx="20" ry="5" stroke="red" fill="transparent" stroke-width="5"/>-->
+
+    <path d="M60,23 Q70,5  80,5 T90,23" fill="none" stroke="rgb(243,144,29)" stroke-width="2"/>
+    <path d="M60,23 Q65,3  75,5 T90,23" fill="none" stroke="rgb(0,112,60)" stroke-width="2"/>
+    <text x="69" y="43" dx="0" font-family="Times">J</text>
+    <!--<path d="M70,30 L80,30  M75,30 L75,35 " fill="none" stroke="rgb(0,112,60)" stroke-width="2"/>-->
+  </svg>
+</div>
+<script>
+  alert("Page loaded");
+
+  var classifier; //classifier and parser will always match
+
+  /* When the user clicks on the "Projects"button,
+              toggle between hiding and showing the dropdown content */
+  function projectOptions() {
+    document.getElementById("projects").classList.toggle("show");
+  }
+
+  //Open the main Menu when "Projects" -> "New" is clicked
+  function newProj() {
+    document.getElementById("mainMenu").style.display = "block";
+    //reset the forms
+    var forms = document.getElementsByTagName('form');
+    for (var i = 1; i < forms.length; i++) { //skips first empty form
+      //console.log(forms[i]);
+      forms[i].reset();
+    }
+  }
+
+  // Close the dropdown if the user clicks outside of it
+  window.onclick = function(e) {
+    if (!e.target.matches('.dropbtn')) {
+      var myDropdown = document.getElementById("projects");
+      if (myDropdown.classList.contains('show')) {
+        myDropdown.classList.remove('show');
+      }
+    }
+  }
+
+  function loadLocalFile() {
+    var file = document.getElementById("localFile").files[0];
+    if (file) {
+      var reader = new FileReader();
+
+      reader.onload = function(evt) {
+        //console.log(evt);
+        //console.log(this.result);
+        var provisionalConfigObject = {};
+        provisionalConfigObject.modules = [];
+
+        var lines = this.result.split(/\r\n|\r|\n/g); //to catch all newlines
+        //console.log(lines);
+        for (var line = 0; line < lines.length; line++) {
+          //console.log(line);
+          //console.log(lines[line]);
+          var lineSplit = lines[line].split("=");
+          if (lines[line].slice(0, 11) === "#BioModule ") {
+            provisionalConfigObject.modules.push(lines[line]);
+            //console.log(lines[line]);
+          } else if (lineSplit.length >= 2) { //if spliting at "=" is 2 or greater...
+            provisionalConfigObject[lineSplit[0]] = lineSplit.slice(1).join('=');
+            //console.log("hi");
+          } else if (line[lines] == undefined) {
+            //console.log("blank line")
+          } else {
+            //console.log(line[line]);
+            alert('Lines must start with "#", or have key/values seperated by "=". Please check your config form');
+            return
+          };
+        }; //end for-loop
+        try {
+          console.log(provisionalConfigObject);
+          sendConfigDataToForms(provisionalConfigObject);
+          alert("document accepted");
+          document.getElementById("openConfig").style.display = "none";
+        } catch (err) {
+          alert(err + " possible invalid key");
+        };
+
+        //console.log(provisionalConfigObject);
+      }; //end reader.onload
+
+      reader.onerror = function(evt) {
+        console.error("An error ocurred reading the file", evt);
+      };
+
+      reader.readAsText(file, "UTF-8");
+      alert("localFile clicked");
+      /*
+
+          */
+    } //end if (file)
+  }; //end loadLocalFile function
+
+
+  //function for parsing config objects in localStorage to forms
+  var sendConfigDataToForms = function(configObject) {
+    //reset currentConfig to config object from memory
+    currentConfig = configObject;
+    for (var key in configObject) {
+
+      //splitting keys because I made it the name of the form + the name of attribute
+      let keys = key.split(".");
+      let formKey = keys[0];
+      let inputKey = keys[1];
+      //first step, loop through modules and show them
+      if (key == "modules") {
+        var mods = configObject[key]; //could have said configObject["modules"]
+        console.log(mods);
+        var domModule = document.getElementById('module');
+        var domModuleLi = domModule.getElementsByTagName('li');
+        for (var a = 0; a < mods.length; a++) {
+          for (var b = 0; b < domModuleLi.length; b++) {
+            if (mods[a] == domModuleLi[b].innerHTML) {
+              domModuleLi[b].classList.add('modChoosen')
+            }
+          }
+          //console.log(document.querySelector('input[name=' + mods[a] + ']'))//[1])
+          //for (var b = 0; )
+          //document.querySelectorAll('input[value=' + mods[a] + ']')[1].classList.remove("hidden");
+        }
+        //document.querySelectorAll('input[value="key"]').classList.remove("hidden");
+        //console.log('add modules');
+      } else {
+
+        //finds the form and item name
+        var element = document.querySelector("form[id=" + formKey.toString() + "] input[name=" + inputKey.toString() + "]");
+        //console.log(element)
+
+        if (element.getAttribute("type") == "text") {
+          element.value = configObject[key];
+
+          //for radio input
+        } else if (element.getAttribute("type") == "radio") {
+
+          //because I split up the name into the modules
+          var elements = document.querySelectorAll("form[id=" + formKey.toString() + "] input[name=" + inputKey.toString() + "]");
+          //console.log(elements);
+          for (var i = 0; i < elements.length; i++) {
+            //console.log(elements[i]);
+            if (elements[i].value == configObject[key].toString() || currentConfig.hasOwnProperty(key)) {
+              //console.log(configObject[key]);
+              elements[i].checked = true;
+            };
+          };
+          //var radio = document.querySelector("input[name=" + inputKey.toString() + "] input[value=" + configObject[key].toString() + "]")
+
+          //for modules
+
+          //for checkbox input
+        } else if (element.getAttribute("type") == "checkbox") {
+          var elements = document.querySelectorAll("form[id=" + formKey.toString() + "] input[name=" + inputKey.toString() + "]");
+
+          checks = configObject[key].slice(0, -1).split(',');
+
+          for (var i = 0; i < elements.length; i++) {
+
+            for (var h = 0; h < checks.length; h++) {
+              if (elements[i].value == checks[h]) {
+                //console.log(configObject[key]);
+                elements[i].checked = true;
+              };
+            };
+          }
+          //
+        }else{
+          console.log(element);
+        }
+        document.getElementById("mainMenu").style.display = "block";
+        //console.log(element);
+        //console.log(key);
+      };
+    };
+  };
+
+  //function for clicking tabs
+  function openTab(evt, tabName) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace("active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+  // Get the element with id="defaultOpen" and click on it (making it open by default)
+  document.getElementById("defaultOpen").click();
+
+  //make "open" show open div
+  function openProjDisplay() {
+    // Check for the various File API support.
+    if (window.File && window.FileReader && window.FileList && window.Blob) {
+      // Great success! All the File APIs are supported.
+      document.getElementById("openConfig").style.display = "block";
+    } else {
+      alert('The File APIs are not fully supported in this browser.');
+    }
+  };
+
+  var currentConfig = {};
+
+  //function to put move data from form to currentConfig
+  function saveTab(formName) {
+    event.preventDefault()
+    //get the form data
+    var formInfo = document.getElementById(formName).elements;
+    var lastAnswer;
+
+    if (formInfo = "module") {
+      modulesToCurrentConfig();
+    } else {
+      //cycle through the form and get the info
+      for (i = 0; i < formInfo.length; i++) {
+        let prop = formName.toString() + "." + formInfo[i].name;
+        let inpType = formInfo[i].type;
+
+        //skip unchecked radio and checkbox entries
+        if (inpType == "radio" && formInfo[i].checked == false) {
+          continue;
+          //} else if (inpType == "checkbox" && formInfo[i].checked == false) {
+          //continue;
+        }
+        //skip the submit buttons
+        else if (inpType == "submit") {
+          continue;
+        }
+        //add all non-blank entries to currentConfig
+        else if (formInfo[i].value != "" && inpType != "checkbox") {
+          currentConfig[prop] = formInfo[i].value;
+          //console.log(formInfo[i].value + " " + formInfo[i].name);
+        }
+        //collect all checkbox options
+        if (inpType == "checkbox") {
+          if (prop !== lastAnswer) {
+            currentConfig[prop] = "";
+          };
+          if (formInfo[i].checked == true) {
+            currentConfig[prop] = currentConfig[prop].concat(formInfo[i].value.toString(), ",");
+          }
+          //what was I doing here...
+          if (currentConfig[prop] == undefined || currentConfig[prop] == null) {
+            currentConfig[prop] = formInfo[i].value.toString().concat(',');
+          }
+        }
+        lastAnswer = prop;
+        //console.log(lastAnswer)
+      }
+    };
+    localStorage.setItem(currentConfig['project.configFile'].toString(), JSON.stringify(currentConfig));
+    console.dir(currentConfig);
+  }
+
+  //section for module related functions
+  function modulesToCurrentConfig() {
+    mods = document.getElementById('module').getElementsByTagName('li');
+    currentConfig["modules"] = [];
+    for (var i = 0; i < mods.length; i++) {
+      if (mods[i].classList.contains('modChoosen') && mods[i].disabled != true) {
+        currentConfig["modules"].push(mods[i].innerHTML)
+      };
+    };
+    localStorage.setItem(currentConfig['project.configFile'].toString(), JSON.stringify(currentConfig));
+    //console.log(currentConfig['modules']);
+  };
+
+  //the following are list of nodes with class for building the subsequence "Choosen" lists
+  var qiimeClassModNodes = Array.from(document.getElementsByClassName("qiimeClass"));
+  var slimmClassModNodes = Array.from(document.getElementsByClassName("slimmClass"));
+  var krakenClassModNodes = Array.from(document.getElementsByClassName("krakenClass"));
+  var rdpClassModNodes = Array.from(document.getElementsByClassName("rdpClass"));
+  var metaphlanClassModNodes = Array.from(document.getElementsByClassName("metaphlanClass"));
+  //the following "Choosen" variables are lists of nodes to disable when a module is selected
+  var qiimeModChoosen = [slimmClassModNodes, krakenClassModNodes, rdpClassModNodes, metaphlanClassModNodes];
+  var rdpModChoosen = [slimmClassModNodes, krakenClassModNodes, qiimeClassModNodes, metaphlanClassModNodes];
+  var slimmModChoosen = [qiimeClassModNodes, krakenClassModNodes, rdpClassModNodes, metaphlanClassModNodes];
+  var krakenModChoosen = [slimmClassModNodes, qiimeClassModNodes, rdpClassModNodes, metaphlanClassModNodes];
+  var metaphlanModChoosen = [slimmClassModNodes, krakenClassModNodes, rdpClassModNodes, qiimeClassModNodes];
+  //object for keeping track of modules choosen
+  //to be used to disable nodes that shouldn't be selected together
+  var modTracker = {
+    qiimeCount: 0,
+    krakenCount: 0,
+    slimmCount: 0,
+    rdpCount: 0,
+    metaphlanCount: 0,
+    getQiimeTrackerCount() {
+      return this.qiimeCount
+    },
+    incrementQiimeTrackerCount: function() {
+      this.qiimeCount++
+    },
+    decrementQiimeTrackerCount: function() {
+      this.qiimeCount--
+    },
+    getRdpTrackerCount: function() {
+      return this.rdpCount
+    },
+    incrementRdpTrackerCount: function() {
+      this.rdpCount++
+    },
+    decrementRdpTrackerCount: function() {
+      this.rdpCount--
+    },
+    getKrakenTrackerCount: function() {
+      return this.krakenCount
+    },
+    incrementKrakenTrackerCount() {
+      this.krakenCount++
+    },
+    decrementKrakenTrackerCount: function() {
+      this.krakenCount--
+    },
+    getSlimmTrackerCount: function() {
+      return this.slimmCount
+    },
+    incrementSlimmTrackerCount: function() {
+      this.slimmCount++
+    },
+    decrementSlimmTrackerCount: function() {
+      this.slimmCount--
+    },
+    getMetaphlanTrackerCount: function() {
+      return this.metaphlanCount
+    },
+    incrementMetaphlanTrackerCount: function() {
+      this.metaphlanCount++
+    },
+    decrementMetaphlanTrackerCount: function() {
+      this.metaphlanCount--
+    },
+  };
+  //helper function for following eventlistener
+  function addClassToAllElemInList(objects, className) {
+    for (let r = 0; r < objects.length; r++) {
+      objects[r].classList.add(className);
+    }
+  }
+
+  function removeClassToAllElemInList(objects, className) {
+    for (let r = 0; r < objects.length; r++) {
+      objects[r].classList.remove(className);
+    }
+  }
+  //function below is called when modules are selected, it both selects them and disables others
+  function toggleSelectModule(target) {
+    //console.log(target)
+    if (target.classList.contains("modChoosen")) {
+      target.classList.remove("modChoosen");
+      if (target.classList.contains("qiimeClass")) {
+        modTracker.decrementQiimeTrackerCount();
+        if (modTracker.getQiimeTrackerCount() == 0) {
+          for (let t = 0; t < qiimeModChoosen.length; t++) {
+            removeClassToAllElemInList(qiimeModChoosen[t], "disabledMod");
+          }
+        }
+      } else if (target.classList.contains("rdpClass")) {
+        modTracker.decrementRdpTrackerCount();
+        if (modTracker.getRdpTrackerCount() == 0) {
+          for (let t = 0; t < rdpModChoosen.length; t++) {
+            removeClassToAllElemInList(rdpModChoosen[t], "disabledMod");
+          }
+        }
+      } else if (target.classList.contains("krakenClass")) {
+        modTracker.decrementKrakenTrackerCount();
+        if (modTracker.getKrakenTrackerCount() == 0) {
+          for (let t = 0; t < krakenModChoosen.length; t++) {
+            removeClassToAllElemInList(krakenModChoosen[t], "disabledMod");
+          }
+        }
+      } else if (target.classList.contains("slimmClass")) {
+        modTracker.decrementSlimmTrackerCount();
+        if (modTracker.getSlimmTrackerCount() == 0) {
+          for (let t = 0; t < slimmModChoosen.length; t++) {
+            removeClassToAllElemInList(slimmModChoosen[t], "disabledMod");
+          }
+        }
+      } else if (target.classList.contains("metaphlanClass")) {
+        modTracker.decrementMetaphlanTrackerCount();
+        if (modTracker.getMetaphlanTrackerCount() == 0) {
+          for (let t = 0; t < metaphlanModChoosen.length; t++) {
+            removeClassToAllElemInList(metaphlanModChoosen[t], "disabledMod");
+          }
+        }
+      }
+    } else {
+      target.classList.add("modChoosen");
+      if (target.classList.contains("qiimeClass")) {
+        modTracker.incrementQiimeTrackerCount();
+        if (modTracker.getQiimeTrackerCount() > 0) {
+          for (let t = 0; t < qiimeModChoosen.length; t++) {
+            addClassToAllElemInList(qiimeModChoosen[t], "disabledMod");
+          }
+        }
+      } else if (target.classList.contains("rdpClass")) {
+        modTracker.incrementRdpTrackerCount();
+        if (modTracker.getRdpTrackerCount() > 0) {
+          for (let t = 0; t < rdpModChoosen.length; t++) {
+            addClassToAllElemInList(rdpModChoosen[t], "disabledMod");
+          }
+        }
+      } else if (target.classList.contains("krakenClass")) {
+        modTracker.incrementKrakenTrackerCount();
+        if (modTracker.getKrakenTrackerCount() > 0) {
+          for (let t = 0; t < krakenModChoosen.length; t++) {
+            addClassToAllElemInList(krakenModChoosen[t], "disabledMod");
+          }
+        }
+      } else if (target.classList.contains("slimmClass")) {
+        modTracker.incrementSlimmTrackerCount();
+        if (modTracker.getSlimmTrackerCount() > 0) {
+          for (let t = 0; t < slimmModChoosen.length; t++) {
+            addClassToAllElemInList(slimmModChoosen[t], "disabledMod");
+          }
+        }
+      } else if (target.classList.contains("metaphlanClass")) {
+        modTracker.incrementMetaphlanTrackerCount();
+        if (modTracker.getMetaphlanTrackerCount() > 0) {
+          for (let t = 0; t < metaphlanModChoosen.length; t++) {
+            addClassToAllElemInList(metaphlanModChoosen[t], "disabledMod");
+          }
+        }
+      }
+    };
+  };
+
+  //module drag events
+  /* comes from http://syntaxxx.com/rearranging-web-page-items-with-html5-drag-and-drop/*/
+  function dragStarted(evt) {
+    //start drag
+    this.source = evt.target;
+    //set data
+    data = {
+      html: evt.target.innerHTML,
+      classes: evt.target.classList.value,
+      info: evt.target.info,
+      value: evt.target.info,
+    };
+    evt.dataTransfer.setData("text/plain", JSON.stringify(data));
+    //specify allowed transfer
+    evt.dataTransfer.effectAllowed = "move";
+  }
+
+  function draggingOver(evt) {
+    //drag over
+    evt.preventDefault();
+    //specify operation
+    evt.dataTransfer.dropEffect = "move";
+  }
+
+  function dropped(evt) {
+    //drop
+    evt.preventDefault();
+    evt.stopPropagation();
+    //update text in dragged item
+    this.source.innerHTML = evt.target.innerHTML;
+    this.source.classList = evt.target.classList;
+    this.source.info = evt.target.info;
+    //update text in drop target
+    data = JSON.parse(evt.dataTransfer.getData("text/plain"));
+    console.log(data);
+    evt.target.innerHTML = data.html;
+    evt.target.classList = data.classes;
+    evt.target.info = data.info;
+  }
+
+
+  //eventlisteners
+  //eventlisteners for dragging module options
+  moduleOptions = Array.from(document.getElementById("module").getElementsByTagName("li"));
+  for (var r = 0; r < moduleOptions.length; r++) {
+    moduleOptions[r].addEventListener("mouseover", function() {
+      let infoTarget = document.getElementById("moduleInfoDiv");
+      let info = this.getAttribute('data-info').trim();
+      infoTarget.innerHTML = "";
+      infoTarget.insertAdjacentHTML("afterbegin", info);
+    })
+  }
+  //helpers for mouseover function
+  var HttpClient = function() {
+    this.get = function(aUrl, aCallback) {
+      var anHttpRequest = new XMLHttpRequest();
+      anHttpRequest.onreadystatechange = function() {
+        if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
+          aCallback(anHttpRequest.responseText);
+      }
+      anHttpRequest.open("GET", aUrl, true);
+      anHttpRequest.send(null);
+    }
+  }
+  //function is broken
+  function htmlToElement(html) {
+    html = html.trim(); // Never return a text node of whitespace as the result
+    html = "<div>".concat(html, "</div>");
+    parser = new DOMParser();
+    temp = parser.parseFromString(html, "text/html");
+    output = temp.getElementsByTagName("div")[0];
+    //console.log(output);
+    //template.innerHTML = html;
+    return output
+  }
+
+  /*
+  for (var r = 0; r < 2; r++){
+    moduleOptions[r].addEventListener("dragstart", dragStarted(event));
+    moduleOptions[r].addEventListener("dragover", draggingOver(event));
+    moduleOptions[r].addEventListener("drop", dropped(event));
+  }*/
+
+  //Event listeners for disabling module options during mouseover
+  /* need to fix, currently, dragging the elements only moves their innerHTML  */
+
+
+  /*for (var t = 0; t < qiimeClass.length; t++) {
+    qiimeClass[t].addEventListener("mousedown", function() {
+      var qiimeChoosen = [slimmClass, krakenClass, rdpClass];
+      if (!this.classList.contains("modChoosen")){
+        for (let t = 0; t < qiimeChoosen.length; t++){
+          addClassToAllElemInList(qiimeChoosen[t], "disabledMod")
+        }
+      }else{
+        for (let t = 0; t < qiimeChoosen.length; t++){
+          removeClassToAllElemInList(qiimeChoosen[t], "disabledMod")
+        }
+        }; //end else
+    });//end eventlistener
+  }; //end qiimeClass for-loop*/
+
+
+
+
+  /* the following block adds an eventlistener with two functions to the next
+  tab tabButtons one for saving, and one for jumping to the next tab */
+  var tabButtons = Array.from(document.getElementsByClassName("nextTab"));
+  for (var t = 0; t < tabButtons.length; t++) {
+    var tabs = Array.from(document.getElementsByClassName("tabcontent"));
+    //eventlistener for moving to next tabName
+    tabButtons[t].tabNum = t;
+    tabButtons[t].addEventListener("click", function() {
+        //alert(tabs[this.tabNum + 1].getAttribute("id").toString())
+        saveTab(this.parentNode.id);
+        openTab(event, tabs[this.tabNum + 1].getAttribute("id"));
+        //alert("Tab clicked")
+      }, {
+        once: false
+      } //end of eventlistener
+    ) //end of nextTab eventlistener
+  }; //end tabs for-loop
+
+  //eventlistener for adding the recent config files to "recent"
+  document.getElementById("recent").addEventListener("mouseover", function() {
+    recentMenuChoices = Object.keys(localStorage);
+    for (var i = 0; i < recentMenuChoices.length; i++) {
+      let opt = document.createElement('a');
+      opt.setAttribute("name", recentMenuChoices[i]);
+      var text = document.createTextNode(recentMenuChoices[i].toString());
+      opt.addEventListener("click", function() {
+        sendConfigDataToForms(JSON.parse(localStorage.getItem(this.name)));
+      });
+      opt.appendChild(text);
+      opt.setAttribute('position', 'relative');
+      opt.setAttribute('display', 'block');
+      opt.classList.add('recentConfigs');
+      let proj = document.getElementById("projects");
+      proj.appendChild(opt);
+    };
+  }, {
+    once: true
+  });
+
+  //Function for creating downloadable config file
+  (function() {
+    makeTextFile = function() {
+      var text = "";
+      textFile = null;
+      //add modules to config first
+      for (var i = 0; i < currentConfig["modules"].length; i++) {
+        //console.log(currentConfig["modules"][i].concat("\n"));
+        text += currentConfig["modules"][i].concat("\n");
+      }
+      //for non_module
+      for (var key in currentConfig) {
+        console.log(key);
+        if (currentConfig.hasOwnProperty(key)) { //only lets keys that are user inputed pass
+          //console.log(key);
+          if (key == "modules" || key == "project.configFile") {
+            //console.log(currentConfig["modules"]);
+            //for (var i = 0; i < currentConfig["modules"].length; i++) {
+            //console.log(currentConfig["modules"][i].concat("\n"));
+            //text += currentConfig["modules"][i].concat("\n");
+            //}
+          } else if (key.toString() != "project.configFile" || key != "modules") { //project.configFile doesn't go inside the document
+            text += key.concat("=", currentConfig[key], "\n");
+            //console.log(text);
+          }
+        }
+      }
+      //console.log(text);
+      var data = new Blob([text], {
+        type: 'text/plain'
+      });
+      // If we are replacing a previously generated file we need to
+      // manually revoke the object URL to avoid memory leaks.
+      if (textFile !== null) {
+        window.URL.revokeObjectURL(textFile);
+      }
+
+      textFile = window.URL.createObjectURL(data);
+
+      return textFile;
+    };
+    //gets all buttons with create class
+    var createDownload = document.getElementsByClassName('createDownload');
+
+    for (var i = 0; i < createDownload.length; i++) {
+      createDownload[i].addEventListener('click', function() {
+        event.preventDefault()
+        var links = document.getElementsByClassName('downloadlink');
+        //console.log(links);
+        for (var a = 0; a < links.length; a++) {
+          let link = links[a];
+          //console.log(link);
+          link['download'] = currentConfig["project.configFile"];
+          //console.log('hi');
+          link.href = makeTextFile();
+          link.style.display = 'block';
+          console.log('hi');
+        };
+      }, false);
+    };
+  })();
+</script>
+
+</body>
+
+</html>
