@@ -473,6 +473,8 @@ For fastq, typically “@”.)<h5></p>
         <input type="text" name="downloadModule"><br></p>
       <p>A directory on the local workstation where the cluster.downloadModule will be downloaded<br>
         <input type="text" name="downloadDir"><br></p>
+      <p>Cluster.scriptHeader<br>
+        <input type="text" name="scriptHeader"><br></p>
     </form>
   </div>
 
@@ -938,7 +940,7 @@ For fastq, typically “@”.)<h5></p>
       //first step, loop through modules and show them
       if (key == "modules") {
         var mods = configObject[key]; //could have said configObject["modules"]
-        console.log(mods);
+        //console.log(mods);
         var domModule = document.getElementById('module');
         var domModuleLi = domModule.getElementsByTagName('li');
         for (var a = 0; a < mods.length; a++) {
@@ -957,9 +959,9 @@ For fastq, typically “@”.)<h5></p>
 
         //finds the form and item name
         var element = document.querySelector("form[id=" + formKey.toString() + "] input[name=" + inputKey.toString() + "]");
-        //console.log(element)
+        if (element == null) {console.log(key)};
 
-        if (element.getAttribute("type") == "text") {
+        if (element.getAttribute("type") == "text" || element.getAttribute("type") == "number") {
           element.value = configObject[key];
 
           //for radio input
