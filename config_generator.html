@@ -947,9 +947,16 @@ For fastq, typically “@”.)<h5></p>
           for (var a = 0; a < mods.length; a++) {
             for (var b = 0; b < domModuleLi.length; b++) {
               if (mods[a] == domModuleLi[b].innerHTML) {
-                domModuleLi[b].classList.add('modChoosen')
-              }
-            }
+                try{
+                domModuleLi[b].click();//add('modChoosen');
+              } catch(err) {
+                //console.error(err);
+                alert(err);
+              } finally{
+
+                }
+              };
+            };//end for-loop over domModuleLi
             //console.log(document.querySelector('input[name=' + mods[a] + ']'))//[1])
             //for (var b = 0; )
             //document.querySelectorAll('input[value=' + mods[a] + ']')[1].classList.remove("hidden");
@@ -1298,6 +1305,7 @@ For fastq, typically “@”.)<h5></p>
     evt.dataTransfer.dropEffect = "move";
   }
 
+  //function for dropping dragged modules
   function dropped(evt) {
     //drop
     evt.preventDefault();
@@ -1313,7 +1321,6 @@ For fastq, typically “@”.)<h5></p>
     evt.target.classList = data.classes;
     evt.target.info = data.info;
   }
-
 
   //eventlisteners
   //eventlisteners for dragging module options
@@ -1349,35 +1356,6 @@ For fastq, typically “@”.)<h5></p>
     //template.innerHTML = html;
     return output
   }
-
-  /*
-  for (var r = 0; r < 2; r++){
-    moduleOptions[r].addEventListener("dragstart", dragStarted(event));
-    moduleOptions[r].addEventListener("dragover", draggingOver(event));
-    moduleOptions[r].addEventListener("drop", dropped(event));
-  }*/
-
-  //Event listeners for disabling module options during mouseover
-  /* need to fix, currently, dragging the elements only moves their innerHTML  */
-
-
-  /*for (var t = 0; t < qiimeClass.length; t++) {
-    qiimeClass[t].addEventListener("mousedown", function() {
-      var qiimeChoosen = [slimmClass, krakenClass, rdpClass];
-      if (!this.classList.contains("modChoosen")){
-        for (let t = 0; t < qiimeChoosen.length; t++){
-          addClassToAllElemInList(qiimeChoosen[t], "disabledMod")
-        }
-      }else{
-        for (let t = 0; t < qiimeChoosen.length; t++){
-          removeClassToAllElemInList(qiimeChoosen[t], "disabledMod")
-        }
-        }; //end else
-    });//end eventlistener
-  }; //end qiimeClass for-loop*/
-
-
-
 
   /* the following block adds an eventlistener with two functions to the next
   tab tabButtons one for saving, and one for jumping to the next tab */
