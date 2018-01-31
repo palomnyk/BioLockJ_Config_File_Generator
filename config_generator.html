@@ -836,7 +836,7 @@ For fastq, typically “@”.)<h5></p>
   </svg>
 </div>
 <script>
-  alert("Page loaded");
+  //alert("Page loaded");
 
   var classifier; //classifier and parser will always match
 
@@ -905,7 +905,8 @@ For fastq, typically “@”.)<h5></p>
           alert("document accepted");
           document.getElementById("openConfig").style.display = "none";
         } catch (err) {
-          alert(err + " possible invalid key");
+          //alert(err + " possible invalid key");
+          console.error(err);
         };
 
         //console.log(provisionalConfigObject);
@@ -916,7 +917,7 @@ For fastq, typically “@”.)<h5></p>
       };
 
       reader.readAsText(file, "UTF-8");
-      alert("localFile clicked");
+      //alert("localFile clicked");
       /*
 
           */
