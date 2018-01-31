@@ -875,6 +875,7 @@ For fastq, typically “@”.)<h5></p>
         //console.log(evt);
         //console.log(this.result);
         var provisionalConfigObject = {};
+        provisionalConfigObject["project.configFile"] = file.name;
         provisionalConfigObject.modules = [];
 
         var lines = this.result.split(/\r\n|\r|\n/g); //to catch all newlines
