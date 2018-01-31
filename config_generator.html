@@ -618,7 +618,7 @@ For fastq, typically “@”.)<h5></p>
       </p>
       <p>Rare OTU threshold: <br>
         <i>If >1, R will filter OTUs below # provided.  If <1, R will treat # as percentage and ignore OTUs not found in that percentage of table rows in each taxa level.</i>
-        <input type="text" name="rareOtuThreshold"><br>
+        <input type="number" name="rareOtuThreshold"><br>
       </p>
       <p><strong>Attributes Filter</strong><br>List of attributes for r to report on:
         <input type="text" name="filterAttributes"><br>
@@ -650,7 +650,7 @@ For fastq, typically “@”.)<h5></p>
       <p>Sets the color of scatterplot points:<br>
         <input type="text" name="pointColor">
       </p>
-      <p>Sets the p.adjust "method" parameter:<br><a href=https://stat.ethz.ch/R-manual/R-devel/library/stats/html/p.adjust.html>More info</a>
+      <p>Sets the p.adjust "method" parameter:<br><a href=https://stat.ethz.ch/R-manual/R-devel/library/stats/html/p.adjust.html>More info</a><br>
         <input type="radio" name="pAdjMethod" value="holm">Holm<br>
         <input type="radio" name="pAdjMethod" value="hochberg">Hochberg<br>
         <input type="radio" name="pAdjMethod" value="hommel">Hommel<br>
@@ -664,31 +664,31 @@ For fastq, typically “@”.)<h5></p>
         <input type="text" name="pValFormat"><br>
       </p>
       <p>Set p-value cutoff used to assign label r.highlightColor:<br>
-        <input type="numeric" name="pvalCutoff"><br>
+        <input type="number" name="pvalCutoff"><br>
       </p>
       <p>Set PDF report plot label maximum width:<br>
-        <input type="numeric" name="plotWidth"><br>
+        <input type="number" name="plotWidth"><br>
       </p>
       <p>Set PDF report plot label position: (r.topRowAdj)<br>
-        <input type="numeric" name="topRowAdj"><br>
+        <input type="number" name="topRowAdj"><br>
       </p>
       <p>Set PDF report plot label position: (r.bottomRowAdj)<br>
-        <input type="numeric" name="bottomRowAdj"><br>
+        <input type="number" name="bottomRowAdj"><br>
       </p>
       <p>Set PDF report plot label position: (r.leftColAdj)<br>
-        <input type="numeric" name="leftColAdj"><br>
+        <input type="number" name="leftColAdj"><br>
       </p>
       <p>Set PDF report plot label position: (r.rightColAdj)<br>
-        <input type="numeric" name="rightColAdj"><br>
+        <input type="number" name="rightColAdj"><br>
       </p>
       <p>Set the size of histogram & boxplot headings in PDF reports<br>
-        <input type="numeric" name="headingLabelSize"><br>
+        <input type="number" name="headingLabelSize"><br>
       </p>
       <p>Set the size of metadata attribute names in PDF reports<br>
-        <input type="numeric" name="attributeLabelSize"><br>
+        <input type="number" name="attributeLabelSize"><br>
       </p>
       <p># minutes before R Script times out:<br>
-        <input type="numeric" name="timeout"><br>
+        <input type="number" name="timeout"><br>
       </p>
       <button onclick="saveTab(this.parentNode.id)">Save</button>
       <button type="button" class="nextTab">Save and move to next tab</button>
