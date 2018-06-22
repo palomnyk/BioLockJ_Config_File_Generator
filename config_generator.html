@@ -276,7 +276,8 @@ div#moduleInfoDiv {
           <!--figureout how to put the styling into css stylesheet";-->
           <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="Demultiplex samples into separate files"
             data-link="https://github.com/mikesioda/BioLockJ_Dev/blob/master/src/biolockj/module/seq/Demultiplexer.java">#BioModule biolockj.module.ImportMetadata</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="This BioModule splits multiplexed data into a separate file or pair of files (for paired reads) for each sample. The
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info=
+          "This BioModule splits multiplexed data into a separate file or pair of files (for paired reads) for each sample. The
           sample ID must be included in the header of each read. If not, run SetMultiplexedHeaders as a prerequisite module.
 Config properties input.trimPrefix and input.trimSuffix are used to parse the sample ID from the header in the same
 way as when used to parse sample IDs from demultiplexed file names. Paired reads are accepted in 2 multiplexed
@@ -301,30 +302,29 @@ single file with read direction indicated by key strings (1:N: and 2:N:)">#BioMo
           <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="qiimeClass" data-info="This BioModule converts the metadata file into a tab delimited QIIME mapping file (if provided). If no metadata file
  is configured, a new mapping file is generated with only QIIME required columns. The QIIME mapping file is validated
  by calling QIIME script validate_mapping_file.py
-
+ QIIME mapping file requirements:
  <ol>
-   QIIME mapping file requirements:
- <li>#SampleID = Required name of 1st column, holds sample unique identifiers, not nullable
- <li>BarcodeSequence = Required name of 2nd column, is nullable
- <li>LinkerPrimerSequence = Required name of 3rd column, is nullable
- <li>InputFileName = Column is required by add_qiime_labels.py, containing demultiplexed file names, not nullable
- <li>Description = Required name of last column, not nullable
+ <li>#SampleID = Required name of 1st column, holds sample unique identifiers, not nullable</li>
+ <li>BarcodeSequence = Required name of 2nd column, is nullable</li>
+ <li>LinkerPrimerSequence = Required name of 3rd column, is nullable</li>
+ <li>InputFileName = Column is required by add_qiime_labels.py, containing demultiplexed file names, not nullable</li>
+ <li>Description = Required name of last column, not nullable</li>
  </ol>
  If metadata file already exists:
  <ol>
- <li>Reorder existing QIIME mapping columns, if any are out of order
- <li>Rename the 1st column (containing sample IDs) to the required value: #SampleID
- <li>Add missing QIIME mapping columns, if any are missing
- <li>Rename the validated mapping file to the original metadata file name and save to the module output directory.
+ <li>Reorder existing QIIME mapping columns, if any are out of order</li>
+ <li>Rename the 1st column (containing sample IDs) to the required value: #SampleID</li>
+ <li>Add missing QIIME mapping columns, if any are missing</li>
+ <li>Rename the validated mapping file to the original metadata file name and save to the module output directory.</li>
  </ol>">#BioModule biolockj.module.classifier.r16s.qiime.BuildQiimeMapping</li>
           <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="qiimeClass" data-info="This BioModule executes the QIIME script pick_closed_reference_otus.py on a fasta input files. Unlike open and de
  novo OTU picking scripts, which require a single multiplexed file for cluster analysis, closed reference OTU picking
  can be run in batches (output/batch_0, output/batch_1, output/batch_2, etc.).
  <ul>
- <li>Config property script.batchSize sets the number of fasta files to process per batch.
- <li>Config property exe.awk is used to split the metadata into separate batch-specific QIIME mapping files.
+ <li>Config property script.batchSize sets the number of fasta files to process per batch.</li>
+ <li>Config property exe.awk is used to split the metadata into separate batch-specific QIIME mapping files.</li>
  <li>BioModule biolockj.module.classifier.r16s.qiime.MergeOtuTables must be run as the next module if demultiplexed
- files were analyzed in more than 1 batch.
+ files were analyzed in more than 1 batch.</li>
  </ul>">#BioModule biolockj.module.classifier.r16s.qiime.ClosedRefClassifier</li>
           <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="qiimeClass" data-info="">#BioModule biolockj.module.classifier.r16s.qiime.DeNovoClassifier</li>
           <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="qiimeClass" data-info="This BioModule can be run immediately after biolockj.module.classifier.r16s.qiime.PickClosedRefOtus to merge the
@@ -353,40 +353,6 @@ single file with read direction indicated by key strings (1:N: and 2:N:)">#BioMo
           <!--inner div for adding information to-->
         </div>
       </div>
-      <!--
-        </select>
-
-        <button type="button" onclick="addModules()">Add</button>
-        <button type="button" onclick="removeModules()">Remove</button>
-        <select size=30 id="modules">
-        <option draggable="true" value="" disabled >Select modules from the right and click "Add"</option>
-        <option draggable="true" value="#biolockJ.module.Email" id="biolockJ.module.Email" class="hidden">Email</option>
-        <option draggable="true" value="#biolockJ.module.ImportMetadata" id="biolockJ.module.ImportMetadata" class="hidden">ImportMetadata</option>
-        <option value="#biolockJ.module.seq.Demultiplexer" id="biolockJ.module.seq.Demultiplexer" class="hidden">seq.Demultiplexer</option>
-        <option value="#biolockJ.module.seq.MergePairedReads" id="biolockJ.module.seq.MergePairedReads" class="hidden">seq.MergePairedReads</option>
-        <option value="#biolockJ.module.seq.Rarefier" id="biolockJ.module.seq.Rarefier" class="hidden">seq.Rarefier</option>
-        <option value="#biolockJ.module.seq.SetMultiplexedHeaders" id="biolockJ.module.seq.SetMultiplexedHeaders" class="hidden">seq.SetMultiplexedHeaders</option>
-        <option value="#biolockJ.module.seq.TrimPrimers" id="biolockJ.module.seq.TrimPrimers" class="hidden">seq.TrimPrimers</option>
-        <option value="#biolockJ.module.report.JsonReport" id="biolockJ.module.report.JsonReport" class="hidden">report.JsonReport</option>
-        <option value="#biolockJ.module.report.RReport" id="biolockJ.module.report.RReport" class="hidden">report.RReport</option>
-        <option value="#biolockJ.module.classifier.r16s.RdpClassifier" id="biolockJ.module.classifier.r16s.RdpClassifier" class="hidden">classifier.r16s.RdpClassifier</option>
-        <option value="#biolockJ.module.classifier.r16s.QiimeClassifier" id="biolockJ.module.classifier.r16s.QiimeClassifier" class="hidden">classifier.r16s.QiimeClassifier</option>
-        <option value="#biolockJ.module.classifier.r16s.qiime.BuildQiimeMapping" id="biolockJ.module.classifier.r16s.qiime.BuildQiimeMapping" class="hidden">classifier.r16s.qiime.BuildQiimeMapping</option>
-        <option value="#biolockJ.module.classifier.r16s.qiime.ClosedRefClassifier" id="biolockJ.module.classifier.r16s.qiime.ClosedRefClassifier" class="hidden">classifier.r16s.qiime.ClosedRefClassifier</option>
-        <option value="#biolockJ.module.classifier.r16s.qiime.DeNovoClassifier" id="biolockJ.module.classifier.r16s.qiime.DeNovoClassifier" class="hidden">classifier.r16s.qiime.DeNovoClassifier</option>
-        <option value="#biolockJ.module.classifier.r16s.qiime.MergeOtuTables" id="biolockJ.module.classifier.r16s.qiime.MergeOtuTables" class="hidden">classifier.r16s.qiime.MergeOtuTables</option>
-        <option value="#biolockJ.module.classifier.r16s.qiime.OpenRefClassifier" id="biolockJ.module.classifier.r16s.qiime.OpenRefClassifier" class="hidden">classifier.r16s.qiime.OpenRefClassifier</option>
-        <option value="#biolockJ.module.classifier.r16s.qiime.QiimePreprocessor" id="biolockJ.module.classifier.r16s.qiime.QiimePreprocessor" class="hidden">classifier.r16s.qiime.QiimePreprocessor</option>
-        <option value="#biolockJ.module.classifier.wgs.MetaphlanClassifier" id="biolockJ.module.classifier.wgs.MetaphlanClassifier" class="hidden">classifier.wgs.MetaphlanClassifier</option>
-        <option value="#biolockJ.module.classifier.wgs.KrakenClassifier" id="biolockJ.module.classifier.wgs.KrakenClassifier" class="hidden">classifier.wgs.KrakenClassifier</option>
-        <option value="#biolockJ.module.classifier.wgs.SlimmClassifier" id="biolockJ.module.classifier.wgs.SlimmClassifier" class="hidden">classifier.wgs.SlimmClassifier</option>
-        <option value="#biolockJ.module.parser.r16s.RdpParser" id="biolockJ.module.parser.r16s.RdpParser" class="hidden">parser.r16s.RdpParser</option>
-        <option value="#biolockJ.module.parser.r16s.QiimeParser" id="biolockJ.module.parser.r16s.QiimeParser" class="hidden">parser.r16s.QiimeParser</option>
-        <option value="#biolockJ.module.parser.wgs.MetaphlanParser" id="biolockJ.module.parser.wgs.MetaphlanParser" class="hidden">parser.wgs.MetaphlanParser</option>
-        <option value="#biolockJ.module.parser.wgs.KrakenParser" id="biolockJ.module.parser.wgs.KrakenParser" class="hidden">classifier.r16s.qiime.OpenRefClassifier</option>
-        <option value="#biolockJ.module.parser.wgs.SlimmParser" id="biolockJ.module.parser.wgs.SlimmParser" class="hidden">parser.wgs.SlimmParser</option>
-        </select>
-      -->
     </fieldset>
     <!--</form>-->
   </div>
@@ -698,7 +664,10 @@ For fastq, typically “@”.)<h5></p>
   </div>
 
   <div id="exeTab" class="tabcontent">
-    <form id="exe">
+    <p>If the program executable isn't already in your classpath ($PATH), add the executable path below:
+    </p>
+    <!--Make it so default commands are hints that will not be saved.-->
+     <form id="exe">
       <p>Classifier executable command:
         <input type="text" name="classifier">
       </p>
@@ -875,8 +844,6 @@ For fastq, typically “@”.)<h5></p>
       var reader = new FileReader();
 
       reader.onload = function(evt) {
-        //console.log(evt);
-        //console.log(this.result);
         var provisionalConfigObject = {};
         provisionalConfigObject["project.configFile"] = file.name;
         provisionalConfigObject.modules = [];
@@ -1121,165 +1088,95 @@ For fastq, typically “@”.)<h5></p>
     //console.log(currentConfig['modules']);
   };
 
-  //the following are list of nodes with class for building the subsequence "Choosen" lists
+  //the following are list of module nodes with class for building the subsequence "Choosen" lists
   var qiimeClassModNodes = Array.from(document.getElementsByClassName("qiimeClass"));
   var slimmClassModNodes = Array.from(document.getElementsByClassName("slimmClass"));
   var krakenClassModNodes = Array.from(document.getElementsByClassName("krakenClass"));
   var rdpClassModNodes = Array.from(document.getElementsByClassName("rdpClass"));
   var metaphlanClassModNodes = Array.from(document.getElementsByClassName("metaphlanClass"));
   //the following "Choosen" variables are lists of nodes to disable when a module is selected
+  //to be used to disable nodes that shouldn't be selected together
   var qiimeModChoosen = [slimmClassModNodes, krakenClassModNodes, rdpClassModNodes, metaphlanClassModNodes];
   var rdpModChoosen = [slimmClassModNodes, krakenClassModNodes, qiimeClassModNodes, metaphlanClassModNodes];
   var slimmModChoosen = [qiimeClassModNodes, krakenClassModNodes, rdpClassModNodes, metaphlanClassModNodes];
   var krakenModChoosen = [slimmClassModNodes, qiimeClassModNodes, rdpClassModNodes, metaphlanClassModNodes];
   var metaphlanModChoosen = [slimmClassModNodes, krakenClassModNodes, rdpClassModNodes, qiimeClassModNodes];
-  //object for keeping track of modules choosen
-  //to be used to disable nodes that shouldn't be selected together
-  var modTracker = {
-    qiimeCount: 0,
-    krakenCount: 0,
-    slimmCount: 0,
-    rdpCount: 0,
-    metaphlanCount: 0,
-    getQiimeTrackerCount() {
-      return this.qiimeCount
-    },
-    incrementQiimeTrackerCount: function() {
-      this.qiimeCount++
-    },
-    decrementQiimeTrackerCount: function() {
-      this.qiimeCount--
-    },
-    getRdpTrackerCount: function() {
-      return this.rdpCount
-    },
-    incrementRdpTrackerCount: function() {
-      this.rdpCount++
-    },
-    decrementRdpTrackerCount: function() {
-      this.rdpCount--
-    },
-    getKrakenTrackerCount: function() {
-      return this.krakenCount
-    },
-    incrementKrakenTrackerCount() {
-      this.krakenCount++
-    },
-    decrementKrakenTrackerCount: function() {
-      this.krakenCount--
-    },
-    getSlimmTrackerCount: function() {
-      return this.slimmCount
-    },
-    incrementSlimmTrackerCount: function() {
-      this.slimmCount++
-    },
-    decrementSlimmTrackerCount: function() {
-      this.slimmCount--
-    },
-    getMetaphlanTrackerCount: function() {
-      return this.metaphlanCount
-    },
-    incrementMetaphlanTrackerCount: function() {
-      this.metaphlanCount++
-    },
-    decrementMetaphlanTrackerCount: function() {
-      this.metaphlanCount--
-    },
-  };
-  //helper function for following eventlistener
+
+  /*This function object will be used to keep track of how many of each moduleClass is chosen
+  modsToDisable will be one of the _____ModChoosen*/
+  function moduleCounter(modulesToDisable) {
+    this.count = 0;
+    this.modsToDisable = modulesToDisable;
+    this.getCount = function(){
+      return this.count
+    };
+    this.decrementCount = function(){
+      this.count--
+    };
+    this.incrementCount = function(){
+      this.count++
+    };
+    this.modClassSelected = function(target){
+    if (target.classList.contains("modChoosen")) {
+      target.classList.remove("modChoosen");
+        this.decrementCount();
+        if (this.getCount() == 0) {
+          for (let t = 0; t < this.modsToDisable.length; t++) {
+            removeClassToAllElemInList(this.modsToDisable[t], "disabledMod");
+          }
+        }
+    }else {
+      target.classList.add("modChoosen");
+        this.incrementCount();
+        if (this.getCount() > 0) {
+          for (let t = 0; t < this.modsToDisable.length; t++) {
+            addClassToAllElemInList(this.modsToDisable[t], "disabledMod");
+          }
+        }
+      }
+    }//end modClassSelected
+  };//end moduleCounter
+
+  //helper function for modTrackers
   function addClassToAllElemInList(objects, className) {
     for (let r = 0; r < objects.length; r++) {
       objects[r].classList.add(className);
     }
-  }
-
+  };
+  //helper function for modTrackers
   function removeClassToAllElemInList(objects, className) {
     for (let r = 0; r < objects.length; r++) {
       objects[r].classList.remove(className);
     }
-  }
+  };
+
+  var qiimeModuleCounter = new moduleCounter(qiimeModChoosen);
+  var rdpModuleCounter = new moduleCounter(rdpModChoosen);
+  var krakenModuleCounter = new moduleCounter(krakenModChoosen);
+  var slimmModuleCounter = new moduleCounter(slimmModChoosen);
+  var metaphlanModuleCounter = new moduleCounter(metaphlanModChoosen);
+
   //function below is called when modules are selected, it both selects them and disables others
   function toggleSelectModule(target) {
-    //console.log(target)
-    if (target.classList.contains("modChoosen")) {
+    if (target.classList.contains("qiimeClass")) {
+      qiimeModuleCounter.modClassSelected(target)
+    }else if (target.classList.contains("rdpClass")) {
+      rdpModuleCounter.modClassSelected(target)
+    }else if (target.classList.contains("krakenClass")) {
+      krakenModuleCounter.modClassSelected(target)
+    }else if (target.classList.contains("slimmClass")) {
+      slimmModuleCounter.modClassSelected(target)
+    }else if (target.classList.contains("metaphlanClass")) {
+      metaphlanModuleCounter.modClassSelected(target)
+    }else{
+      //for all modules that are not a classifier
+      if (target.classList.contains("modChoosen")) {
       target.classList.remove("modChoosen");
-      if (target.classList.contains("qiimeClass")) {
-        modTracker.decrementQiimeTrackerCount();
-        if (modTracker.getQiimeTrackerCount() == 0) {
-          for (let t = 0; t < qiimeModChoosen.length; t++) {
-            removeClassToAllElemInList(qiimeModChoosen[t], "disabledMod");
-          }
-        }
-      } else if (target.classList.contains("rdpClass")) {
-        modTracker.decrementRdpTrackerCount();
-        if (modTracker.getRdpTrackerCount() == 0) {
-          for (let t = 0; t < rdpModChoosen.length; t++) {
-            removeClassToAllElemInList(rdpModChoosen[t], "disabledMod");
-          }
-        }
-      } else if (target.classList.contains("krakenClass")) {
-        modTracker.decrementKrakenTrackerCount();
-        if (modTracker.getKrakenTrackerCount() == 0) {
-          for (let t = 0; t < krakenModChoosen.length; t++) {
-            removeClassToAllElemInList(krakenModChoosen[t], "disabledMod");
-          }
-        }
-      } else if (target.classList.contains("slimmClass")) {
-        modTracker.decrementSlimmTrackerCount();
-        if (modTracker.getSlimmTrackerCount() == 0) {
-          for (let t = 0; t < slimmModChoosen.length; t++) {
-            removeClassToAllElemInList(slimmModChoosen[t], "disabledMod");
-          }
-        }
-      } else if (target.classList.contains("metaphlanClass")) {
-        modTracker.decrementMetaphlanTrackerCount();
-        if (modTracker.getMetaphlanTrackerCount() == 0) {
-          for (let t = 0; t < metaphlanModChoosen.length; t++) {
-            removeClassToAllElemInList(metaphlanModChoosen[t], "disabledMod");
-          }
-        }
-      }
-    } else {
+    }else{
       target.classList.add("modChoosen");
-      if (target.classList.contains("qiimeClass")) {
-        modTracker.incrementQiimeTrackerCount();
-        if (modTracker.getQiimeTrackerCount() > 0) {
-          for (let t = 0; t < qiimeModChoosen.length; t++) {
-            addClassToAllElemInList(qiimeModChoosen[t], "disabledMod");
-          }
-        }
-      } else if (target.classList.contains("rdpClass")) {
-        modTracker.incrementRdpTrackerCount();
-        if (modTracker.getRdpTrackerCount() > 0) {
-          for (let t = 0; t < rdpModChoosen.length; t++) {
-            addClassToAllElemInList(rdpModChoosen[t], "disabledMod");
-          }
-        }
-      } else if (target.classList.contains("krakenClass")) {
-        modTracker.incrementKrakenTrackerCount();
-        if (modTracker.getKrakenTrackerCount() > 0) {
-          for (let t = 0; t < krakenModChoosen.length; t++) {
-            addClassToAllElemInList(krakenModChoosen[t], "disabledMod");
-          }
-        }
-      } else if (target.classList.contains("slimmClass")) {
-        modTracker.incrementSlimmTrackerCount();
-        if (modTracker.getSlimmTrackerCount() > 0) {
-          for (let t = 0; t < slimmModChoosen.length; t++) {
-            addClassToAllElemInList(slimmModChoosen[t], "disabledMod");
-          }
-        }
-      } else if (target.classList.contains("metaphlanClass")) {
-        modTracker.incrementMetaphlanTrackerCount();
-        if (modTracker.getMetaphlanTrackerCount() > 0) {
-          for (let t = 0; t < metaphlanModChoosen.length; t++) {
-            addClassToAllElemInList(metaphlanModChoosen[t], "disabledMod");
-          }
-        }
       }
-    };
-  };
+    }
+  };// end toggleSelectModule
 
   //module drag events
   /* comes from http://syntaxxx.com/rearranging-web-page-items-with-html5-drag-and-drop/*/
@@ -1323,18 +1220,44 @@ For fastq, typically “@”.)<h5></p>
   }
 
   //eventlisteners
-  //eventlisteners for dragging module options
+  //eventlistener for mouseover
   moduleOptions = Array.from(document.getElementById("module").getElementsByTagName("li"));
-  for (var r = 0; r < moduleOptions.length; r++) {
-    moduleOptions[r].addEventListener("mouseover", function() {
+  for (let r = 0; r < moduleOptions.length; r++) {
+      moduleOptions[r].addEventListener("mouseover", function() {
       let infoTarget = document.getElementById("moduleInfoDiv");
-      let info = this.getAttribute('data-info').trim();
-      infoTarget.innerHTML = "";
-      infoTarget.insertAdjacentHTML("afterbegin", info);
+      let info = '<!DOCTYPE html><html><head></head><body><div id="tempModInfo">' + this.getAttribute('data-info').trim() + '</div></body></html>';
+      try {
+        parser = new DOMParser;
+        newInfo = parser.parseFromString(info , "text/xml");
+        //console.log(newInfo.getElementById('tempModInfo').innerHTML);
+        //infoTarget.innerHTML = "";
+        while (infoTarget.firstChild) {
+          infoTarget.removeChild(infoTarget.firstChild);
+          }
+        try {
+          infoTarget.appendChild(newInfo.getElementById('tempModInfo'));
+          console.log(infoTarget);
+          if (document.getElementById('tempModInfo').innerHTML == ""){
+            console.log(this);
+            document.getElementById('tempModInfo').insertAdjacentHTML("afterbegin", this.getAttribute('data-info'));
+          }
+        } catch (e) {
+          console.error(e);
+        } finally {
+
+        }
+        //infoTarget.insertAdjacentHTML("afterbegin", newInfo.getElementById('tempModInfo').innerHTML);
+
+      }
+      catch (err){
+          console.error(err);
+      }
+
     })
   }
   //helpers for mouseover function
   var HttpClient = function() {
+    //this function not used
     this.get = function(aUrl, aCallback) {
       var anHttpRequest = new XMLHttpRequest();
       anHttpRequest.onreadystatechange = function() {
