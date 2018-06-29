@@ -223,7 +223,6 @@ div#moduleInfoDiv {
     <button class="tablinks" onclick="openTab(event, 'krakenTab')">Kraken</button>
     <button class="tablinks" onclick="openTab(event, 'slimmTab')">SLIMM</button>
   </div>
-
   <!--tabbed menu-->
 
   <div id="projectTab" class="tabcontent">
@@ -251,12 +250,6 @@ div#moduleInfoDiv {
         <input type="radio" name="logLevel" value="INFO">INFO<br>
         <input type="radio" name="logLevel" value="WARN">WARN<br>
         <input type="radio" name="logLevel" value="ERROR">ERROR<br></p>
-      <!--<p>Classifier type:<br>
-        <input type="radio" name="classifierType" value="rdp" required> 16S Classifier: Ribosomal Database Project (RDP)<br>
-        <input type="radio" name="classifierType" value="qiime"> QIIME<br>
-        <input type="radio" name="classifierType" value="kraken"> Kraken<br>
-        <input type="radio" name="classifierType" value="metaphlan"> MetaPhlAnn<br>
-        <input type="radio" name="classifierType" value="slimm"> SLIMM<br></p>-->
       <button onclick="saveTab(this.parentNode.id)">Save</button>
       <button type='button' class="nextTab">Save and move to next tab</button>
     </form>
@@ -272,11 +265,11 @@ div#moduleInfoDiv {
         <span> <center> Drag module options to reorder them.<br>
           Only highlighted (green) modules will be added to your config file. <br> </center>
         </span>
-        <ul style="padding-left: 5px">
+        <ul id='module_ul' style="padding-left: 5px">
           <!--figureout how to put the styling into css stylesheet";-->
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="Demultiplex samples into separate files"
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="Demultiplex samples into separate files"
             data-link="https://github.com/mikesioda/BioLockJ_Dev/blob/master/src/biolockj/module/seq/Demultiplexer.java">#BioModule biolockj.module.ImportMetadata</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info=
+          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info=
           "This BioModule splits multiplexed data into a separate file or pair of files (for paired reads) for each sample. The
           sample ID must be included in the header of each read. If not, run SetMultiplexedHeaders as a prerequisite module.
 Config properties input.trimPrefix and input.trimSuffix are used to parse the sample ID from the header in the same
@@ -410,10 +403,6 @@ For fastq, typically “@”.)<h5></p>
       <p>Barcode in header?<br>
         <input type="radio" name="barcodeInHeader" value="Y"> Yes<br>
         <input type="radio" name="barcodeInHeader" value="N"> No<br></p>
-      <!--is thi still there?
-        <p>Discard sequences missing primers:
-          <input type="radio" name="keepSeqsMissingPrimer" value="Y"> Yes<br>
-          <input type="radio" name="keepSeqsMissingPrimer" value="N"> No<br></p>-->
       <button onclick="saveTab(this.parentNode.id)">Save</button>
       <button type="button" class="nextTab">Save and move to next tab</button>
     </form>
@@ -464,19 +453,6 @@ For fastq, typically “@”.)<h5></p>
     </form>
   </div>
 
-  <!--  <div id="metadataTab" class="tabcontent">
-    <form id="metadata">
-      <p>Metadata file path (file must have unique column headers):
-        <input type="text" name="file"><br></p>
-      <p>Define how null values are represented in metadata:
-        <input type="text" name="nullValue"><br></p>
-      <p>Define how comments are represented in metadata:
-        <input type="text" name="commentChar"><br></p>
-      <button onclick="saveTab(this.parentNode.id)">Save</button>
-      <button type="button" class="nextTab">Save and move to next tab</button>
-    </form>
-  </div>-->
-
   <div id="reportTab" class="tabcontent">
     <form id="report">
       <p>Include number of hits in output: <br>
@@ -523,11 +499,6 @@ For fastq, typically “@”.)<h5></p>
 
   <div id="mailTab" class="tabcontent">
     <form id="mail">
-      <!--
-      <p>Attach qsub output and error files to E-mail notifications:<br>
-        <input type="radio" name="sendNotification" value="Y">Yes<br>
-        <input type="radio" name="sendNotification" value="N">No <br>
-      </p>-->
       <p>Max size for log file attachment (in MB):
         <input type="text" name="maxAttachmentSizeMB"><br>
       </p>
@@ -563,17 +534,6 @@ For fastq, typically “@”.)<h5></p>
 
   <div id="rTab" class="tabcontent">
     <form id="r">
-      <!--<p>Log normailze data:
-        <input type="radio" name="logNorm" value="Y">Yes<br>
-        <input type="radio" name="logNorm" value="N">No <br>
-      </p>
-      <p>Log base for normalizing data:
-        <input type="radio" name="logNorm" value="Y">Yes<br>
-        <input type="radio" name="logNorm" value="N">No <br>
-      </p>
-      <p>Max title size (OTU names will be trimmed to this size):
-        <input type="text" name="maxTitleSize" value="25" <br>
-      </p>-->
       <p>If Y, will generate R Script log files:<br>
         <input type="radio" name="debug" value="Y">Yes<br>
         <input type="radio" name="debug" value="N">No <br>
@@ -740,22 +700,6 @@ For fastq, typically “@”.)<h5></p>
           scikit-bio.org/docs/latest/generated/skbio.diversity.alpha.html</a>.<br>
         <input type="text" name="alphaDiversityMetrics">
       </p>
-      <!--<p>Format metadata to build QIIME mapping file:<br>
-        <input type="radio" name="formatMetadata" value="Y">Yes<br>
-        <input type="radio" name="formatMetadata" value="N">No <br>
-      </p>
-      <p>Preprocess QIIME input <i>(decompress gzipped files and/or convert fastq files into fasta format, as required by QIIME)</i>:<br>
-        <input type="radio" name="preprocessInput" value="Y">Yes<br>
-        <input type="radio" name="preprocessInput" value="N">No <i>(choose this if they are already properly formatted)</i> <br>
-      </p>
-      <p>Execute qiime.pickOtuScript:<br>
-        <input type="radio" name="pickOtus" value="Y">Yes<br>
-        <input type="radio" name="pickOtus" value="N">No <br>
-      </p>
-      <p>Merge OTU tables generated by batched scripts calling pick_closed_reference_otus.py:<br>
-        <input type="radio" name="mergeOtuTables" value="Y">Yes<br>
-        <input type="radio" name="mergeOtuTables" value="N">No <br>
-      </p>-->
       <p>Remove chimeras after open or de novo OTU picking:<br>
         <input type="radio" name="removeChimeras" value="Y">Yes<br>
         <input type="radio" name="removeChimeras" value="N">No <br>
@@ -808,9 +752,6 @@ For fastq, typically “@”.)<h5></p>
 </div>
 <script>
   //alert("Page loaded");
-
-  var classifier; //classifier and parser will always match
-
   /* When the user clicks on the "Projects"button,
               toggle between hiding and showing the dropdown content */
   function projectOptions() {
@@ -851,8 +792,6 @@ For fastq, typically “@”.)<h5></p>
         var lines = this.result.split(/\r\n|\r|\n/g); //to catch all newlines
         //console.log(lines);
         for (var line = 0; line < lines.length; line++) {
-          //console.log(line);
-          //console.log(lines[line]);
           var lineSplit = lines[line].split("=");
           if (lines[line].slice(0, 11) === "#BioModule ") {
             provisionalConfigObject.modules.push(lines[line]);
@@ -884,12 +823,7 @@ For fastq, typically “@”.)<h5></p>
       reader.onerror = function(evt) {
         console.error("An error ocurred reading the file", evt);
       };
-
       reader.readAsText(file, "UTF-8");
-      //alert("localFile clicked");
-      /*
-
-          */
     } //end if (file)
   }; //end loadLocalFile function
 
@@ -920,16 +854,10 @@ For fastq, typically “@”.)<h5></p>
                 //console.error(err);
                 alert(err);
               } finally{
-
                 }
               };
             };//end for-loop over domModuleLi
-            //console.log(document.querySelector('input[name=' + mods[a] + ']'))//[1])
-            //for (var b = 0; )
-            //document.querySelectorAll('input[value=' + mods[a] + ']')[1].classList.remove("hidden");
           }
-          //document.querySelectorAll('input[value="key"]').classList.remove("hidden");
-          //console.log('add modules');
         } else {
 
           //finds the form and item name
@@ -976,8 +904,6 @@ For fastq, typically “@”.)<h5></p>
             //console.log(element);
           }
           document.getElementById("mainMenu").style.display = "block";
-          //console.log(element);
-          //console.log(key);
         }; //end first else
       } catch (err) {
         alert(err + "\n problem with " + key + ".")
@@ -1029,9 +955,10 @@ For fastq, typically “@”.)<h5></p>
     event.preventDefault()
     //get the form data
     var formInfo = document.getElementById(formName).elements;
+    console.log(formInfo);
     var lastAnswer;
 
-    if (formInfo = "module") {
+    if (formName == "module") {
       modulesToCurrentConfig();
     } else {
       //cycle through the form and get the info
@@ -1042,8 +969,6 @@ For fastq, typically “@”.)<h5></p>
         //skip unchecked radio and checkbox entries
         if (inpType == "radio" && formInfo[i].checked == false) {
           continue;
-          //} else if (inpType == "checkbox" && formInfo[i].checked == false) {
-          //continue;
         }
         //skip the submit buttons
         else if (inpType == "submit") {
@@ -1073,6 +998,86 @@ For fastq, typically “@”.)<h5></p>
     };
     localStorage.setItem(currentConfig['project.configFile'].toString(), JSON.stringify(currentConfig));
     console.dir(currentConfig);
+  }
+
+  /*Helper code to grab text from github for parsing module descriptions from
+  -className will be value like biolockj.module.seq.AwkFastaConverter
+  -bljModuleJavaClassName=”biolockj/module/seq/AwkFastaConverter.java”
+  -swap className periods with forward slashes and add “.java” suffix
+*/
+  function getUrl(bljModuleJavaClassName){
+    //This function makes the string to feed into getText
+    console.assert(typeof bljModuleJavaClassName === "string", "getUrl function requires string argumentd")
+    //TODO convert '.'s to '/'s for bljModuleJavaClassName
+    urlRoot="https://raw.githubusercontent.com/mikesioda/BioLockJ_Dev/master/src/"
+    return (urlRoot+bljModuleJavaClassName)
+    }
+  function getText(bljLink){
+    // read text from URL location
+    return new Promise((resolve, reject) => {
+      var request = new XMLHttpRequest();
+      request.open('GET', bljLink, true);
+      request.onload = function() {
+        try{
+          if(this.status === 200 && request.readyState === 4){
+            resolve(this.responseText)
+          }else{
+            reject(this.status + " " + this.statusText)
+          }
+        } catch(e) {
+          reject (e.message);
+        }
+      };
+      request.onerror = function() {
+        reject(this.status + " " + this.statusText)
+      };
+      request.send();
+    })
+  }//end getText
+
+
+  function parseBljModuleJavaClass(text){
+    var startPublicClass;
+    var startComment;
+    console.log("hi");
+    var lines = text.split('\n');
+    for (let i = 0; i < lines.length; i++){
+      if (lines[i].startsWith("public class")){
+        startPublicClass = i;
+      }
+    }
+    for (let i = startPublicClass; i == 0; i--) {
+      if (lines[i].replace(/\s+/, "") == "/**"){
+        startComment = i;
+      }
+    }
+    var modDescrip = ""
+    for (let i = startComment; i == startPublicClass; i++){
+      modDescrip = modDescrip.concat(lines[i].slice(2))
+    }
+    console.log(startPublicClass);
+    console.log(startComment);
+    return(startComment)
+  }//end parseBljModuleJavaClass
+
+  //list of modules with their java classes and their javascript classes
+  //has the format of nested array, with the first item of the nested array being the java class
+  const moduleLinkAndClass = [
+    ['biolockj/module/classifier/r16s/qiime/PickClosedRefOtus.java', 'qiimeClass'],
+    ['biolockj/module/classifier/r16s/RdpClassifier.java', 'rdpClass']
+  ];
+
+  function makeModuleLi(link, ...classes){//using rest parameters
+    var modUl = document.getElementById('module_ul');
+    var mod = document.createElement('li');
+    modLabel = link.split('.')[0];
+    console.log(link);
+  }
+
+  for (var i = 0; i < moduleLinkAndClass.length; i++){
+    mod = moduleLinkAndClass[i];
+    makeModuleLi(mod[0], mod.slice(1,))
+    //do something with makeModuleLi
   }
 
   //section for module related functions
@@ -1193,14 +1198,14 @@ For fastq, typically “@”.)<h5></p>
     evt.dataTransfer.setData("text/plain", JSON.stringify(data));
     //specify allowed transfer
     evt.dataTransfer.effectAllowed = "move";
-  }
+  };
 
   function draggingOver(evt) {
     //drag over
     evt.preventDefault();
     //specify operation
     evt.dataTransfer.dropEffect = "move";
-  }
+  };
 
   //function for dropping dragged modules
   function dropped(evt) {
@@ -1244,10 +1249,9 @@ For fastq, typically “@”.)<h5></p>
         } catch (e) {
           console.error(e);
         } finally {
-
+          //do something?
         }
         //infoTarget.insertAdjacentHTML("afterbegin", newInfo.getElementById('tempModInfo').innerHTML);
-
       }
       catch (err){
           console.error(err);
@@ -1335,10 +1339,6 @@ For fastq, typically “@”.)<h5></p>
         if (currentConfig.hasOwnProperty(key)) { //only lets keys that are user inputed pass
           //console.log(key);
           if (key == "modules" || key == "project.configFile") {
-            //console.log(currentConfig["modules"]);
-            //for (var i = 0; i < currentConfig["modules"].length; i++) {
-            //console.log(currentConfig["modules"][i].concat("\n"));
-            //text += currentConfig["modules"][i].concat("\n");
             //}
           } else if (key.toString() != "project.configFile" || key != "modules") { //project.configFile doesn't go inside the document
             text += key.concat("=", currentConfig[key], "\n");
