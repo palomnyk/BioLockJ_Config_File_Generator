@@ -145,11 +145,6 @@ position: relative;
 display: block;
 /*transition-timing-function: ease;*/
 }
-/*li:hover{
-  transform: scaleX(1);
-  transition: transform 0.5s ease;
-}*/
-
 div#module ul{
   padding-left: 5;
 }
@@ -204,7 +199,6 @@ div#moduleInfoDiv {
   </form>
 </div>
 
-
 <!--options for control panel-->
 <div class="menu" id='mainMenu'>
   <div class="tab">
@@ -213,7 +207,6 @@ div#moduleInfoDiv {
     <button class="tablinks" onclick="openTab(event, 'inputTab')">Input</button>
     <button class="tablinks" onclick="openTab(event, 'clusterTab')">Cluster</button>
     <button class="tablinks" onclick="openTab(event, 'scriptTab')">Script</button>
-    <!--<button class="tablinks" onclick="openTab(event, 'metadataTab')">Metadata</button>-->
     <button class="tablinks" onclick="openTab(event, 'reportTab')">Report</button>
     <button class="tablinks" onclick="openTab(event, 'mailTab')">E-mail</button>
     <button class="tablinks" onclick="openTab(event, 'rTab')">R</button>
@@ -259,85 +252,13 @@ div#moduleInfoDiv {
     <button type="button" onclick="modulesToCurrentConfig()">Save</button>
     <button type="button" class="nextTab">Save and move to next tab</button>
     <fieldset>
-      <!--<form id="module">-->
       <legend>Module options</legend>
       <div id="module">
         <span> <center> Drag module options to reorder them.<br>
           Only highlighted (green) modules will be added to your config file. <br> </center>
         </span>
         <ul id='module_ul' style="padding-left: 5px">
-          <!--figureout how to put the styling into css stylesheet";-->
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="Demultiplex samples into separate files"
-            data-link="https://github.com/mikesioda/BioLockJ_Dev/blob/master/src/biolockj/module/seq/Demultiplexer.java">#BioModule biolockj.module.ImportMetadata</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info=
-          "This BioModule splits multiplexed data into a separate file or pair of files (for paired reads) for each sample. The
-          sample ID must be included in the header of each read. If not, run SetMultiplexedHeaders as a prerequisite module.
-Config properties input.trimPrefix and input.trimSuffix are used to parse the sample ID from the header in the same
-way as when used to parse sample IDs from demultiplexed file names. Paired reads are accepted in 2 multiplexed
-formats. Forward and reverse reads can be partitioned into 2 separate files identified by identified by
-input.forwardFileSuffix and input.reverseFileSuffix. Alternately, forward and reverse reads can be combined in a
-single file with read direction indicated by key strings (1:N: and 2:N:)">#BioModule biolockj.module.seq.Demultiplexer</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="This BioModule uses awk and gzip to convert input sequence files into a decompressed fasta file format.">#BioModule biolockj.module.seq.FastaConverter</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="This BioModule will merge forward and reverse fastq files using <a href=https://sco.h-its.org/exelixis/web/software/pear/doc.html>PEAR</a>">#BioModule biolockj.module.seq.MergePairedReads</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="This BioModule imposes a minimum and/or maximum
-          number of reads per sample. Samples below the minimum are discarded. Samples above the maximum are limited by selecting
-          random reads up to the maximum value.">#BioModule biolockj.module.seq.Rarefier</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="This BioModule parses sequence file to count
-          the number of reads per sample. The data is stored in a new column NUM_READS. If no metadata file exists, it is created with 2 columns: SAMPLE_ID and NUM_READS.">
-            #BioModule biolockj.module.seq.RegisterNumReads</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="This BioModule parses sequence file to count the number of reads per sample. The data is stored in a new column NUM_READS. If no metadata file exists, it is created with 2 columns: SAMPLE_ID and NUM_READS.">#BioModule biolockj.module.seq.SetMultiplexedHeaders</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="This BioModule removes sequence primers, which are defined using regular expressions in a separate file.">#BioModule biolockj.module.seq.TrimPrimers</li>
-          <!--do we need a li for ClassifierModuleImpl?	-->
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="rdpClass" data-info="This BioModule uses RDP to assign taxonomy to 16s sequences.">#BioModule biolockj.module.classifier.r16s.RdpClassifier</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="qiimeClass" data-info="This BioModule generates the bash script used to create QIIME summary scripts, taxonomy-level reports, and add alpha
- diversity metrics (if configured) to the metadata file. QiimeClassifier is also the superclass for all modules in the
- biolockj.module.classifier.r16s.qiime package so contains several shared methods.">#BioModule biolockj.module.classifier.r16s.QiimeClassifier</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="qiimeClass" data-info="This BioModule converts the metadata file into a tab delimited QIIME mapping file (if provided). If no metadata file
- is configured, a new mapping file is generated with only QIIME required columns. The QIIME mapping file is validated
- by calling QIIME script validate_mapping_file.py
- QIIME mapping file requirements:
- <ol>
- <li>#SampleID = Required name of 1st column, holds sample unique identifiers, not nullable</li>
- <li>BarcodeSequence = Required name of 2nd column, is nullable</li>
- <li>LinkerPrimerSequence = Required name of 3rd column, is nullable</li>
- <li>InputFileName = Column is required by add_qiime_labels.py, containing demultiplexed file names, not nullable</li>
- <li>Description = Required name of last column, not nullable</li>
- </ol>
- If metadata file already exists:
- <ol>
- <li>Reorder existing QIIME mapping columns, if any are out of order</li>
- <li>Rename the 1st column (containing sample IDs) to the required value: #SampleID</li>
- <li>Add missing QIIME mapping columns, if any are missing</li>
- <li>Rename the validated mapping file to the original metadata file name and save to the module output directory.</li>
- </ol>">#BioModule biolockj.module.classifier.r16s.qiime.BuildQiimeMapping</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="qiimeClass" data-info="This BioModule executes the QIIME script pick_closed_reference_otus.py on a fasta input files. Unlike open and de
- novo OTU picking scripts, which require a single multiplexed file for cluster analysis, closed reference OTU picking
- can be run in batches (output/batch_0, output/batch_1, output/batch_2, etc.).
- <ul>
- <li>Config property script.batchSize sets the number of fasta files to process per batch.</li>
- <li>Config property exe.awk is used to split the metadata into separate batch-specific QIIME mapping files.</li>
- <li>BioModule biolockj.module.classifier.r16s.qiime.MergeOtuTables must be run as the next module if demultiplexed
- files were analyzed in more than 1 batch.</li>
- </ul>">#BioModule biolockj.module.classifier.r16s.qiime.ClosedRefClassifier</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="qiimeClass" data-info="">#BioModule biolockj.module.classifier.r16s.qiime.DeNovoClassifier</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="qiimeClass" data-info="This BioModule can be run immediately after biolockj.module.classifier.r16s.qiime.PickClosedRefOtus to merge the
- multiple otu_table.biom files created into a single file. This module should not be added to other pipelines.">#BioModule biolockj.module.classifier.r16s.qiime.MergeOtuTables</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="qiimeClass" data-info="">#BioModule biolockj.module.classifier.r16s.qiime.OpenRefClassifier</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="qiimeClass" data-info="">#BioModule biolockj.module.classifier.r16s.qiime.QiimePreprocessor</li>
-
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="metaphlanClass" data-info="">#BioModule biolockj.module.classifier.wgs.MetaphlanClassifier</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="krakenClass" data-info="">#BioModule biolockj.module.classifier.wgs.KrakenClassifier</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="slimmClass" data-info="">#BioModule biolockj.module.classifier.wgs.SlimmClassifier</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="rdpClass" data-info="">#BioModule biolockj.module.parser.r16s.RdpParser</li>
-
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="qiimeClass" data-info="">#BioModule biolockj.module.parser.r16s.QiimeParser</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="metaphlanClass" data-info="">#BioModule biolockj.module.parser.wgs.MetaphlanParser</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="krakenClass" data-info="">#BioModule biolockj.module.parser.wgs.KrakenParser</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="slimmClass">#BioModule biolockj.module.parser.wgs.SlimmParser</li>
-
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="">#BioModule biolockj.module.report.RReport</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="">#BioModule biolockj.module.report.JsonReport</li>
-          <li draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)" onclick="toggleSelectModule(this)" class="anyClassifier" data-info="">#BioModule biolockj.module.report.Email</li>
+        </ul>
       </div>
       <div id='moduleInfo'>
         <center>Hover mouse over module for more information.</center><br>
@@ -347,7 +268,6 @@ single file with read direction indicated by key strings (1:N: and 2:N:)">#BioMo
         </div>
       </div>
     </fieldset>
-    <!--</form>-->
   </div>
 
   <div id="inputTab" class="tabcontent">
@@ -690,11 +610,6 @@ For fastq, typically “@”.)<h5></p>
 
   <div id="qiimeTab" class="tabcontent">
     <form id="qiime">
-      <!--<p>QIIME picking strategy:<br>
-        <input type="radio" name="pickOtuScript" value="pick_closed_reference_otus.py"> Closed reference<br>
-        <input type="radio" name="pickOtuScript" value="pick_de_novo_otus.py">De novo<br>
-        <input type="radio" name="pickOtuScript" value="pick_open_reference_otus.py">Open reference OTU<br>
-      </p>-->
       <p>Alpha diverisity metrics: <br> Options listed online:
         <a href="http://scikit-bio.org/docs/latest/generated/skbio.diversity.alpha.html">
           scikit-bio.org/docs/latest/generated/skbio.diversity.alpha.html</a>.<br>
@@ -751,7 +666,6 @@ For fastq, typically “@”.)<h5></p>
   </svg>
 </div>
 <script>
-  //alert("Page loaded");
   /* When the user clicks on the "Projects"button,
               toggle between hiding and showing the dropdown content */
   function projectOptions() {
@@ -764,7 +678,6 @@ For fastq, typically “@”.)<h5></p>
     //reset the forms
     var forms = document.getElementsByTagName('form');
     for (var i = 1; i < forms.length; i++) { //skips first empty form
-      //console.log(forms[i]);
       forms[i].reset();
     }
   }
@@ -788,21 +701,15 @@ For fastq, typically “@”.)<h5></p>
         var provisionalConfigObject = {};
         provisionalConfigObject["project.configFile"] = file.name;
         provisionalConfigObject.modules = [];
-
-        var lines = this.result.split(/\r\n|\r|\n/g); //to catch all newlines
-        //console.log(lines);
+        var lines = this.result;
         for (var line = 0; line < lines.length; line++) {
           var lineSplit = lines[line].split("=");
           if (lines[line].slice(0, 11) === "#BioModule ") {
             provisionalConfigObject.modules.push(lines[line]);
-            //console.log(lines[line]);
           } else if (lineSplit.length >= 2) { //if spliting at "=" is 2 or greater...
             provisionalConfigObject[lineSplit[0]] = lineSplit.slice(1).join('=');
-            //console.log("hi");
           } else if (line[lines] == undefined) {
-            //console.log("blank line")
           } else {
-            //console.log(line[line]);
             alert('Lines must start with "#", or have key/values seperated by "=". Please check your config form');
             return
           };
@@ -816,10 +723,7 @@ For fastq, typically “@”.)<h5></p>
           //alert(err + " possible invalid key");
           console.error(err);
         };
-
-        //console.log(provisionalConfigObject);
       }; //end reader.onload
-
       reader.onerror = function(evt) {
         console.error("An error ocurred reading the file", evt);
       };
@@ -863,13 +767,10 @@ For fastq, typically “@”.)<h5></p>
           //finds the form and item name
           var element = document.querySelector("form[id=" + formKey.toString() + "] input[name=" + inputKey.toString() + "]");
           if (element == null) {console.log(key)};
-
           if (element.getAttribute("type") == "text" || element.getAttribute("type") == "number") {
             element.value = configObject[key];
-
             //for radio input
           } else if (element.getAttribute("type") == "radio") {
-
             //because I split up the name into the modules
             var elements = document.querySelectorAll("form[id=" + formKey.toString() + "] input[name=" + inputKey.toString() + "]");
             //console.log(elements);
@@ -880,10 +781,7 @@ For fastq, typically “@”.)<h5></p>
                 elements[i].checked = true;
               };
             };
-            //var radio = document.querySelector("input[name=" + inputKey.toString() + "] input[value=" + configObject[key].toString() + "]")
-
             //for modules
-
             //for checkbox input
           } else if (element.getAttribute("type") == "checkbox") {
             var elements = document.querySelectorAll("form[id=" + formKey.toString() + "] input[name=" + inputKey.toString() + "]");
@@ -908,7 +806,6 @@ For fastq, typically “@”.)<h5></p>
       } catch (err) {
         alert(err + "\n problem with " + key + ".")
       } finally{
-
       }
     }; //end for-loop over configObject
   }; //end sendConfigDataToForms
@@ -947,9 +844,7 @@ For fastq, typically “@”.)<h5></p>
       alert('The File APIs are not fully supported in this browser.');
     }
   };
-
-  var currentConfig = {};
-
+  var currentConfig = {};//IMPORTANT: This variable holds all of the selected configuations
   //function to put move data from form to currentConfig
   function saveTab(formName) {
     event.preventDefault()
@@ -1000,15 +895,12 @@ For fastq, typically “@”.)<h5></p>
     console.dir(currentConfig);
   }
 
-  /*Helper code to grab text from github for parsing module descriptions from
+  /**Helper code to grab text from github for parsing module descriptions from
   -className will be value like biolockj.module.seq.AwkFastaConverter
-  -bljModuleJavaClassName=”biolockj/module/seq/AwkFastaConverter.java”
-  -swap className periods with forward slashes and add “.java” suffix
-*/
+  -bljModuleJavaClassName=”biolockj/module/seq/AwkFastaConverter.java”*/
   function getUrl(bljModuleJavaClassName){
     //This function makes the string to feed into getText
     console.assert(typeof bljModuleJavaClassName === "string", "getUrl function requires string argumentd")
-    //TODO convert '.'s to '/'s for bljModuleJavaClassName
     urlRoot="https://raw.githubusercontent.com/mikesioda/BioLockJ_Dev/master/src/"
     return (urlRoot+bljModuleJavaClassName)
     }
@@ -1035,50 +927,67 @@ For fastq, typically “@”.)<h5></p>
     })
   }//end getText
 
-
   function parseBljModuleJavaClass(text){
     var startPublicClass;
     var startComment;
-    console.log("hi");
     var lines = text.split('\n');
     for (let i = 0; i < lines.length; i++){
       if (lines[i].startsWith("public class")){
         startPublicClass = i;
       }
     }
-    for (let i = startPublicClass; i == 0; i--) {
-      if (lines[i].replace(/\s+/, "") == "/**"){
+    for (let i = startPublicClass; i > 0; i--) {
+      if (lines[i].startsWith("/**")) {
+        //console.log('found one!');
         startComment = i;
       }
     }
     var modDescrip = ""
-    for (let i = startComment; i == startPublicClass; i++){
-      modDescrip = modDescrip.concat(lines[i].slice(2))
+    for (var a = startComment; a < startPublicClass; a++){
+      var sect = lines[a].slice(3,);
+      modDescrip = modDescrip.concat(sect);
     }
-    console.log(startPublicClass);
-    console.log(startComment);
-    return(startComment)
+    return(modDescrip)
   }//end parseBljModuleJavaClass
 
   //list of modules with their java classes and their javascript classes
   //has the format of nested array, with the first item of the nested array being the java class
   const moduleLinkAndClass = [
     ['biolockj/module/classifier/r16s/qiime/PickClosedRefOtus.java', 'qiimeClass'],
-    ['biolockj/module/classifier/r16s/RdpClassifier.java', 'rdpClass']
+    ['biolockj/module/classifier/r16s/RdpClassifier.java', 'rdpClass'],
+    ['biolockj.module.classifier.r16s.qiime.PickClosedRefOtus.java', ]
   ];
 
   function makeModuleLi(link, ...classes){//using rest parameters
     var modUl = document.getElementById('module_ul');
     var mod = document.createElement('li');
-    modLabel = link.split('.')[0];
-    console.log(link);
-  }
-
+    for (var c = 0; c < classes.length; c++){
+      mod.classList.add(classes[c]);
+    };
+    mod.setAttribute('draggable', true);
+    mod.innerHTML = link.split('.')[0].replace(/\//g,'.');//remove .java then replace / with .
+    var text = getText(getUrl(link))
+    text.then(result => {
+      mod.setAttribute('data-info', parseBljModuleJavaClass(result));
+      console.log('entered .then');
+      hoverEventlistenerForModules(mod);
+      modUl.appendChild(mod);
+      mod.addEventListener('dragstart', function(){dragStarted(event)});
+      mod.addEventListener('dragover', function(){draggingOver(event)});
+      mod.addEventListener('drop',function(){dropped(event)});
+      mod.addEventListener('click', function(){toggleSelectModule(event.target)})
+    });
+  };//end makeModuleLi
   for (var i = 0; i < moduleLinkAndClass.length; i++){
     mod = moduleLinkAndClass[i];
-    makeModuleLi(mod[0], mod.slice(1,))
-    //do something with makeModuleLi
-  }
+    try {
+      makeModuleLi(mod[0], mod.slice(1,))l
+    } catch (e) {
+      console.error(e);
+    } finally {
+      //do what?
+    }
+  }//end forloop
 
   //section for module related functions
   function modulesToCurrentConfig() {
@@ -1138,9 +1047,38 @@ For fastq, typically “@”.)<h5></p>
             addClassToAllElemInList(this.modsToDisable[t], "disabledMod");
           }
         }
-      }
+      }//end else
     }//end modClassSelected
   };//end moduleCounter
+
+  function hoverEventlistenerForModules(modLiElement){
+        modLiElement.addEventListener("mouseover", function() {
+        let infoTarget = document.getElementById("moduleInfoDiv");
+        console.log(this);
+        let info = '<!DOCTYPE html><html><head></head><body><div id="tempModInfo">' + this.getAttribute('data-info').trim() + '</div></body></html>';
+        try {
+          parser = new DOMParser;
+          newInfo = parser.parseFromString(info , "text/xml");
+          while (infoTarget.firstChild) {
+            infoTarget.removeChild(infoTarget.firstChild);
+            }
+          try {
+            infoTarget.appendChild(newInfo.getElementById('tempModInfo'));
+            console.log(infoTarget);
+            if (document.getElementById('tempModInfo').innerHTML == ""){
+              document.getElementById('tempModInfo').insertAdjacentHTML("afterbegin", this.getAttribute('data-info'));
+            }
+          } catch (e) {
+            console.error(e);
+          } finally {
+            //do something?
+          }
+        }
+        catch (err){
+            console.error(err);
+        }
+      })//end eventlistener
+    }//end event listener wrapper function
 
   //helper function for modTrackers
   function addClassToAllElemInList(objects, className) {
@@ -1187,6 +1125,8 @@ For fastq, typically “@”.)<h5></p>
   /* comes from http://syntaxxx.com/rearranging-web-page-items-with-html5-drag-and-drop/*/
   function dragStarted(evt) {
     //start drag
+    console.log('drag started');
+    console.log(evt);
     this.source = evt.target;
     //set data
     data = {
@@ -1214,6 +1154,7 @@ For fastq, typically “@”.)<h5></p>
     evt.stopPropagation();
     //update text in dragged item
     this.source.innerHTML = evt.target.innerHTML;
+    //TODO: consider adding try/catch here
     this.source.classList = evt.target.classList;
     this.source.info = evt.target.info;
     //update text in drop target
@@ -1224,66 +1165,6 @@ For fastq, typically “@”.)<h5></p>
     evt.target.info = data.info;
   }
 
-  //eventlisteners
-  //eventlistener for mouseover
-  moduleOptions = Array.from(document.getElementById("module").getElementsByTagName("li"));
-  for (let r = 0; r < moduleOptions.length; r++) {
-      moduleOptions[r].addEventListener("mouseover", function() {
-      let infoTarget = document.getElementById("moduleInfoDiv");
-      let info = '<!DOCTYPE html><html><head></head><body><div id="tempModInfo">' + this.getAttribute('data-info').trim() + '</div></body></html>';
-      try {
-        parser = new DOMParser;
-        newInfo = parser.parseFromString(info , "text/xml");
-        //console.log(newInfo.getElementById('tempModInfo').innerHTML);
-        //infoTarget.innerHTML = "";
-        while (infoTarget.firstChild) {
-          infoTarget.removeChild(infoTarget.firstChild);
-          }
-        try {
-          infoTarget.appendChild(newInfo.getElementById('tempModInfo'));
-          console.log(infoTarget);
-          if (document.getElementById('tempModInfo').innerHTML == ""){
-            console.log(this);
-            document.getElementById('tempModInfo').insertAdjacentHTML("afterbegin", this.getAttribute('data-info'));
-          }
-        } catch (e) {
-          console.error(e);
-        } finally {
-          //do something?
-        }
-        //infoTarget.insertAdjacentHTML("afterbegin", newInfo.getElementById('tempModInfo').innerHTML);
-      }
-      catch (err){
-          console.error(err);
-      }
-
-    })
-  }
-  //helpers for mouseover function
-  var HttpClient = function() {
-    //this function not used
-    this.get = function(aUrl, aCallback) {
-      var anHttpRequest = new XMLHttpRequest();
-      anHttpRequest.onreadystatechange = function() {
-        if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
-          aCallback(anHttpRequest.responseText);
-      }
-      anHttpRequest.open("GET", aUrl, true);
-      anHttpRequest.send(null);
-    }
-  }
-  //function is broken
-  function htmlToElement(html) {
-    html = html.trim(); // Never return a text node of whitespace as the result
-    html = "<div>".concat(html, "</div>");
-    parser = new DOMParser();
-    temp = parser.parseFromString(html, "text/html");
-    output = temp.getElementsByTagName("div")[0];
-    //console.log(output);
-    //template.innerHTML = html;
-    return output
-  }
-
   /* the following block adds an eventlistener with two functions to the next
   tab tabButtons one for saving, and one for jumping to the next tab */
   var tabButtons = Array.from(document.getElementsByClassName("nextTab"));
@@ -1292,10 +1173,8 @@ For fastq, typically “@”.)<h5></p>
     //eventlistener for moving to next tabName
     tabButtons[t].tabNum = t;
     tabButtons[t].addEventListener("click", function() {
-        //alert(tabs[this.tabNum + 1].getAttribute("id").toString())
         saveTab(this.parentNode.id);
         openTab(event, tabs[this.tabNum + 1].getAttribute("id"));
-        //alert("Tab clicked")
       }, {
         once: false
       } //end of eventlistener
@@ -1330,23 +1209,18 @@ For fastq, typically “@”.)<h5></p>
       textFile = null;
       //add modules to config first
       for (var i = 0; i < currentConfig["modules"].length; i++) {
-        //console.log(currentConfig["modules"][i].concat("\n"));
         text += currentConfig["modules"][i].concat("\n");
       }
       //for non_module
       for (var key in currentConfig) {
         console.log(key);
         if (currentConfig.hasOwnProperty(key)) { //only lets keys that are user inputed pass
-          //console.log(key);
           if (key == "modules" || key == "project.configFile") {
-            //}
           } else if (key.toString() != "project.configFile" || key != "modules") { //project.configFile doesn't go inside the document
             text += key.concat("=", currentConfig[key], "\n");
-            //console.log(text);
           }
         }
       }
-      //console.log(text);
       var data = new Blob([text], {
         type: 'text/plain'
       });
@@ -1355,9 +1229,7 @@ For fastq, typically “@”.)<h5></p>
       if (textFile !== null) {
         window.URL.revokeObjectURL(textFile);
       }
-
       textFile = window.URL.createObjectURL(data);
-
       return textFile;
     };
     //gets all buttons with create class
@@ -1367,12 +1239,9 @@ For fastq, typically “@”.)<h5></p>
       createDownload[i].addEventListener('click', function() {
         event.preventDefault()
         var links = document.getElementsByClassName('downloadlink');
-        //console.log(links);
         for (var a = 0; a < links.length; a++) {
           let link = links[a];
-          //console.log(link);
           link['download'] = currentConfig["project.configFile"];
-          //console.log('hi');
           link.href = makeTextFile();
           link.style.display = 'block';
           console.log('hi');
