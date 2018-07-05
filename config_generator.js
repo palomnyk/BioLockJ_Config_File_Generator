@@ -78,7 +78,6 @@
         //first step, loop through modules and show them
         if (key == "modules") {
           var mods = configObject[key]; //could have said configObject["modules"]
-          //console.log(mods);
           var domModule = document.getElementById('module');
           var domModuleLi = domModule.getElementsByTagName('li');
           for (var a = 0; a < mods.length; a++) {
@@ -98,18 +97,14 @@
 
           //finds the form and item name
           var element = document.querySelector("form[id=" + formKey.toString() + "] input[name=" + inputKey.toString() + "]");
-          if (element == null) {console.log(key)};
           if (element.getAttribute("type") == "text" || element.getAttribute("type") == "number") {
             element.value = configObject[key];
             //for radio input
           } else if (element.getAttribute("type") == "radio") {
             //because I split up the name into the modules
             var elements = document.querySelectorAll("form[id=" + formKey.toString() + "] input[name=" + inputKey.toString() + "]");
-            //console.log(elements);
             for (var i = 0; i < elements.length; i++) {
-              //console.log(elements[i]);
               if (elements[i].value == configObject[key].toString() || currentConfig.hasOwnProperty(key)) {
-                //console.log(configObject[key]);
                 elements[i].checked = true;
               };
             };
@@ -124,14 +119,12 @@
 
               for (var h = 0; h < checks.length; h++) {
                 if (elements[i].value == checks[h]) {
-                  //console.log(configObject[key]);
                   elements[i].checked = true;
                 };
               };
             }
             //
           }else{
-            //console.log(element);
           }
           document.getElementById("mainMenu").style.display = "block";
         }; //end first else
@@ -182,7 +175,6 @@
     event.preventDefault()
     //get the form data
     var formInfo = document.getElementById(formName).elements;
-    console.log(formInfo);
     var lastAnswer;
 
     if (formName == "module") {
@@ -204,7 +196,6 @@
         //add all non-blank entries to currentConfig
         else if (formInfo[i].value != "" && inpType != "checkbox") {
           currentConfig[prop] = formInfo[i].value;
-          //console.log(formInfo[i].value + " " + formInfo[i].name);
         }
         //collect all checkbox options
         if (inpType == "checkbox") {
@@ -220,7 +211,6 @@
           }
         }
         lastAnswer = prop;
-        //console.log(lastAnswer)
       }
     };
     localStorage.setItem(currentConfig['project.configFile'].toString(), JSON.stringify(currentConfig));
@@ -270,7 +260,6 @@
     }
     for (let i = startPublicClass; i > 0; i--) {
       if (lines[i].startsWith("/**")) {
-        //console.log('found one!');
         startComment = i;
       }
     }
@@ -282,34 +271,50 @@
     return(modDescrip)
   }//end parseBljModuleJavaClass
 
+  //functions for module tabButtons
+  function toggleImplicitModules(){
+    //var implicits = document.getElementsByClassName('implicit');
+    if (implicitsHidden == true){
+      document.getElementsByClassName('implicit').style.display = 'none';
+    }else{
+      implicitsHidden = true;
+      document.getElementsByClassName('implicit').style.display = 'block';
+  }//end else
+}//end toggleImplicitModules
+  var implicitsHidden = true;
+
   //list of modules with their java classes and their javascript classes
   //has the format of nested array, with the first item of the nested array being the java class
   const moduleLinkAndClass = [
     ['biolockj/module/classifier/r16s/qiime/PickClosedRefOtus.java', 'qiimeClass'],
     ['biolockj/module/classifier/r16s/RdpClassifier.java', 'rdpClass'],
-    ['biolockj.module.classifier.r16s.qiime.PickClosedRefOtus.java', ]
+    ['biolockj/module/implicit/parser/r16s/RdpParser.java', 'rdpClass', 'implicit'],
+    ['biolockj/module/classifier/r16s/qiime/PickDeNovoOtus.java', 'qiimeClass'],
+    ['biolockj/module/classifier/r16s/qiime/PickOpenRefOtus.java', 'qiimeClass'],
+    ['biolockj/module/classifier/wgs/KrakenClassifier.java', 'krakenClass'],
+    ['biolockj/module/classifier/wgs/MetaphlanClassifier.java',  'metaphlanClass'],
+    ['biolockj/module/classifier/wgs/SlimmClassifier.java', 'slimmClass']
   ];
 
   function makeModuleLi(link, ...classes){//using rest parameters
     var modUl = document.getElementById('module_ul');
     var mod = document.createElement('li');
-    for (var c = 0; c < classes.length; c++){
-      mod.classList.add(classes[c]);
-    };
+    mod.classList.add(classes);
     mod.setAttribute('draggable', true);
     mod.innerHTML = link.split('.')[0].replace(/\//g,'.');//remove .java then replace / with .
     var text = getText(getUrl(link))
     text.then(result => {
       mod.setAttribute('data-info', parseBljModuleJavaClass(result));
-      console.log('entered .then');
       hoverEventlistenerForModules(mod);
-      modUl.appendChild(mod);
       mod.addEventListener('dragstart', function(){dragStarted(event)});
       mod.addEventListener('dragover', function(){draggingOver(event)});
       mod.addEventListener('drop',function(){dropped(event)});
       mod.addEventListener('click', function(){toggleSelectModule(event.target)})
     });
+    modUl.appendChild(mod);
   };//end makeModuleLi
+
+  function runRightNow() {
   for (var i = 0; i < moduleLinkAndClass.length; i++){
     mod = moduleLinkAndClass[i];
     try {
@@ -320,6 +325,8 @@
       //do what?
     }
   }//end forloop
+}
+runRightNow();
 
   //section for module related functions
   function modulesToCurrentConfig() {
@@ -331,7 +338,6 @@
       };
     };
     localStorage.setItem(currentConfig['project.configFile'].toString(), JSON.stringify(currentConfig));
-    //console.log(currentConfig['modules']);
   };
 
   //the following are list of module nodes with class for building the subsequence "Choosen" lists
@@ -376,6 +382,7 @@
         this.incrementCount();
         if (this.getCount() > 0) {
           for (let t = 0; t < this.modsToDisable.length; t++) {
+            console.log(this.modsToDisable[t]);
             addClassToAllElemInList(this.modsToDisable[t], "disabledMod");
           }
         }
@@ -383,10 +390,23 @@
     }//end modClassSelected
   };//end moduleCounter
 
+  //helper function for modTrackers
+  function addClassToAllElemInList(objects, className) {
+    for (let r = 0; r < objects.length; r++) {
+      objects[r].classList.add(className);
+      console.log('whats the deal?');
+    }
+  };
+  //helper function for modTrackers
+  function removeClassToAllElemInList(objects, className) {
+    for (let r = 0; r < objects.length; r++) {
+      objects[r].classList.remove(className);
+    }
+  };
+
   function hoverEventlistenerForModules(modLiElement){
         modLiElement.addEventListener("mouseover", function() {
         let infoTarget = document.getElementById("moduleInfoDiv");
-        console.log(this);
         let info = '<!DOCTYPE html><html><head></head><body><div id="tempModInfo">' + this.getAttribute('data-info').trim() + '</div></body></html>';
         try {
           parser = new DOMParser;
@@ -396,7 +416,6 @@
             }
           try {
             infoTarget.appendChild(newInfo.getElementById('tempModInfo'));
-            console.log(infoTarget);
             if (document.getElementById('tempModInfo').innerHTML == ""){
               document.getElementById('tempModInfo').insertAdjacentHTML("afterbegin", this.getAttribute('data-info'));
             }
@@ -412,19 +431,6 @@
       })//end eventlistener
     }//end event listener wrapper function
 
-  //helper function for modTrackers
-  function addClassToAllElemInList(objects, className) {
-    for (let r = 0; r < objects.length; r++) {
-      objects[r].classList.add(className);
-    }
-  };
-  //helper function for modTrackers
-  function removeClassToAllElemInList(objects, className) {
-    for (let r = 0; r < objects.length; r++) {
-      objects[r].classList.remove(className);
-    }
-  };
-
   var qiimeModuleCounter = new moduleCounter(qiimeModChoosen);
   var rdpModuleCounter = new moduleCounter(rdpModChoosen);
   var krakenModuleCounter = new moduleCounter(krakenModChoosen);
@@ -434,6 +440,7 @@
   //function below is called when modules are selected, it both selects them and disables others
   function toggleSelectModule(target) {
     if (target.classList.contains("qiimeClass")) {
+      console.log(target.classList);
       qiimeModuleCounter.modClassSelected(target)
     }else if (target.classList.contains("rdpClass")) {
       rdpModuleCounter.modClassSelected(target)
@@ -479,14 +486,11 @@
     evt.dataTransfer.dropEffect = "move";
   };
 
-  //function for dropping dragged modules
-  function dropped(evt) {
-    //drop
+  function dropped(evt) {//function for dropping dragged modules
     evt.preventDefault();
     evt.stopPropagation();
     //update text in dragged item
     this.source.innerHTML = evt.target.innerHTML;
-    //TODO: consider adding try/catch here
     this.source.classList = evt.target.classList;
     this.source.info = evt.target.info;
     //update text in drop target
@@ -576,7 +580,6 @@
           link['download'] = currentConfig["project.configFile"];
           link.href = makeTextFile();
           link.style.display = 'block';
-          console.log('hi');
         };
       }, false);
     };
