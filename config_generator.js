@@ -217,6 +217,27 @@
     console.dir(currentConfig);
   }
 
+  //eventlistener for adding the recent config files to "recent"
+  document.getElementById("recent").addEventListener("mouseover", function() {
+    recentMenuChoices = Object.keys(localStorage);
+    for (var i = 0; i < recentMenuChoices.length; i++) {
+      let opt = document.createElement('a');
+      opt.setAttribute("name", recentMenuChoices[i]);
+      var text = document.createTextNode(recentMenuChoices[i].toString());
+      opt.addEventListener("click", function() {
+        sendConfigDataToForms(JSON.parse(localStorage.getItem(this.name)));
+      });
+      opt.appendChild(text);
+      opt.setAttribute('position', 'relative');
+      opt.setAttribute('display', 'block');
+      opt.classList.add('recentConfigs');
+      let proj = document.getElementById("projects");
+      proj.appendChild(opt);
+    };
+  }, {
+    once: true
+  });
+
   /**Helper code to grab text from github for parsing module descriptions from
   -className will be value like biolockj.module.seq.AwkFastaConverter
   -bljModuleJavaClassName=”biolockj/module/seq/AwkFastaConverter.java”*/
@@ -296,38 +317,6 @@
     ['biolockj/module/classifier/wgs/SlimmClassifier.java', 'slimmClass']
   ];
 
-  function makeModuleLi(link, ...classes){//using rest parameters
-    var modUl = document.getElementById('module_ul');
-    var mod = document.createElement('li');
-    mod.classList.add(classes);
-    mod.setAttribute('draggable', true);
-    mod.innerHTML = link.split('.')[0].replace(/\//g,'.');//remove .java then replace / with .
-    var text = getText(getUrl(link))
-    text.then(result => {
-      mod.setAttribute('data-info', parseBljModuleJavaClass(result));
-      hoverEventlistenerForModules(mod);
-      mod.addEventListener('dragstart', function(){dragStarted(event)});
-      mod.addEventListener('dragover', function(){draggingOver(event)});
-      mod.addEventListener('drop',function(){dropped(event)});
-      mod.addEventListener('click', function(){toggleSelectModule(event.target)})
-    });
-    modUl.appendChild(mod);
-  };//end makeModuleLi
-
-  function runRightNow() {
-  for (var i = 0; i < moduleLinkAndClass.length; i++){
-    mod = moduleLinkAndClass[i];
-    try {
-      makeModuleLi(mod[0], mod.slice(1,));
-    } catch (e) {
-      console.error(e);
-    } finally {
-      //do what?
-    }
-  }//end forloop
-}
-runRightNow();
-
   //section for module related functions
   function modulesToCurrentConfig() {
     mods = document.getElementById('module').getElementsByTagName('li');
@@ -339,20 +328,6 @@ runRightNow();
     };
     localStorage.setItem(currentConfig['project.configFile'].toString(), JSON.stringify(currentConfig));
   };
-
-  //the following are list of module nodes with class for building the subsequence "Choosen" lists
-  var qiimeClassModNodes = Array.from(document.getElementsByClassName("qiimeClass"));
-  var slimmClassModNodes = Array.from(document.getElementsByClassName("slimmClass"));
-  var krakenClassModNodes = Array.from(document.getElementsByClassName("krakenClass"));
-  var rdpClassModNodes = Array.from(document.getElementsByClassName("rdpClass"));
-  var metaphlanClassModNodes = Array.from(document.getElementsByClassName("metaphlanClass"));
-  //the following "Choosen" variables are lists of nodes to disable when a module is selected
-  //to be used to disable nodes that shouldn't be selected together
-  var qiimeModChoosen = [slimmClassModNodes, krakenClassModNodes, rdpClassModNodes, metaphlanClassModNodes];
-  var rdpModChoosen = [slimmClassModNodes, krakenClassModNodes, qiimeClassModNodes, metaphlanClassModNodes];
-  var slimmModChoosen = [qiimeClassModNodes, krakenClassModNodes, rdpClassModNodes, metaphlanClassModNodes];
-  var krakenModChoosen = [slimmClassModNodes, qiimeClassModNodes, rdpClassModNodes, metaphlanClassModNodes];
-  var metaphlanModChoosen = [slimmClassModNodes, krakenClassModNodes, rdpClassModNodes, qiimeClassModNodes];
 
   /*This function object will be used to keep track of how many of each moduleClass is chosen
   modsToDisable will be one of the _____ModChoosen*/
@@ -394,7 +369,6 @@ runRightNow();
   function addClassToAllElemInList(objects, className) {
     for (let r = 0; r < objects.length; r++) {
       objects[r].classList.add(className);
-      console.log('whats the deal?');
     }
   };
   //helper function for modTrackers
@@ -402,6 +376,7 @@ runRightNow();
     for (let r = 0; r < objects.length; r++) {
       objects[r].classList.remove(className);
     }
+
   };
 
   function hoverEventlistenerForModules(modLiElement){
@@ -431,34 +406,6 @@ runRightNow();
       })//end eventlistener
     }//end event listener wrapper function
 
-  var qiimeModuleCounter = new moduleCounter(qiimeModChoosen);
-  var rdpModuleCounter = new moduleCounter(rdpModChoosen);
-  var krakenModuleCounter = new moduleCounter(krakenModChoosen);
-  var slimmModuleCounter = new moduleCounter(slimmModChoosen);
-  var metaphlanModuleCounter = new moduleCounter(metaphlanModChoosen);
-
-  //function below is called when modules are selected, it both selects them and disables others
-  function toggleSelectModule(target) {
-    if (target.classList.contains("qiimeClass")) {
-      console.log(target.classList);
-      qiimeModuleCounter.modClassSelected(target)
-    }else if (target.classList.contains("rdpClass")) {
-      rdpModuleCounter.modClassSelected(target)
-    }else if (target.classList.contains("krakenClass")) {
-      krakenModuleCounter.modClassSelected(target)
-    }else if (target.classList.contains("slimmClass")) {
-      slimmModuleCounter.modClassSelected(target)
-    }else if (target.classList.contains("metaphlanClass")) {
-      metaphlanModuleCounter.modClassSelected(target)
-    }else{
-      //for all modules that are not a classifier
-      if (target.classList.contains("modChoosen")) {
-      target.classList.remove("modChoosen");
-    }else{
-      target.classList.add("modChoosen");
-      }
-    }
-  };// end toggleSelectModule
 
   //module drag events
   /* comes from http://syntaxxx.com/rearranging-web-page-items-with-html5-drag-and-drop/*/
@@ -517,27 +464,82 @@ runRightNow();
     ) //end of nextTab eventlistener
   }; //end tabs for-loop
 
-  //eventlistener for adding the recent config files to "recent"
-  document.getElementById("recent").addEventListener("mouseover", function() {
-    recentMenuChoices = Object.keys(localStorage);
-    for (var i = 0; i < recentMenuChoices.length; i++) {
-      let opt = document.createElement('a');
-      opt.setAttribute("name", recentMenuChoices[i]);
-      var text = document.createTextNode(recentMenuChoices[i].toString());
-      opt.addEventListener("click", function() {
-        sendConfigDataToForms(JSON.parse(localStorage.getItem(this.name)));
-      });
-      opt.appendChild(text);
-      opt.setAttribute('position', 'relative');
-      opt.setAttribute('display', 'block');
-      opt.classList.add('recentConfigs');
-      let proj = document.getElementById("projects");
-      proj.appendChild(opt);
-    };
-  }, {
-    once: true
-  });
+  function runModuleFunctions() {//Build module li and counters
+    console.log('is this running?');
+    //function below is called when modules are selected, it both selects them and disables others
+    function toggleSelectModule(target) {
+      if (target.classList.contains("qiimeClass")) {
+        console.log(target.classList);
+        qiimeModuleCounter.modClassSelected(target)
+      }else if (target.classList.contains("rdpClass")) {
+        rdpModuleCounter.modClassSelected(target)
+      }else if (target.classList.contains("krakenClass")) {
+        krakenModuleCounter.modClassSelected(target)
+      }else if (target.classList.contains("slimmClass")) {
+        slimmModuleCounter.modClassSelected(target)
+      }else if (target.classList.contains("metaphlanClass")) {
+        metaphlanModuleCounter.modClassSelected(target)
+      }else{
+        //for all modules that are not a classifier
+        if (target.classList.contains("modChoosen")) {
+        target.classList.remove("modChoosen");
+        }else{
+          target.classList.add("modChoosen");
+          }
+      }
+    };// end toggleSelectModule
 
+    function makeModuleLi(link, ...classes){//using rest parameters
+      var modUl = document.getElementById('module_ul');
+      var mod = document.createElement('li');
+      mod.classList.add(classes);
+      mod.setAttribute('draggable', true);
+      mod.innerHTML = link.split('.')[0].replace(/\//g,'.');//remove .java then replace / with .
+      var text = getText(getUrl(link))
+      text.then(result => {
+        mod.setAttribute('data-info', parseBljModuleJavaClass(result));
+        hoverEventlistenerForModules(mod);
+        mod.addEventListener('dragstart', function(){dragStarted(event)});
+        mod.addEventListener('dragover', function(){draggingOver(event)});
+        mod.addEventListener('drop',function(){dropped(event)});
+        mod.addEventListener('click', function(){toggleSelectModule(event.target)})
+      });
+      modUl.appendChild(mod);
+    };//end makeModuleLi
+
+    for (var i = 0; i < moduleLinkAndClass.length; i++){
+      mod = moduleLinkAndClass[i];
+      try {
+        makeModuleLi(mod[0], mod.slice(1,));
+      } catch (e) {
+        console.error(e);
+      } finally {
+        //do what?
+      }
+    }//end forloop
+
+    //the following are list of module nodes with class for building the subsequence "Choosen" lists
+    var qiimeClassModNodes = Array.from(document.getElementsByClassName("qiimeClass"));
+    var slimmClassModNodes = Array.from(document.getElementsByClassName("slimmClass"));
+    var krakenClassModNodes = Array.from(document.getElementsByClassName("krakenClass"));
+    var rdpClassModNodes = Array.from(document.getElementsByClassName("rdpClass"));
+    var metaphlanClassModNodes = Array.from(document.getElementsByClassName("metaphlanClass"));
+    //the following "Choosen" variables are lists of nodes to disable when a module is selected
+    //to be used to disable nodes that shouldn't be selected together
+    var qiimeModChoosen = [slimmClassModNodes, krakenClassModNodes, rdpClassModNodes, metaphlanClassModNodes];
+    var rdpModChoosen = [slimmClassModNodes, krakenClassModNodes, qiimeClassModNodes, metaphlanClassModNodes];
+    var slimmModChoosen = [qiimeClassModNodes, krakenClassModNodes, rdpClassModNodes, metaphlanClassModNodes];
+    var krakenModChoosen = [slimmClassModNodes, qiimeClassModNodes, rdpClassModNodes, metaphlanClassModNodes];
+    var metaphlanModChoosen = [slimmClassModNodes, krakenClassModNodes, rdpClassModNodes, qiimeClassModNodes];
+
+    var qiimeModuleCounter = new moduleCounter(qiimeModChoosen);
+    var rdpModuleCounter = new moduleCounter(rdpModChoosen);
+    var krakenModuleCounter = new moduleCounter(krakenModChoosen);
+    var slimmModuleCounter = new moduleCounter(slimmModChoosen);
+    var metaphlanModuleCounter = new moduleCounter(metaphlanModChoosen);
+  };
+  runModuleFunctions();
+  
   //Function for creating downloadable config file
   (function() {
     makeTextFile = function() {
