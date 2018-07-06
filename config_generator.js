@@ -63,7 +63,6 @@
     } //end if (file)
   }; //end loadLocalFile function
 
-
   //function for parsing config objects in localStorage to forms
   var sendConfigDataToForms = function(configObject) {
     //reset currentConfig to config object from memory
@@ -304,19 +303,6 @@
 }//end toggleImplicitModules
   var implicitsHidden = true;
 
-  //list of modules with their java classes and their javascript classes
-  //has the format of nested array, with the first item of the nested array being the java class
-  const moduleLinkAndClass = [
-    ['biolockj/module/classifier/r16s/qiime/PickClosedRefOtus.java', 'qiimeClass'],
-    ['biolockj/module/classifier/r16s/RdpClassifier.java', 'rdpClass'],
-    ['biolockj/module/implicit/parser/r16s/RdpParser.java', 'rdpClass', 'implicit'],
-    ['biolockj/module/classifier/r16s/qiime/PickDeNovoOtus.java', 'qiimeClass'],
-    ['biolockj/module/classifier/r16s/qiime/PickOpenRefOtus.java', 'qiimeClass'],
-    ['biolockj/module/classifier/wgs/KrakenClassifier.java', 'krakenClass'],
-    ['biolockj/module/classifier/wgs/MetaphlanClassifier.java',  'metaphlanClass'],
-    ['biolockj/module/classifier/wgs/SlimmClassifier.java', 'slimmClass']
-  ];
-
   //section for module related functions
   function modulesToCurrentConfig() {
     mods = document.getElementById('module').getElementsByTagName('li');
@@ -376,7 +362,6 @@
     for (let r = 0; r < objects.length; r++) {
       objects[r].classList.remove(className);
     }
-
   };
 
   function hoverEventlistenerForModules(modLiElement){
@@ -405,7 +390,6 @@
         }
       })//end eventlistener
     }//end event listener wrapper function
-
 
   //module drag events
   /* comes from http://syntaxxx.com/rearranging-web-page-items-with-html5-drag-and-drop/*/
@@ -464,12 +448,22 @@
     ) //end of nextTab eventlistener
   }; //end tabs for-loop
 
-  function runModuleFunctions() {//Build module li and counters
-    console.log('is this running?');
-    //function below is called when modules are selected, it both selects them and disables others
-    function toggleSelectModule(target) {
+  //list of modules with their java classes and their javascript classes
+  //has the format of nested array, with the first item of the nested array being the java class
+  const moduleLinkAndClass = [
+    ['biolockj/module/classifier/r16s/qiime/PickClosedRefOtus.java', 'qiimeClass'],
+    ['biolockj/module/classifier/r16s/RdpClassifier.java', 'rdpClass'],
+    ['biolockj/module/implicit/parser/r16s/RdpParser.java', 'rdpClass', 'implicit'],
+    ['biolockj/module/classifier/r16s/qiime/PickDeNovoOtus.java', 'qiimeClass'],
+    ['biolockj/module/classifier/r16s/qiime/PickOpenRefOtus.java', 'qiimeClass'],
+    ['biolockj/module/classifier/wgs/KrakenClassifier.java', 'krakenClass'],
+    ['biolockj/module/classifier/wgs/MetaphlanClassifier.java',  'metaphlanClass'],
+    ['biolockj/module/classifier/wgs/SlimmClassifier.java', 'slimmClass']
+  ];
+
+  function runModuleFunctions() {//large function to build module li and counters
+    function toggleSelectModule(target) {//function called when modules are selected, it both selects them and disables others
       if (target.classList.contains("qiimeClass")) {
-        console.log(target.classList);
         qiimeModuleCounter.modClassSelected(target)
       }else if (target.classList.contains("rdpClass")) {
         rdpModuleCounter.modClassSelected(target)
@@ -492,7 +486,11 @@
     function makeModuleLi(link, ...classes){//using rest parameters
       var modUl = document.getElementById('module_ul');
       var mod = document.createElement('li');
-      mod.classList.add(classes);
+      var setClass = '';
+      for (var c = 0; c < classes.length; c++){
+        setClass += classes[c];
+      }//  ^this function is a hack because classList.add() adds commas between the css classes, making them unreadable to css
+      mod.className = setClass;
       mod.setAttribute('draggable', true);
       mod.innerHTML = link.split('.')[0].replace(/\//g,'.');//remove .java then replace / with .
       var text = getText(getUrl(link))
@@ -514,7 +512,6 @@
       } catch (e) {
         console.error(e);
       } finally {
-        //do what?
       }
     }//end forloop
 
@@ -524,22 +521,16 @@
     var krakenClassModNodes = Array.from(document.getElementsByClassName("krakenClass"));
     var rdpClassModNodes = Array.from(document.getElementsByClassName("rdpClass"));
     var metaphlanClassModNodes = Array.from(document.getElementsByClassName("metaphlanClass"));
-    //the following "Choosen" variables are lists of nodes to disable when a module is selected
-    //to be used to disable nodes that shouldn't be selected together
-    var qiimeModChoosen = [slimmClassModNodes, krakenClassModNodes, rdpClassModNodes, metaphlanClassModNodes];
-    var rdpModChoosen = [slimmClassModNodes, krakenClassModNodes, qiimeClassModNodes, metaphlanClassModNodes];
-    var slimmModChoosen = [qiimeClassModNodes, krakenClassModNodes, rdpClassModNodes, metaphlanClassModNodes];
-    var krakenModChoosen = [slimmClassModNodes, qiimeClassModNodes, rdpClassModNodes, metaphlanClassModNodes];
-    var metaphlanModChoosen = [slimmClassModNodes, krakenClassModNodes, rdpClassModNodes, qiimeClassModNodes];
 
-    var qiimeModuleCounter = new moduleCounter(qiimeModChoosen);
-    var rdpModuleCounter = new moduleCounter(rdpModChoosen);
-    var krakenModuleCounter = new moduleCounter(krakenModChoosen);
-    var slimmModuleCounter = new moduleCounter(slimmModChoosen);
-    var metaphlanModuleCounter = new moduleCounter(metaphlanModChoosen);
+    //moduleCounters instanciated with nodes that they will disable
+    var qiimeModuleCounter = new moduleCounter([slimmClassModNodes, krakenClassModNodes, rdpClassModNodes, metaphlanClassModNodes]);
+    var rdpModuleCounter = new moduleCounter([slimmClassModNodes, krakenClassModNodes, qiimeClassModNodes, metaphlanClassModNodes]);
+    var krakenModuleCounter = new moduleCounter([slimmClassModNodes, qiimeClassModNodes, rdpClassModNodes, metaphlanClassModNodes]);
+    var slimmModuleCounter = new moduleCounter([qiimeClassModNodes, krakenClassModNodes, rdpClassModNodes, metaphlanClassModNodes]);
+    var metaphlanModuleCounter = new moduleCounter([slimmClassModNodes, krakenClassModNodes, rdpClassModNodes, qiimeClassModNodes]);
   };
   runModuleFunctions();
-  
+
   //Function for creating downloadable config file
   (function() {
     makeTextFile = function() {
