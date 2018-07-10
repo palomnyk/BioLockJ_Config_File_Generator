@@ -169,8 +169,8 @@
     }
   };//end openProjDisplay
   var currentConfig = {};//IMPORTANT: This variable holds all of the selected configuations
-  //function to put move data from form to currentConfig
-  function saveTab(formName) {
+
+  function saveTab(formName) {//function to put move data from form to currentConfig
     event.preventDefault()
     //get the form data
     var formInfo = document.getElementById(formName).elements;
@@ -292,13 +292,19 @@
 
   //functions for module tabButtons
   function toggleImplicitModules(){
-    console.log(document.getElementsByClassName('tabcontent'));
-    console.log(document.getElementsByClassName('implicit'));
-    if (implicitsHidden == true){
-      document.getElementsByClassName('implicit').style.display = 'none';
+    var impliMods = document.getElementsByClassName('implicit');
+    if (implicitsHidden === true){
+      for (var el = 0; el < impliMods.length; el++){
+        impliMods[el].classList.add('hidden');
+        impliMods[el].disabled = true;
+      };
+      implicitsHidden = false;
     }else{
+      for (var el = 0; el < impliMods.length; el++) {
+        impliMods[el].classList.remove('hidden');
+        impliMods[el].disabled = false;
+      };
       implicitsHidden = true;
-      document.getElementsByClassName('implicit').style.display = 'block';
     }//end else
   }//end toggleImplicitModules
   var implicitsHidden = true;
@@ -451,6 +457,8 @@
   //list of modules with their java classes and their javascript classes
   //has the format of nested array, with the first item of the nested array being the java class
   const moduleLinkAndClass = [
+    ['biolockj/module/implicit/ImportMetadata.java', 'implicit'],
+    ['biolockj/module/implicit/Demultiplexer.java', 'implicit'],
     ['biolockj/module/classifier/r16s/qiime/PickClosedRefOtus.java', 'qiimeClass'],
     ['biolockj/module/classifier/r16s/RdpClassifier.java', 'rdpClass'],
     ['biolockj/module/implicit/parser/r16s/RdpParser.java', 'rdpClass', 'implicit'],
@@ -458,7 +466,22 @@
     ['biolockj/module/classifier/r16s/qiime/PickOpenRefOtus.java', 'qiimeClass'],
     ['biolockj/module/classifier/wgs/KrakenClassifier.java', 'krakenClass'],
     ['biolockj/module/classifier/wgs/MetaphlanClassifier.java',  'metaphlanClass'],
-    ['biolockj/module/classifier/wgs/SlimmClassifier.java', 'slimmClass']
+    ['biolockj/module/classifier/wgs/SlimmClassifier.java', 'slimmClass'],
+    ['biolockj/module/r/BuildMdsPlots.java'],
+    ['biolockj/module/r/BuildOtuPlots.java'],
+    ['biolockj/module/r/BuildPvalHistograms.java'],
+    ['biolockj/module/r/CalculateStats.java'],
+    ['biolockj/module/report/AddMetadataToOtuTables.java'],
+    ['biolockj/module/report/JsonReport.java'],
+    ['biolockj/module/report/Normalizer.java'],
+    ['biolockj/module/seq/AwkFastaConverter.java'],
+    ['biolockj/module/seq/Multiplexer.java'],
+    ['biolockj/module/seq/PearMergeReads.java'],
+    ['biolockj/module/seq/Rarefier.java'],
+    ['biolockj/module/seq/RegisterNumReads.java'],
+    ['biolockj/module/seq/SeqFileValidator.java'],
+    ['biolockj/module/seq/TrimPrimers.java'],
+    ['biolockj/module/report/Email.java']
   ];
 
   function runModuleFunctions() {//large function to build module li and counters
@@ -526,8 +549,22 @@
     var krakenModuleCounter = new moduleCounter([slimmClassModNodes, qiimeClassModNodes, rdpClassModNodes, metaphlanClassModNodes]);
     var slimmModuleCounter = new moduleCounter([qiimeClassModNodes, krakenClassModNodes, rdpClassModNodes, metaphlanClassModNodes]);
     var metaphlanModuleCounter = new moduleCounter([slimmClassModNodes, krakenClassModNodes, rdpClassModNodes, qiimeClassModNodes]);
+
+    document.getElementById('implicitOverride').addEventListener('click', function(){toggleImplicitModules()});
+    document.getElementById('implicitOverride').click();//automatiically hide everything
+    document.getElementById('implicitOverride').addEventListener('mouseover', function(){
+      document.getElementById('implicitWarning').classList.remove('hidden');
+    });
+    document.getElementById('implicitOverride').addEventListener('mouseout', function(){
+      document.getElementById('implicitWarning').classList.add('hidden');
+    });
   };
   runModuleFunctions();
+
+  function displayImplicitWarning(){
+    console.log(this);
+    this.classList.remove('hidden');
+  }
 
   //Function for creating downloadable config file
   (function() {
