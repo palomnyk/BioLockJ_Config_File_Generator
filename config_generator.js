@@ -167,7 +167,7 @@
     } else {
       alert('The File APIs are not fully supported in this browser.');
     }
-  };
+  };//end openProjDisplay
   var currentConfig = {};//IMPORTANT: This variable holds all of the selected configuations
   //function to put move data from form to currentConfig
   function saveTab(formName) {
@@ -245,9 +245,8 @@
     console.assert(typeof bljModuleJavaClassName === "string", "getUrl function requires string argumentd")
     urlRoot="https://raw.githubusercontent.com/mikesioda/BioLockJ_Dev/master/src/"
     return (urlRoot+bljModuleJavaClassName)
-    }
-  function getText(bljLink){
-    // read text from URL location
+  }//end getUrl
+  function getText(bljLink){// read text from URL location
     return new Promise((resolve, reject) => {
       var request = new XMLHttpRequest();
       request.open('GET', bljLink, true);
@@ -293,14 +292,15 @@
 
   //functions for module tabButtons
   function toggleImplicitModules(){
-    //var implicits = document.getElementsByClassName('implicit');
+    console.log(document.getElementsByClassName('tabcontent'));
+    console.log(document.getElementsByClassName('implicit'));
     if (implicitsHidden == true){
       document.getElementsByClassName('implicit').style.display = 'none';
     }else{
       implicitsHidden = true;
       document.getElementsByClassName('implicit').style.display = 'block';
-  }//end else
-}//end toggleImplicitModules
+    }//end else
+  }//end toggleImplicitModules
   var implicitsHidden = true;
 
   //section for module related functions
@@ -365,31 +365,31 @@
   };
 
   function hoverEventlistenerForModules(modLiElement){
-        modLiElement.addEventListener("mouseover", function() {
-        let infoTarget = document.getElementById("moduleInfoDiv");
-        let info = '<!DOCTYPE html><html><head></head><body><div id="tempModInfo">' + this.getAttribute('data-info').trim() + '</div></body></html>';
-        try {
-          parser = new DOMParser;
-          newInfo = parser.parseFromString(info , "text/xml");
-          while (infoTarget.firstChild) {
-            infoTarget.removeChild(infoTarget.firstChild);
-            }
-          try {
-            infoTarget.appendChild(newInfo.getElementById('tempModInfo'));
-            if (document.getElementById('tempModInfo').innerHTML == ""){
-              document.getElementById('tempModInfo').insertAdjacentHTML("afterbegin", this.getAttribute('data-info'));
-            }
-          } catch (e) {
-            console.error(e);
-          } finally {
-            //do something?
-          }
+    modLiElement.addEventListener("mouseover", function() {
+    let infoTarget = document.getElementById("moduleInfoDiv");
+    let info = '<!DOCTYPE html><html><head></head><body><div id="tempModInfo">' + this.getAttribute('data-info').trim() + '</div></body></html>';
+    try {
+      parser = new DOMParser;
+      newInfo = parser.parseFromString(info , "text/xml");
+      while (infoTarget.firstChild) {
+        infoTarget.removeChild(infoTarget.firstChild);
         }
-        catch (err){
-            console.error(err);
+      try {
+        infoTarget.appendChild(newInfo.getElementById('tempModInfo'));
+        if (document.getElementById('tempModInfo').innerHTML == ""){
+          document.getElementById('tempModInfo').insertAdjacentHTML("afterbegin", this.getAttribute('data-info'));
         }
-      })//end eventlistener
-    }//end event listener wrapper function
+    } catch (e) {
+      console.error(e);
+    } finally {
+        //do something?
+      }
+    }
+    catch (err){
+        console.error(err);
+    }
+    })//end eventlistener
+  }//end event listener wrapper function
 
   //module drag events
   /* comes from http://syntaxxx.com/rearranging-web-page-items-with-html5-drag-and-drop/*/
@@ -483,25 +483,23 @@
       }
     };// end toggleSelectModule
 
-    function makeModuleLi(link, ...classes){//using rest parameters
+    function makeModuleLi(link, classes){
       var modUl = document.getElementById('module_ul');
       var mod = document.createElement('li');
-      var setClass = '';
       for (var c = 0; c < classes.length; c++){
-        setClass += classes[c];
+        mod.classList.add(classes[c])
       }//  ^this function is a hack because classList.add() adds commas between the css classes, making them unreadable to css
-      mod.className = setClass;
       mod.setAttribute('draggable', true);
       mod.innerHTML = link.split('.')[0].replace(/\//g,'.');//remove .java then replace / with .
       var text = getText(getUrl(link))
       text.then(result => {
         mod.setAttribute('data-info', parseBljModuleJavaClass(result));
         hoverEventlistenerForModules(mod);
-        mod.addEventListener('dragstart', function(){dragStarted(event)});
-        mod.addEventListener('dragover', function(){draggingOver(event)});
-        mod.addEventListener('drop',function(){dropped(event)});
-        mod.addEventListener('click', function(){toggleSelectModule(event.target)})
       });
+      mod.addEventListener('dragstart', function(){dragStarted(event)});
+      mod.addEventListener('dragover', function(){draggingOver(event)});
+      mod.addEventListener('drop',function(){dropped(event)});
+      mod.addEventListener('click', function(){toggleSelectModule(event.target)})
       modUl.appendChild(mod);
     };//end makeModuleLi
 
@@ -544,7 +542,7 @@
       for (var key in currentConfig) {
         console.log(key);
         if (currentConfig.hasOwnProperty(key)) { //only lets keys that are user inputed pass
-          if (key == "modules" || key == "project.configFile") {
+          if (key == "modules" || key == "project.configFile") {// TODO: What was this wonky code for?
           } else if (key.toString() != "project.configFile" || key != "modules") { //project.configFile doesn't go inside the document
             text += key.concat("=", currentConfig[key], "\n");
           }
@@ -553,8 +551,7 @@
       var data = new Blob([text], {
         type: 'text/plain'
       });
-      // If we are replacing a previously generated file we need to
-      // manually revoke the object URL to avoid memory leaks.
+      // If we are replacing a previously generated file we need to manually revoke the object URL to avoid memory leaks.
       if (textFile !== null) {
         window.URL.revokeObjectURL(textFile);
       }
