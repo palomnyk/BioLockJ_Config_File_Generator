@@ -170,51 +170,56 @@
   };//end openProjDisplay
   var currentConfig = {};//IMPORTANT: This variable holds all of the selected configuations
 
-  function saveTab(formName) {//function to put move data from form to currentConfig
+  function saveTab() {//function to put move data from form to currentConfig
     event.preventDefault()
-    //get the form data
-    var formInfo = document.getElementById(formName).elements;
-    var lastAnswer;
-
-    if (formName == "module") {
-      modulesToCurrentConfig();
-    } else {
-      //cycle through the form and get the info
-      for (i = 0; i < formInfo.length; i++) {
-        let prop = formName.toString() + "." + formInfo[i].name;
-        let inpType = formInfo[i].type;
-
-        //skip unchecked radio and checkbox entries
-        if (inpType == "radio" && formInfo[i].checked == false) {
-          continue;
-        }
-        //skip the submit buttons
-        else if (inpType == "submit") {
-          continue;
-        }
-        //add all non-blank entries to currentConfig
-        else if (formInfo[i].value != "" && inpType != "checkbox") {
-          currentConfig[prop] = formInfo[i].value;
-        }
-        //collect all checkbox options
-        if (inpType == "checkbox") {
-          if (prop !== lastAnswer) {
-            currentConfig[prop] = "";
-          };
-          if (formInfo[i].checked == true) {
-            currentConfig[prop] = currentConfig[prop].concat(formInfo[i].value.toString(), ",");
-          }
-          //what was I doing here...
-          if (currentConfig[prop] == undefined || currentConfig[prop] == null) {
-            currentConfig[prop] = formInfo[i].value.toString().concat(',');
-          }
-        }
-        lastAnswer = prop;
-      }
+    if (document.getElementById('configFile').value == '' ){
+      alert('The config file name is required for saving tabs.')
     };
+    var configForms = document.getElementsByTagName('form');
+    var lastAnswer;
+    for (var f = 0; f < configForms.length; f++){//get the form data
+      console.log(configForms[f]);
+      if (configForms[f].getAttribute('id') !== null ) {
+        console.log('not null');
+        var formInputs = configForms[f].elements;
+        //cycle through the form and get the info
+        for (i = 0; i < formInputs.length; i++) {
+          console.log(formInputs[i]);
+          let inpType = formInputs[i].type;
+          let prop = formInputs[i].name; //this is the key to the key/value pair
+          //skip unchecked radio and checkbox entries
+          if (inpType == "radio" && formInputs[i].checked == false) {
+            continue;
+          }
+          //skip the submit buttons
+          else if (inpType == "submit") {
+            continue;
+          }
+          //add all non-blank entries to currentConfig
+          else if (formInputs[i].value != "" && inpType != "checkbox") {
+            currentConfig[prop] = formInputs[i].value;
+          }
+          //collect all checkbox options
+          if (inpType == "checkbox") {
+            if (prop !== lastAnswer) {
+              currentConfig[prop] = "";
+            };
+            if (formInputs[i].checked == true) {
+              currentConfig[prop] = currentConfig[prop].concat(formInputs[i].value.toString(), ",");
+            }
+            //what was I doing here...
+            if (currentConfig[prop] == undefined || currentConfig[prop] == null) {
+              currentConfig[prop] = formInputs[i].value.toString().concat(',');
+              }
+            }
+            lastAnswer = prop;
+        }//end 2nd for loop
+      }//end if
+    }//end first forloop
     localStorage.setItem(currentConfig['project.configFile'].toString(), JSON.stringify(currentConfig));
     console.dir(currentConfig);
-  }
+    modulesToCurrentConfig();
+  };//end saveTabs
 
   //eventlistener for adding the recent config files to "recent"
   document.getElementById("recent").addEventListener("mouseover", function() {

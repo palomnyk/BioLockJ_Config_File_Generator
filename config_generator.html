@@ -49,22 +49,17 @@
   <!--tabbed menu-->
 
   <div id="projectTab" class="tabcontent">
-    <!--<h3>Project</h3>-->
     <form id="project">
-      <p>Configuration file name<input type="text" name="configFile" required></p>
-      <p>Project name:
-        <input type="text" name="name" required><br></p>
-      <p>Root directory: <input type="text" name="rootDir" required><br>
-        <h5>(The root directory is the parent directory for BioLockJ project run directories)</h5></p>
+      <p>Configuration file name
+        <input id='configFile' type="text" name="project.configFile" required></p>
       <p>Copy input files into the parent directory:<br>
-        <input type="radio" name="copyInput" value="Y" required> Yes<br>
-        <input type="radio" name="copyInput" value="N"> No<br></p>
+        <input type="radio" name="project.copyInput" value="Y" required> Yes<br>
+        <input type="radio" name="project.copyInput" value="N"> No<br></p>
       <p>Delete temporary files:<br>
-        <input type="radio" name="deleteTempFiles" value="Y" required> Yes<br>
-        <input type="radio" name="deleteTempFiles" value="N"> No<br></p>
-      <!--  -->
+        <input type="radio" name="project.deleteTempFiles" value="Y" required> Yes<br>
+        <input type="radio" name="project.deleteTempFiles" value="N"> No<br></p>
       <p>Path to default properties file:
-        <input type="text" name="defaultProps"><br> add file picker here
+        <input type="text" name="project.defaultProps"><br> add file picker here
         <i>(Path to a default BioLockJ configuration file containing default
         property values that are overridden if defined in the primary
         configuration file.)</i></p>
@@ -73,6 +68,17 @@
         <input type="radio" name="logLevel" value="INFO">INFO<br>
         <input type="radio" name="logLevel" value="WARN">WARN<br>
         <input type="radio" name="logLevel" value="ERROR">ERROR<br></p>
+      <p>Project runtime environment: <br>
+        <input name='project.env' type="radio" value="aws"> AWS<br>
+        <input name='project.env' type="radio" value="cluster"> Cluster<br>
+        <input name='project.env' type="radio" value="local"> Yes<br></p>
+      <p>Run project in Docker:<br>
+        <input type="radio" name="project.runDocker" value="Y"> Yes<br>
+        <input type="radio" name="project.runDocker" value="N"> No<br></p>
+      <p>A directory on the local workstation where the cluster.downloadModule will be downloaded<br>
+        <input type="text" name="project.downloadDir"><br></p>
+      <p>Set # minutes before direct Java module script will time out and fail<br>
+        <input type="number" name="java.timeout" value="">
       <button onclick="saveTab(this.parentNode.id)">Save</button>
       <button type='button' class="nextTab">Save and move to next tab</button>
     </form>
@@ -81,6 +87,10 @@
   <div id="moduleTab" class="tabcontent">
     <button type="button" onclick="modulesToCurrentConfig()">Save</button>
     <button type="button" class="nextTab">Save and move to next tab</button>
+    <!-- TODO: Link button to currentConfig -->
+    <button type='button' id='implicitOverride'>Config Implicit Override</button>
+    <h3 class='hidden' id='implicitWarning'>
+      Implicit modules will be added automatically by BioLockJ as needed.</h3>
     <fieldset>
       <legend>Module options</legend>
       <div id="module">
@@ -99,87 +109,89 @@
       </div>
     </fieldset>
   </div>
-
   <div id="inputTab" class="tabcontent">
     <form id="input">
-      <p>Input directory (or directories): <input type="text" name="dirs" required><br>
+      <p>Input directory (or directories): <input type="text" name="input.dirPaths" required><br>
         <h5>(Input directory must contain files expected by the first module executed.
         Multiple directories must be comma-separated.)</h5></p>
-      <p>Files in input directory to ignore: <input type="text" name="ignoreFiles"><br>
+      <p>Files in input directory to ignore: <input type="text" name="input.ignoreFiles"><br>
         <h5>(Multiple files must be comma-separated.)</h5></p>
-      <p>Demultiplex: <br>
-        <input type="radio" name="demultiplex" value="Y" required> Yes<br>
-        <input type="radio" name="demultiplex" value="N"> No<br>
-        <h5>(If yes, sequence files include reads from multiple samples
-          and sample IDs must be extracted from the sequence headers.
-          RDP and Kraken classifiers only.  If no, there is one sample per file
-          and the file name must contain the sample ID.)</h5></p>
-      <p>Paired reads: <br>
-        <input type="radio" name="pairedReads" value="Y" required> Yes<br>
-        <input type="radio" name="pairedReads" value="N"> No<br>
-        <h5>(If yes, file names must include input.forwardFileSuffix or
-        input.reverseFileSuffix.)<h5></p>
-      <p><File name suffix to indicate a forward read:
-            <input type="text" name="forwardFileSuffix"><br>
+      <p>File name suffix to indicate a forward read:
+            <input type="text" name="input.suffixFw"><br>
             File name suffix to indicate a reverse read.
-            <input type="text" name="reverseFileSuffix"><br>
+            <input type="text" name="input.suffixRw"><br>
             </p>
       <p>Trim prefix:
-        <input type="text" name="trimPrefix"><br>
+        <input type="text" name="input.trimPrefix"><br>
       <h5>(For files named by Sample ID, provide the
         prefix preceding the ID to trim when extracting Sample ID.
 If input.demultiplex=Y, provide any characters in the sequence header preceding the ID.
 For fastq, typically “@”.)<h5></p>
       <p>Trim suffix:
-        <input type="text" name="trimSuffix"><br>
+        <input type="text" name="input.trimSuffix"><br>
         <h5>(For files named by Sample ID, provide the suffix after the ID, often
            this is just the file extension.  Do not include read direction indicators l
            isted in input.forwardFileSuffix/reverseFileSuffix.
            If input.demultiplex=Y, provide 1st character in the sequence header after ID;
            for fastq, typically “:” char.)</h5></p>
-      <p>Minimum number of sequences per sample (BioLockJ will discard samples with sequences below this.):
-        <input type="number" name="rarefyMin"><br></p>
-      <p>Maximum number of sequences per sample (BioLockJ will discard samples with sequences above this.):
-        <input type="number" name="rarefyMax"><br></p>
+      <p>Maximum accepted length of sequence read:<br>
+        <input type="number" name="input.seqMaxLen"><br></p>
+      <p>Minimum accepted length of sequence read:<br>
+        <input type="number" name="input.seqMinLen"><br></p>
+      <p>Minimum number of sequences per sample for use in rarefication (BioLockJ will discard samples with sequences below this.):<br>
+        <input type="number" name="rarefier.min"><br></p> <!--these should be hidden unless rarefy module is selected (also change names)-->
+      <p>Randomly select maximum number of sequences per sample use in rarefication:<br>
+        <input type="number" name="rarefier.max"><br></p>
       <p>Path to file containing primers to trim (File must contain only one sequence per line):
-        <input type="text" name="trimSeqPath"><br></p>
-      <p>Metadata file path, <i>must have unique column headers</i>:
-        <input type="text" name="metadata"><br></p>
-      <p>Define how null values are represented in metadata: (input.nullValue)<br>
-        <input type="text" name="nullValue">
-      </p>
-      <p>Define column delimiter for input.metadata (input.columnDelim)<br>
-        <input type="text" name="columnDelim"></p>
-      <p>Barcode in header?<br>
-        <input type="radio" name="barcodeInHeader" value="Y"> Yes<br>
-        <input type="radio" name="barcodeInHeader" value="N"> No<br></p>
+        <input type="text" name="trimPrimers.filePath"><br></p>
+      <p>Discard reads with no primers?<br>
+        <input type="radio" name="trimPrimers.requirePrimer" value="Y"> Yes<br>
+        <input type="radio" name="trimPrimers.requirePrimer" value="N"> No<br></p>
+      <!--add demux -->
+      <p>Set the Demultiplexer strategy. If using barcodes, they must be provided in the
+        metadata.filePath with in column name defined by metadata.barcodeColumn.<br>
+        <input type="radio" name="demux.strategy" value="barcode_in_header">barcode_in_header<br>
+        <input type="radio" name="demux.strategy" value="id_in_header">id_in_header<br></p>
+        <input type="radio" name="demux.strategy" value="do_not_demux.">do_not_demux.<br></p>
       <button onclick="saveTab(this.parentNode.id)">Save</button>
       <button type="button" class="nextTab">Save and move to next tab</button>
     </form>
   </div>
+
+<!-- TODO: Add metadata tab -->
+      <p>Define how null values are represented in metadata: (input.nullValue)<br>
+        <input type="text" name="nullValue"></p>
+      <p>Define column delimiter for input.metadata (input.columnDelim)<br>
+        <input type="text" name="columnDelim"></p>
+
 
   <div id="clusterTab" class="tabcontent">
     <form id="cluster">
       <button onclick="saveTab('cluster')">Next</button>
       <button type="button" class="nextTab">Save and move to next tab</button>
       <p>Cluster host address (cluster.host):<br>
-        <input type="text" name="host"><br></p>
+        <input type="text" name="cluster.host"><br></p>
       <p>Batch command to submit jobs on the cluster: <br>
-        <input type="text" name="batchCommand"><br>
+        <input type="text" name="cluster.batchCommand"><br>
       </p>
-      <p>Cluster parameters: <br>
-        <input type="text" name="params"><br></p>
-      <p>Validate cluster parameters: <br>
-        <input type="radio" name="validateParams" value="Y"> Yes<br>
-        <input type="radio" name="validateParams" value="N"> No<br></p>
+      <p>Job script header to define # of nodes, # of cores, RAM, walltime, etc.<br>
+        <input type="text" name="cluster.jobHeader"><br></p>
+      <p>Number of classifier threads (Integer value passed to ClassifierModule if it has a number of threads parameter.
+        If undefined, script.numThreads will be used instead because classifiers often
+        require more resources than other modules.):
+        <input type="number" name="cluster.numClassifierThreads"><br></p>
+      <p>Run java as script module: (If Y, each JavaModule will instantiate a clone of the
+        application in direct mode on a job node via a single worker script to avoid overworking
+        the head node where BioLockJ is deployed):<b>
+        <input type="radio" name="cluster.runJavaAsScriptModule" value="Y"> Yes<br>
+        <input type="radio" name="cluster.runJavaAsScriptModule" value="N"> No<br></p>
+      <p>Validate cluster parameters: (If Y, validate
+        cluster.jobHeader/cluster.classifierHeader "ppn:" or "procs:"
+        value matches script.numThreads/cluster.numClassifierThreads)<br>
+        <input type="radio" name="cluster.validateParams" value="Y"> Yes<br>
+        <input type="radio" name="cluster.validateParams" value="N"> No<br></p>
       <p>Cluster modules to load before execution: <br>
-        <input type="text" name="modules"><br></p>
-      <p>The email notification will include an scp command to download this BioModule outputDir<br>
-        <input type="text" name="downloadModule"><br></p>
-      <p>A directory on the local workstation where the cluster.downloadModule will be downloaded<br>
-        <input type="text" name="downloadDir"><br></p>
-      <p>Cluster.scriptHeader<br>
-        <input type="text" name="scriptHeader"><br></p>
+        <input type="text" name="cluster.modules"><br></p>
     </form>
   </div>
 
@@ -189,15 +201,15 @@ For fastq, typically “@”.)<h5></p>
       <p>Exit program if errors in script occur: (script.exitOnError)<br>
         <input type="radio" name="exitOnError" value="Y"> Yes<br>
         <input type="radio" name="exitOnError" value="N"> No (failures will be logged to failure directory) <br></p>
-      <p>Run on cluster: <br>
-        <input type="radio" name="runOnCluster" value="Y"> Yes<br>
-        <input type="radio" name="runOnCluster" value="N"> No</p>
       <p>Number of sequence files to process per script:<br>
         <input type="number" name="batchSize"><br></p>
       <p>Command to grant script execute permissions:
-        <input type="text" name="chmodCommand" value="chmod 774"><br></p>
+        <input type="text" name="scriptPermissions" value="chmod 774"><br></p>
       <p>Number of threads:
         <input type="text" name="numThreads"><br></p>
+        scriptTimeout
+
+        scriptDefaultHeader
       <button onclick="saveTab(this.parentNode.id)">Save</button>
       <button type="button" class="nextTab">Save and move to next tab</button>
     </form>
@@ -211,18 +223,6 @@ For fastq, typically “@”.)<h5></p>
       <p>Add number of reads to output: <br>
         <input type="radio" name="numReads" value="Y"> Yes<br>
         <input type="radio" name="numReads" value="N"> No<br></p>
-      <p>Add full taxonimic names to output:<br>
-        <input type="radio" name="fullTaxonomyNames" value="Y"> Yes<br>
-        <input type="radio" name="fullTaxonomyNames" value="N"> No<br></p>
-      <p>Add genus prefix to species name in output:<br>
-        <i>(If yes, ParserModule adds genus prefix to species name in output tables)</i><br>
-        <input type="radio" name="addGenusToSpeciesName" value="Y">Yes<br>
-        <input type="radio" name="addGenusToSpeciesName" value="N">No
-        <br></p>
-      <p>Add only <strong>first initial</strong> of genus to species name in output:<br>
-        <input type="radio" name="useGenusFirstInitial" value="Y">Yes<br>
-        <input type="radio" name="useGenusFirstInitial" value="N">No
-        <br></p>
       <p>Metadata attributes for R script to add to statistical models:<br>
         <input type="text" name="attributes">
         <br></p>
@@ -247,11 +247,10 @@ For fastq, typically “@”.)<h5></p>
     </form>
   </div>
 
+  min threshold  (total number) vs min count (per sample)
+
   <div id="mailTab" class="tabcontent">
     <form id="mail">
-      <p>Max size for log file attachment (in MB):
-        <input type="text" name="maxAttachmentSizeMB"><br>
-      </p>
       <p>Encrypted E-mail password:<br>
         <i>(Encrypted password from email.from account.  If BioLockJ is passed a 2nd parameter
           (in addition to the config file), the 2nd parameter should be the clear-text password.
@@ -378,47 +377,49 @@ For fastq, typically “@”.)<h5></p>
     </p>
     <!--Make it so default commands are hints that will not be saved.-->
      <form id="exe">
-      <p>Classifier executable command:
-        <input type="text" name="classifier">
+      <p>Define executable awk command if default "awk" is not included in your $PATH:
+        <input type="text" name="exe.awk">
+      </p>
+      <p>Define executable bowtie2 command if default "bowtie2" is not included in your $PATH:
+        <input type="text" name="exe.bowtie2">
+      </p>
+      <p>Optional bowtie2 parameters used by SlimmClassifier:
+        <input type="text" name="exe.bowtie2Params">
       </p>
       <p>Classifier executable command:
-        <input type="text" name="classifierParams">
+        <input type="text" name="exe.classifier">
       </p>
-      <p>Executable RScript command:
-        <input type="text" name="rScript">
+      <p>Optional classifier parameters,
+        excluding parameters generated by BioLockJ (input files,
+        output files, numThreads, etc.):
+        <input type="text" name="exe.classifierParams">
       </p>
-      <p>Executable Java command:
-        <input type="text" name="java">
+      <p>Define executable gzip command if default "gzip" is not included in your $PATH:
+        <input type="text" name="exe.gzip">
       </p>
-      <p>Executable python command:
-        <input type="text" name="python">
+      <p>Define executable java command if default "java" is not included in your $PATH
+        <input type="text" name="exe.java">
       </p>
-      <p>Executable gzip command:
-        <input type="text" name="gzip">
-      </p>
-      <p>Executable awak command:
-        <input type="text" name="awak">
-      </p>
-      <p>Executable bowtie2 command:
-        <input type="text" name="bowtie">
-      </p>
-      <p>Optional bowtie2 parameters:
-        <input type="text" name="bowtieParams">
-      </p>
-      <p>Executable PEAR command:
-        <input type="text" name="pear">
+      <p>Define executable pear command if default "pear" is not included in your $PATH
+        <input type="text" name="exe.pear">
       </p>
       <p>Optional PEAR parameters:
-        <input type="text" name="pearParams">
+        <input type="text" name="exe.pearParams">
       </p>
-      <p>Executable samtools command:
-        <input type="text" name="samtools">
+      <p>Define executable python command, if default "python" is not included in your $PATH:
+        <input type="text" name="exe.python">
       </p>
-      <p>Executable vsearch command:
-        <input type="text" name="vsearch">
+      <p>Define executable Rscript command, if default "Rscript" is not included in your $PATH:
+        <input type="text" name="exe.Rscript">
       </p>
-      <p>Optional PEAR parameters:
-        <input type="text" name="vsearchParams">
+      <p>Define executable samtools command, if default "samtools" is not included in your $PATH
+        <input type="text" name="exe.samtools">
+      </p>
+      <p>Define executable vsearch command, if default "vsearch" is not included in your $PATH:
+        <input type="text" name="exe.vsearch">
+      </p>
+      <p>Optional vsearch parameters:
+        <input type="text" name="exe.vsearchParams">
       </p>
       <button onclick="saveTab(this.parentNode.id)">Save</button>
       <button class="createDownload">Create configuration file for download</button>
@@ -486,9 +487,7 @@ For fastq, typically “@”.)<h5></p>
   <svg width="150" height="75" version="1.1" xmlns="http://www.w3.org/2000/svg">
     <!--rounded edges rect-->
     <rect x="60" y="20" rx="10" ry="10" width="30" height="30" stroke="black" fill="transparent" stroke-width="4"/>
-
     <!--<ellipse cx="75" cy="75" rx="20" ry="5" stroke="red" fill="transparent" stroke-width="5"/>-->
-
     <path d="M60,23 Q70,5  80,5 T90,23" fill="none" stroke="rgb(243,144,29)" stroke-width="2"/>
     <path d="M60,23 Q65,3  75,5 T90,23" fill="none" stroke="rgb(0,112,60)" stroke-width="2"/>
     <text x="69" y="43" dx="0" font-family="Times">J</text>
@@ -497,5 +496,4 @@ For fastq, typically “@”.)<h5></p>
 </div>
 <script type="text/javascript" src="config_generator.js"></script>
 </body>
-
 </html>
