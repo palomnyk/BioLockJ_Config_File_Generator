@@ -93,7 +93,6 @@
             };//end for-loop over domModuleLi
           }
         } else {
-
           //finds the form and item name
           var element = document.querySelector("form[id=" + formKey.toString() + "] input[name=" + inputKey.toString() + "]");
           if (element.getAttribute("type") == "text" || element.getAttribute("type") == "number") {
@@ -320,7 +319,7 @@
     currentConfig["modules"] = [];
     for (var i = 0; i < mods.length; i++) {
       if (mods[i].classList.contains('modChoosen') && mods[i].disabled != true) {
-        currentConfig["modules"].push(mods[i].innerHTML)
+        currentConfig["modules"].push("#BioModule " + mods[i].innerHTML)
       };
     };
     localStorage.setItem(currentConfig['project.configFile'].toString(), JSON.stringify(currentConfig));

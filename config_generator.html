@@ -34,7 +34,8 @@
   <div class="tab">
     <button id="defaultOpen" class="tablinks" onclick="openTab(event, 'projectTab')">Project</button>
     <button class="tablinks" onclick="openTab(event, 'moduleTab')">Modules</button>
-    <button class="tablinks" onclick="openTab(event, 'inputTab')">Input</button>
+    <button class="tablinks" onclick="openTab(event, 'inputTab')">[Sequencing Input]</button>
+    <button class="tablinks" onclick="openTab(event, 'metadataTab')">Metadata</button>
     <button class="tablinks" onclick="openTab(event, 'clusterTab')">Cluster</button>
     <button class="tablinks" onclick="openTab(event, 'scriptTab')">Script</button>
     <button class="tablinks" onclick="openTab(event, 'reportTab')">Report</button>
@@ -50,43 +51,43 @@
 
   <div id="projectTab" class="tabcontent">
     <form id="project">
-      <p>Configuration file name
+      <p>Project name:
         <input id='configFile' type="text" name="project.configFile" required></p>
-      <p>Copy input files into the parent directory:<br>
-        <input type="radio" name="project.copyInput" value="Y" required> Yes<br>
+      <p>Copy input files into the parent directory:
+        <input type="radio" name="project.copyInput" value="Y" required> Yes
         <input type="radio" name="project.copyInput" value="N"> No<br></p>
-      <p>Delete temporary files:<br>
-        <input type="radio" name="project.deleteTempFiles" value="Y" required> Yes<br>
+      <p>Delete temporary files:
+        <input type="radio" name="project.deleteTempFiles" value="Y" required> Yes
         <input type="radio" name="project.deleteTempFiles" value="N"> No<br></p>
       <p>Path to default properties file:
         <input type="text" name="project.defaultProps"><br> add file picker here
         <i>(Path to a default BioLockJ configuration file containing default
         property values that are overridden if defined in the primary
         configuration file.)</i></p>
-      <p>Log level: <br><i>Determines log level sensitivity.</i><br>
-        <input type="radio" name="logLevel" value="DEBUG">DEBUG<br>
-        <input type="radio" name="logLevel" value="INFO">INFO<br>
-        <input type="radio" name="logLevel" value="WARN">WARN<br>
-        <input type="radio" name="logLevel" value="ERROR">ERROR<br></p>
-      <p>Project runtime environment: <br>
-        <input name='project.env' type="radio" value="aws"> AWS<br>
-        <input name='project.env' type="radio" value="cluster"> Cluster<br>
+      <p>Log level: <br><i>Determines log level sensitivity.</i>
+        <input type="radio" name="project.logLevel" value="DEBUG">DEBUG
+        <input type="radio" name="project.logLevel" value="INFO">INFO
+        <input type="radio" name="project.logLevel" value="WARN">WARN
+        <input type="radio" name="project.logLevel" value="ERROR">ERROR<br></p>
+      <p>Project runtime environment:
+        <input name='project.env' type="radio" value="aws"> AWS
+        <input name='project.env' type="radio" value="cluster"> Cluster
         <input name='project.env' type="radio" value="local"> Yes<br></p>
-      <p>Run project in Docker:<br>
-        <input type="radio" name="project.runDocker" value="Y"> Yes<br>
-        <input type="radio" name="project.runDocker" value="N"> No<br></p>
-      <p>A directory on the local workstation where the cluster.downloadModule will be downloaded<br>
+      <p>Run project in Docker:
+        <input type="radio" name="project.runDocker" value="Y"> Yes
+        <input type="radio" name="project.runDocker" value="N"> No</p>
+      <p>A directory on the local workstation where the cluster.downloadModule will be downloaded
         <input type="text" name="project.downloadDir"><br></p>
-      <p>Set # minutes before direct Java module script will time out and fail<br>
-        <input type="number" name="java.timeout" value="">
-      <button onclick="saveTab(this.parentNode.id)">Save</button>
-      <button type='button' class="nextTab">Save and move to next tab</button>
+      <!--<p>Set # minutes before direct Java module script will time out and fail<br>
+        <input type="number" name="java.timeout">-->
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button type='button' class="nextTab hidden">Save and move to next tab</button>
     </form>
   </div>
 
   <div id="moduleTab" class="tabcontent">
     <button type="button" onclick="modulesToCurrentConfig()">Save</button>
-    <button type="button" class="nextTab">Save and move to next tab</button>
+    <button type="button" class="nextTab hidden">Save and move to next tab</button>
     <!-- TODO: Link button to currentConfig -->
     <button type='button' id='implicitOverride'>Config Implicit Override</button>
     <h3 class='hidden' id='implicitWarning'>
@@ -109,9 +110,10 @@
       </div>
     </fieldset>
   </div>
+
   <div id="inputTab" class="tabcontent">
     <form id="input">
-      <p>Input directory (or directories): <input type="text" name="input.dirPaths" required><br>
+      <p>Input directory (or directories): <input type="text" name="input.dirPaths" required>
         <h5>(Input directory must contain files expected by the first module executed.
         Multiple directories must be comma-separated.)</h5></p>
       <p>Files in input directory to ignore: <input type="text" name="input.ignoreFiles"><br>
@@ -122,7 +124,7 @@
             <input type="text" name="input.suffixRw"><br>
             </p>
       <p>Trim prefix:
-        <input type="text" name="input.trimPrefix"><br>
+        <input type="text" name="input.trimPrefix">
       <h5>(For files named by Sample ID, provide the
         prefix preceding the ID to trim when extracting Sample ID.
 If input.demultiplex=Y, provide any characters in the sequence header preceding the ID.
@@ -134,44 +136,55 @@ For fastq, typically “@”.)<h5></p>
            isted in input.forwardFileSuffix/reverseFileSuffix.
            If input.demultiplex=Y, provide 1st character in the sequence header after ID;
            for fastq, typically “:” char.)</h5></p>
-      <p>Maximum accepted length of sequence read:<br>
-        <input type="number" name="input.seqMaxLen"><br></p>
-      <p>Minimum accepted length of sequence read:<br>
-        <input type="number" name="input.seqMinLen"><br></p>
-      <p>Minimum number of sequences per sample for use in rarefication (BioLockJ will discard samples with sequences below this.):<br>
-        <input type="number" name="rarefier.min"><br></p> <!--these should be hidden unless rarefy module is selected (also change names)-->
-      <p>Randomly select maximum number of sequences per sample use in rarefication:<br>
-        <input type="number" name="rarefier.max"><br></p>
+      <p>Maximum accepted length of sequence read:
+        <input type="number" name="input.seqMaxLen" min="1"><br></p>
+      <p>Minimum accepted length of sequence read:
+        <input type="number" name="input.seqMinLen" min="1"><br></p>
+      <p>Minimum number of sequences per sample for use in rarefication (BioLockJ will discard samples with sequences below this.):
+        <input type="number" name="rarefier.min" min="1"><br></p> <!--these should be hidden unless rarefy module is selected (also change names)-->
+      <p>Randomly select maximum number of sequences per sample use in rarefication:
+        <input type="number" name="rarefier.max" min="1"><br></p>
       <p>Path to file containing primers to trim (File must contain only one sequence per line):
         <input type="text" name="trimPrimers.filePath"><br></p>
-      <p>Discard reads with no primers?<br>
-        <input type="radio" name="trimPrimers.requirePrimer" value="Y"> Yes<br>
+      <p>Discard reads with no primers?
+        <input type="radio" name="trimPrimers.requirePrimer" value="Y"> Yes
         <input type="radio" name="trimPrimers.requirePrimer" value="N"> No<br></p>
       <!--add demux -->
       <p>Set the Demultiplexer strategy. If using barcodes, they must be provided in the
-        metadata.filePath with in column name defined by metadata.barcodeColumn.<br>
-        <input type="radio" name="demux.strategy" value="barcode_in_header">barcode_in_header<br>
-        <input type="radio" name="demux.strategy" value="id_in_header">id_in_header<br></p>
-        <input type="radio" name="demux.strategy" value="do_not_demux.">do_not_demux.<br></p>
-      <button onclick="saveTab(this.parentNode.id)">Save</button>
-      <button type="button" class="nextTab">Save and move to next tab</button>
+        metadata.filePath with in column name defined by metadata.barcodeColumn.
+        <input type="radio" name="demux.strategy" value="barcode_in_header">barcode_in_header
+        <input type="radio" name="demux.strategy" value="id_in_header">id_in_header
+        <input type="radio" name="demux.strategy" value="do_not_demux.">do_not_demux<br></p>
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button type="button" class="nextTab hidden">Save and move to next tab</button>
     </form>
   </div>
 
-<!-- TODO: Add metadata tab -->
+  <div id="metadataTab" class="tabcontent">
+    <form id="metadata">
+      <p>Metadata column name containing the barcode used for demultiplexing:
+        <input type="text" name="metadata.barcodeColumn" value="barcode"><br></p>
+      <p>Metadata file path (file must have unique column headers):
+        <input type="text" name="metadata.filePath"><br></p>
+      <p>Define how comments are represented in metadata:
+        <input type="text" name="metadata.commentChar"><br></p>
       <p>Define how null values are represented in metadata: (input.nullValue)<br>
-        <input type="text" name="nullValue"></p>
+        <input type="text" name="metadata.nullValue"></p>
       <p>Define column delimiter for input.metadata (input.columnDelim)<br>
-        <input type="text" name="columnDelim"></p>
+        <input type="text" name="metadata.columnDelim"></p>
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button type="button" class="nextTab hidden">Save and move to next tab</button>
+    </form>
+    </div>
 
 
   <div id="clusterTab" class="tabcontent">
     <form id="cluster">
       <button onclick="saveTab('cluster')">Next</button>
-      <button type="button" class="nextTab">Save and move to next tab</button>
-      <p>Cluster host address (cluster.host):<br>
+      <button type="button" class="nextTab hidden">Save and move to next tab</button>
+      <p>Cluster host address (cluster.host):
         <input type="text" name="cluster.host"><br></p>
-      <p>Batch command to submit jobs on the cluster: <br>
+      <p>Batch command to submit jobs on the cluster:
         <input type="text" name="cluster.batchCommand"><br>
       </p>
       <p>Job script header to define # of nodes, # of cores, RAM, walltime, etc.<br>
@@ -182,15 +195,15 @@ For fastq, typically “@”.)<h5></p>
         <input type="number" name="cluster.numClassifierThreads"><br></p>
       <p>Run java as script module: (If Y, each JavaModule will instantiate a clone of the
         application in direct mode on a job node via a single worker script to avoid overworking
-        the head node where BioLockJ is deployed):<b>
-        <input type="radio" name="cluster.runJavaAsScriptModule" value="Y"> Yes<br>
+        the head node where BioLockJ is deployed):
+        <input type="radio" name="cluster.runJavaAsScriptModule" value="Y"> Yes
         <input type="radio" name="cluster.runJavaAsScriptModule" value="N"> No<br></p>
       <p>Validate cluster parameters: (If Y, validate
         cluster.jobHeader/cluster.classifierHeader "ppn:" or "procs:"
-        value matches script.numThreads/cluster.numClassifierThreads)<br>
-        <input type="radio" name="cluster.validateParams" value="Y"> Yes<br>
+        value matches script.numThreads/cluster.numClassifierThreads)
+        <input type="radio" name="cluster.validateParams" value="Y"> Yes
         <input type="radio" name="cluster.validateParams" value="N"> No<br></p>
-      <p>Cluster modules to load before execution: <br>
+      <p>Cluster modules to load before execution:
         <input type="text" name="cluster.modules"><br></p>
     </form>
   </div>
@@ -199,55 +212,52 @@ For fastq, typically “@”.)<h5></p>
   <div id="scriptTab" class="tabcontent">
     <form id="script">
       <p>Exit program if errors in script occur: (script.exitOnError)<br>
-        <input type="radio" name="exitOnError" value="Y"> Yes<br>
-        <input type="radio" name="exitOnError" value="N"> No (failures will be logged to failure directory) <br></p>
+        <input type="radio" name="script.exitOnError" value="Y"> Yes<br>
+        <input type="radio" name="script.exitOnError" value="N"> No (failures will be logged to failure directory) <br></p>
       <p>Number of sequence files to process per script:<br>
-        <input type="number" name="batchSize"><br></p>
+        <input type="number" name="script.batchSize"><br></p>
       <p>Command to grant script execute permissions:
-        <input type="text" name="scriptPermissions" value="chmod 774"><br></p>
+        <input type="text" name="script.scriptPermissions" value="chmod 774"><br></p>
       <p>Number of threads:
-        <input type="text" name="numThreads"><br></p>
-        scriptTimeout
-
-        scriptDefaultHeader
-      <button onclick="saveTab(this.parentNode.id)">Save</button>
-      <button type="button" class="nextTab">Save and move to next tab</button>
+        <input type="text" name="script.numThreads"><br></p>
+      <p>Default header: (Used to set shebang line to define scripts as bash executables, such as "#!/bin/bash"
+        scriptDefaultHeader)
+        <input type="text" name="script.defaultHeader"><br></p>
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button type="button" class="nextTab hidden">Save and move to next tab</button>
     </form>
   </div>
 
   <div id="reportTab" class="tabcontent">
     <form id="report">
+      <p>Report logbase: (If e, use natural log (base e), otherwise use log base 10):
+        <input type="radio" name="report.logBase" value="e"> e
+        <input type="radio" name="report.logBase" value="10"> No<br></p>
       <p>Include number of hits in output: <br>
-        <input type="radio" name="numHits" value="Y"> Yes<br>
-        <input type="radio" name="numHits" value="N"> No<br></p>
+        <input type="radio" name="report.numHits" value="Y"> Yes<br>
+        <input type="radio" name="report.numHits" value="N"> No<br></p>
       <p>Add number of reads to output: <br>
-        <input type="radio" name="numReads" value="Y"> Yes<br>
-        <input type="radio" name="numReads" value="N"> No<br></p>
-      <p>Metadata attributes for R script to add to statistical models:<br>
-        <input type="text" name="attributes">
-        <br></p>
-      <p>Min threshold for OTU counts (<i>below which they will be ignored</i>):<br>
-        <input type="text" name="minOtuCount"><br></p>
+        <input type="radio" name="report.numReads" value="Y"> Yes<br>
+        <input type="radio" name="report.numReads" value="N"> No<br></p>
+      <p>ParserModule ignores OTU counts below this minimum number per sample when building raw count tables:
+        <input type="number" min='0' name="report.minOtuCount"><br></p>
+      <p>ParserModule ignores OTU counts if the total OTU count for all samples falls below this minimum number when building raw count tables:
+        <input type="number" min='0' name="report.minOtuThreshold">
       <!--  <p>Delimiter to sepearte genus and species:<br>
         <input type="text" name="emptySpaceDelim"><br></p>-->
       <p>Taxonomic levels included in report:<br>
-        <input type="checkbox" name="taxonomyLevels" value="domain">Domain<br>
-        <input type="checkbox" name="taxonomyLevels" value="phylum">Phylum<br>
-        <input type="checkbox" name="taxonomyLevels" value="class">Class<br>
-        <input type="checkbox" name="taxonomyLevels" value="order">Order<br>
-        <input type="checkbox" name="taxonomyLevels" value="family">Family<br>
-        <input type="checkbox" name="taxonomyLevels" value="genus">Genus<br>
-        <input type="checkbox" name="taxonomyLevels" value="species">Species<br>
+        <input type="checkbox" name="report.taxonomyLevels" value="domain">Domain<br>
+        <input type="checkbox" name="report.taxonomyLevels" value="phylum">Phylum<br>
+        <input type="checkbox" name="report.taxonomyLevels" value="class">Class<br>
+        <input type="checkbox" name="report.taxonomyLevels" value="order">Order<br>
+        <input type="checkbox" name="report.taxonomyLevels" value="family">Family<br>
+        <input type="checkbox" name="report.taxonomyLevels" value="genus">Genus<br>
+        <input type="checkbox" name="report.taxonomyLevels" value="species">Species<br>
       </p>
-      <p>Report log base: <br>
-        <input type="radio" name="logBase" value="10">10<br>
-        <input type="radio" name="logBase" value="e">e<br></p>
-      <button onclick="saveTab(this.parentNode.id)">Save</button>
-      <button type="button" class="nextTab">Save and move to next tab</button>
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button type="button" class="nextTab hidden">Save and move to next tab</button>
     </form>
   </div>
-
-  min threshold  (total number) vs min count (per sample)
 
   <div id="mailTab" class="tabcontent">
     <form id="mail">
@@ -258,117 +268,102 @@ For fastq, typically “@”.)<h5></p>
         <strong>WARNING: Base64 encryption is only a trivial roadblock for malicious users.
           This functionality is intended merely to keep clear-text passwords out of the
           configuration files and should only be used with a disposable email.from account.</strong>
-        <input type="text" name="encryptedPassword"><br>
+        <input type="text" name="mail.encryptedPassword"><br>
         <p>Notification emails sent from this account, provided email.encryptedPassword is valid:
-          <input type="text" name="from"><br>
+          <input type="text" name="mail.from"><br>
           <p>Comma-separated email recipients list:
-            <input type="text" name="to"><br>
+            <input type="text" name="mail.to"><br>
           </p>
           <p>Email SMTP Host:<br>
-            <input type="text" name="smtp.host"><br>
+            <input type="text" name="mail.smtp.host"><br>
           </p>
           p>Email SMTP port:<br>
-          <input type="text" name="smtp.port"><br>
+          <input type="text" name="mail.smtp.port"><br>
         </p>
         <p>Set the SMTP authorization property.<br>
-          <input type="radio" name="smtp.auth" value="Y">Yes<br>
-          <input type="radio" name="smtp.auth" value="N">No<br></p>
+          <input type="radio" name="mail.smtp.auth" value="Y">Yes<br>
+          <input type="radio" name="mail.smtp.auth" value="N">No<br></p>
         <p>Set the SMTP start TLS property.<br>
-          <input type="radio" name="smtp.starttls.enable" value="Y">Yes<br>
-          <input type="radio" name="smtp.starttls.enable" value="N">No<br></p>
-        <button onclick="saveTab(this.parentNode.id)">Save</button>
-        <button type="button" class="nextTab">Save and move to next tab</button>
+          <input type="radio" name="mail.smtp.starttls.enable" value="Y">Yes<br>
+          <input type="radio" name="mail.smtp.starttls.enable" value="N">No<br></p>
+        <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+        <button type="button" class="nextTab hidden">Save and move to next tab</button>
     </form>
   </div>
 
   <div id="rTab" class="tabcontent">
     <form id="r">
-      <p>If Y, will generate R Script log files:<br>
-        <input type="radio" name="debug" value="Y">Yes<br>
-        <input type="radio" name="debug" value="N">No <br>
+      <p>This is the base color used for labels & headings in the PDF report:
+        <input type="text" name="r.colorBase">
       </p>
-      <p>R script adds nominal statistical models for the listed metadata attributes. (Comma seperated list)<br>
-        <input type="text" name="nominalData"><br>
-      </p>
-      <p>R script adds numeric statistical models for the listed metadata attributes. (Comma seperated list)<br>
-        <input type="text" name="numericData"><br>
-      </p>
-      <p>Rare OTU threshold: <br>
-        <i>If >1, R will filter OTUs below # provided.  If <1, R will treat # as percentage and ignore OTUs not found in that percentage of table rows in each taxa level.</i>
-        <input type="number" name="rareOtuThreshold"><br>
-      </p>
-      <p><strong>Attributes Filter</strong><br>List of attributes for r to report on:
-        <input type="text" name="filterAttributes"><br>
-      </p>
-      <p>List of logical operators to apply to attributes filter:
-        <input type="text" name="filterOperators"><br>
-      </p>
-      <p>Filter values: <br><i><An orrdered list of values to compare with attributes filter)</i>
-        <input type="text" name="filterValues"><br>
-      </p>
-      <p>Rows with NA values for attributes ignored in R script:
-        <input type="text" name="filterNaAttributes">
-      </p>
-      <p>Number of breaks in P-value histograms output by R script:
-        <input type="text" name="numHistogramBreaks">
-      </p>
-      <p>P-value adjustment scope: Used to set the p.adjust "n" parameter for how many simultaneous p-value calculations:<br>
-        <input type="radio" name="adjPvalsScope" value="GLOBAL">GLOBAL<br>
-        <input type="radio" name="adjPvalsScope" value="LOCAL">LOCAL<br>
-        <input type="radio" name="adjPvalsScope" value="TAXA">TAXA<br>
-        <input type="radio" name="adjPvalsScope" value="ATTRIBUTE">ATTRIBUTE<br>
-      </p>
-      <p>This is the base color used for labels & headings in the PDF report:<br>
-        <input type="text" name="baseColor">
-      </p>
-      <p>This color is used to highlight significant attributes:<br>
-        <input type="text" name="highlightColor">
+      <p>This color is used to highlight significant attributes:
+        <input type="text" name="r.colorHighlight">
       </p>
       <p>Sets the color of scatterplot points:<br>
-        <input type="text" name="pointColor">
+        <input type="text" name="r.colorPoint">
       </p>
-      <p>Sets the p.adjust "method" parameter:<br><a href=https://stat.ethz.ch/R-manual/R-devel/library/stats/html/p.adjust.html>More info</a><br>
-        <input type="radio" name="pAdjMethod" value="holm">Holm<br>
-        <input type="radio" name="pAdjMethod" value="hochberg">Hochberg<br>
-        <input type="radio" name="pAdjMethod" value="hommel">Hommel<br>
-        <input type="radio" name="pAdjMethod" value="bonferroni">Honferroni<br>
-        <input type="radio" name="pAdjMethod" value="BH">Benjamini & Hochberg (BH)<br>
-        <input type="radio" name="pAdjMethod" value="BY">Benjamini & Yekutieli (BY)<br>
-        <input type="radio" name="pAdjMethod" value="fdr">FDR<br>
-        <input type="radio" name="pAdjMethod" value="none">none<br>
+      <p>Generate R Script log files:
+        <input type="radio" name="r.debug" value="Y">Yes
+        <input type="radio" name="r.debug" value="N">No <br>
       </p>
-      <p>Sets the format used in R sprintf() function:<br>
-        <input type="text" name="pValFormat"><br>
+      <p>List metadata columns to exclude from R script reports (comma separated)
+        <input type="text" name='r.excludeFields'></p>
+      <p>Filter fields: (Ordered list of metadata fields that together with r.filterOperators and r.filterValues
+        are used to filter OTU-metadata tables in generated R script reports.)
+        <input type="text" name="r.filterFields"></p>
+      <p>Filter out rows with "NA" values for these fields in R
+        <input type="text" name="r.filterNaFields"></p>
+      <p>List of logical operators to apply to attributes filter:
+        <input type="text" name="r.filterOperators"></p>
+      <p>Filter values: <br><i>(An ordered list of values to compare with attributes filter)</i>
+        <input type="text" name="r.filterValues"></p>
+      <p>Explicitly override default field type assignment to model as a nominal field in R (Comma seperated list)<br>
+        <input type="text" name="r.nominalFields">    </p>
+      <p>Explicitly override default field type assignment to model as a numeric field in R. (Comma seperated list)<br>
+        <input type="text" name="r.numericData"><br>  </p>
+      <p>Sets R plot pch parameter for PDF report:
+        <input type='text' name="r.pch"></p>
+      <p>Sets PDF report plot label maximum width
+        <input type="text" name="r.plotWidth" value=""></p>
+      <p>Sets p-value cutoff used to assign label r.colorHighlight
+        <input type="text" name="r.pvalCutoff" value="">
       </p>
-      <p>Set p-value cutoff used to assign label r.highlightColor:<br>
-        <input type="number" name="pvalCutoff"><br>
+      <p>Format of the pvalue used in R sprintf() function
+        <input type="text" name="r.pValFormat" value=""></p>
+      <p>Rare OTU threshold: (If > 1, R will filter OTUs below value provided. If < 1, R will interperate the value as a percentage and discard OTUs not found in at least that percentage of samples)
+        <input type="number" name="r.rareOtuThreshold" value=""></p>
+      <p>Override field used to explicitly list metadata columns to report in the R scripts. If left undefined, all columns are reported.
+      <input type="text" name="r.reportFields" value=""></p>
+      <p>Save r data? (If Y, all R script generating BioModules will save R Session data to the module output directory to a file using the extension ".RData")
+      <input type="radio" name="r.saveRData" value="Y">Yes
+      <input type="radio" name="r.saveRData" value="N">Nod</p>
+      <p># minutes before R Script times out:
+        <input type="number" name="r.timeout"><br>
       </p>
-      <p>Set PDF report plot label maximum width:<br>
-        <input type="number" name="plotWidth"><br>
+      <p>Number of MDS axis to plot:
+      <input type="number" min="0" name="rMds.numAxis" value=""> </p>
+      <p>Override field used to explicitly list metadata columns to build MDS plots. If left undefined, all columns are reported
+      <input type="text" name="rMds.reportFields" value=""> </p>
+      <p>P-value adjustment scope: Used to set the p.adjust "n" parameter for how many simultaneous p-value calculations:
+        <input type="radio" name="rStats.adjPvalsScope" value="GLOBAL">GLOBAL
+        <input type="radio" name="rStats.adjPvalsScope" value="LOCAL">LOCAL
+        <input type="radio" name="rStats.adjPvalsScope" value="TAXA">TAXA
+        <input type="radio" name="rStats.adjPvalsScope" value="ATTRIBUTE">ATTRIBUTE
       </p>
-      <p>Set PDF report plot label position: (r.topRowAdj)<br>
-        <input type="number" name="topRowAdj"><br>
+      <p>Sets the p.adjust "method" parameter:<a href=https://stat.ethz.ch/R-manual/R-devel/library/stats/html/p.adjust.html>More info</a><br>
+        <input type="radio" name="rStats.pAdjMethod" value="holm">Holm
+        <input type="radio" name="rStats.pAdjMethod" value="hochberg">Hochberg
+        <input type="radio" name="rStats.pAdjMethod" value="hommel">Hommel
+        <input type="radio" name="rStatsr.pAdjMethod" value="bonferroni">Honferroni
+        <input type="radio" name="rStatsr.pAdjMethod" value="BH">Benjamini & Hochberg (BH)
+        <input type="radio" name="rStats.pAdjMethod" value="BY">Benjamini & Yekutieli (BY)
+        <input type="radio" name="rStats.pAdjMethod" value="fdr">FDR
+        <input type="radio" name="rStats.pAdjMethod" value="none">none
       </p>
-      <p>Set PDF report plot label position: (r.bottomRowAdj)<br>
-        <input type="number" name="bottomRowAdj"><br>
-      </p>
-      <p>Set PDF report plot label position: (r.leftColAdj)<br>
-        <input type="number" name="leftColAdj"><br>
-      </p>
-      <p>Set PDF report plot label position: (r.rightColAdj)<br>
-        <input type="number" name="rightColAdj"><br>
-      </p>
-      <p>Set the size of histogram & boxplot headings in PDF reports<br>
-        <input type="number" name="headingLabelSize"><br>
-      </p>
-      <p>Set the size of metadata attribute names in PDF reports<br>
-        <input type="number" name="attributeLabelSize"><br>
-      </p>
-      <p># minutes before R Script times out:<br>
-        <input type="number" name="timeout"><br>
-      </p>
-      <button onclick="saveTab(this.parentNode.id)">Save</button>
-      <button type="button" class="nextTab">Save and move to next tab</button>
+      <p>
+      <input type="text" name="" value=""> </p>
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button type="button" class="nextTab hidden">Save and move to next tab</button>
     </form>
   </div>
 
@@ -421,19 +416,19 @@ For fastq, typically “@”.)<h5></p>
       <p>Optional vsearch parameters:
         <input type="text" name="exe.vsearchParams">
       </p>
-      <button onclick="saveTab(this.parentNode.id)">Save</button>
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
       <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
-      <button type="button" class="nextTab">Save and move to next tab</button>
+      <button type="button" class="nextTab hidden">Save and move to next tab</button>
     </form>
   </div>
 
   <div id="rdpTab" class="tabcontent">
     <form id="rdp">
       <p>Required RDP minimum threshold score for valid OTUs:
-        <input type="text" name="minThresholdScore">
+        <input type="text" name="rdp.minThresholdScore">
       </p>
-      <button onclick="saveTab(this.parentNode.id)">Save</button>
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
       <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
     </form>
@@ -444,13 +439,13 @@ For fastq, typically “@”.)<h5></p>
       <p>Alpha diverisity metrics: <br> Options listed online:
         <a href="http://scikit-bio.org/docs/latest/generated/skbio.diversity.alpha.html">
           scikit-bio.org/docs/latest/generated/skbio.diversity.alpha.html</a>.<br>
-        <input type="text" name="alphaDiversityMetrics">
+        <input type="text" name="qiime.alphaDiversityMetrics">
       </p>
       <p>Remove chimeras after open or de novo OTU picking:<br>
-        <input type="radio" name="removeChimeras" value="Y">Yes<br>
-        <input type="radio" name="removeChimeras" value="N">No <br>
+        <input type="radio" name="qiime.removeChimeras" value="Y">Yes<br>
+        <input type="radio" name="qiime.removeChimeras" value="N">No <br>
       </p>
-      <button onclick="saveTab(this.parentNode.id)">Save</button>
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
       <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
     </form>
@@ -461,7 +456,7 @@ For fastq, typically “@”.)<h5></p>
       <p>Path to Kraken database:
         <input type="text" name="kraken.db">
       </p>
-      <button onclick="saveTab(this.parentNode.id)">Save</button>
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
       <a id="downloadlink" class="hidden">Download configuration file to default directory</a>
     </form>
@@ -473,9 +468,9 @@ For fastq, typically “@”.)<h5></p>
         <input type="text" name="slimm.db">
       </p>
       <p>Path the bowtie2 reference genome index:
-        <input type="text" name="refGenomeIndex">
+        <input type="text" name="slimm.refGenomeIndex">
       </p>
-      <button onclick="saveTab(this.parentNode.id)">Save</button>
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
       <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
     </form>
