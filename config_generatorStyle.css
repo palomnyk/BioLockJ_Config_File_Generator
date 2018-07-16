@@ -1,5 +1,4 @@
 /* colors found at http://advancement.uncc.edu/sites/advancement.uncc.edu/files/media/identity-standards-guide.pdf */
-
 /* This block is for the nav-bar */
 .nav-bar {
     overflow: hidden;
@@ -62,7 +61,7 @@
 }
 
 .hidden{
-  display: none;
+  display: none !important;
 }
 
 
@@ -166,4 +165,12 @@ div#moduleInfoDiv {
   display: inline;
   padding: 10, 10, 10, 10;
   left: 20px;
+}
+#implicitWarning{
+  display: inline;
+}
+#tempModInfo{
+  display: initial;
+  /*position: fixed;*/
+  width: inherit;
 }

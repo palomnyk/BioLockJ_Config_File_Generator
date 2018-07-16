@@ -86,13 +86,13 @@
   </div>
 
   <div id="moduleTab" class="tabcontent">
-    <button type="button" onclick="modulesToCurrentConfig()">Save</button>
+    <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
     <button type="button" class="nextTab hidden">Save and move to next tab</button>
+    <fieldset>
     <!-- TODO: Link button to currentConfig -->
     <button type='button' id='implicitOverride'>Config Implicit Override</button>
     <h3 class='hidden' id='implicitWarning'>
       Implicit modules will be added automatically by BioLockJ as needed.</h3>
-    <fieldset>
       <legend>Module options</legend>
       <div id="module">
         <span> <center> Drag module options to reorder them.<br>
