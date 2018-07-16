@@ -24,7 +24,7 @@
     }
   }
 
-  function loadLocalFile() {
+  function loadLocalFile() {//loading from computer
     var file = document.getElementById("localFile").files[0];
     if (file) {
       var reader = new FileReader();
@@ -68,24 +68,18 @@
     //reset currentConfig to config object from memory
     currentConfig = configObject;
     for (var key in configObject) {
-      //splitting keys because I made it the name of the form + the name of attribute
-      let keys = key.split(".");
-      let formKey = keys[0];
-      let inputKey = keys[1];
-
       try {
         //first step, loop through modules and show them
         if (key == "modules") {
           var mods = configObject[key]; //could have said configObject["modules"]
           var domModule = document.getElementById('module');
           var domModuleLi = domModule.getElementsByTagName('li');
-          for (var a = 0; a < mods.length; a++) {
-            for (var b = 0; b < domModuleLi.length; b++) {
-              if (mods[a] == domModuleLi[b].innerHTML) {
+          for (var a = 0; a < mods.length; a++) {//for mod in saved mods
+            for (var b = 0; b < domModuleLi.length; b++) {//for mod in mod li
+              if (mods[a] == '#BioModule ' + domModuleLi[b].innerHTML) {
                 try{
                 domModuleLi[b].click();//add('modChoosen');
               } catch(err) {
-                //console.error(err);
                 alert(err);
               } finally{
                 }
@@ -93,25 +87,21 @@
             };//end for-loop over domModuleLi
           }
         } else {
-          //finds the form and item name
-          var element = document.querySelector("form[id=" + formKey.toString() + "] input[name=" + inputKey.toString() + "]");
+          //finds item name
+          var element = document.querySelector("input[name='" + key + "']");
           if (element.getAttribute("type") == "text" || element.getAttribute("type") == "number") {
             element.value = configObject[key];
-            //for radio input
-          } else if (element.getAttribute("type") == "radio") {
-            //because I split up the name into the modules
-            var elements = document.querySelectorAll("form[id=" + formKey.toString() + "] input[name=" + inputKey.toString() + "]");
+          } else if (element.getAttribute("type") == "radio") {//for radio input
+            var elements = document.querySelectorAll("input[name='" + key + "']");
             for (var i = 0; i < elements.length; i++) {
               if (elements[i].value == configObject[key].toString() || currentConfig.hasOwnProperty(key)) {
                 elements[i].checked = true;
               };
             };
-            //for modules
-            //for checkbox input
-          } else if (element.getAttribute("type") == "checkbox") {
-            var elements = document.querySelectorAll("form[id=" + formKey.toString() + "] input[name=" + inputKey.toString() + "]");
+          } else if (element.getAttribute("type") == "checkbox") {//for checkbox input
+            var elements = document.querySelectorAll("input[name='" + key + "']");
 
-            checks = configObject[key].slice(0, -1).split(',');
+            var checks = configObject[key].slice(0, -1).split(',');
 
             for (var i = 0; i < elements.length; i++) {
 
@@ -121,7 +111,6 @@
                 };
               };
             }
-            //
           }else{
           }
           document.getElementById("mainMenu").style.display = "block";
@@ -177,13 +166,10 @@
     var configForms = document.getElementsByTagName('form');
     var lastAnswer;
     for (var f = 0; f < configForms.length; f++){//get the form data
-      console.log(configForms[f]);
       if (configForms[f].getAttribute('id') !== null ) {
-        console.log('not null');
         var formInputs = configForms[f].elements;
         //cycle through the form and get the info
         for (i = 0; i < formInputs.length; i++) {
-          console.log(formInputs[i]);
           let inpType = formInputs[i].type;
           let prop = formInputs[i].name; //this is the key to the key/value pair
           //skip unchecked radio and checkbox entries
@@ -353,7 +339,6 @@
         this.incrementCount();
         if (this.getCount() > 0) {
           for (let t = 0; t < this.modsToDisable.length; t++) {
-            console.log(this.modsToDisable[t]);
             addClassToAllElemInList(this.modsToDisable[t], "disabledMod");
           }
         }
@@ -583,7 +568,7 @@
       for (var key in currentConfig) {
         console.log(key);
         if (currentConfig.hasOwnProperty(key)) { //only lets keys that are user inputed pass
-          if (key == "modules" || key == "project.configFile") {// TODO: What was this wonky code for?
+          if (key == "modules" || key == "project.configFile") {// skipping project.configFile and modules
           } else if (key.toString() != "project.configFile" || key != "modules") { //project.configFile doesn't go inside the document
             text += key.concat("=", currentConfig[key], "\n");
           }
