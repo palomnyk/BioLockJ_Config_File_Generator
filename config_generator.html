@@ -81,8 +81,6 @@
         <input type="radio" name="project.runDocker" value="N"> No</p>
       <p>A directory on the local workstation where the cluster.downloadModule will be downloaded
         <input type="text" name="project.downloadDir"><br></p>
-      <!--<p>Set # minutes before direct Java module script will time out and fail<br>
-        <input type="number" name="java.timeout">-->
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
       <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
@@ -164,7 +162,7 @@ For fastq, typically “@”.)<h5></p>
         <input type="radio" name="trimPrimers.requirePrimer" value="N"> No<br></p>
       <!--add demux -->
       <p>Set the Demultiplexer strategy. If using barcodes, they must be provided in the
-        metadata.filePath with in column name defined by metadata.barcodeColumn.
+        metadata.filePath with in column name defined by metadata.barcodeColumn. This is only used by the Demultiplexer module.
         <input type="radio" name="demux.strategy" value="barcode_in_header">barcode_in_header
         <input type="radio" name="demux.strategy" value="id_in_header">id_in_header
         <input type="radio" name="demux.strategy" value="do_not_demux.">do_not_demux<br></p>
@@ -239,10 +237,10 @@ For fastq, typically “@”.)<h5></p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
       <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
-      <p>Exit program if errors in script occur: (script.exitOnError)<br>
-        <input type="radio" name="script.exitOnError" value="Y"> Yes<br>
+      <p>Exit program if errors in script occur: (script.exitOnError)
+        <input type="radio" name="script.exitOnError" value="Y"> Yes
         <input type="radio" name="script.exitOnError" value="N"> No (failures will be logged to failure directory) <br></p>
-      <p>Number of sequence files to process per script:<br>
+      <p>Number of sequence files to process per script:
         <input type="number" name="script.batchSize"><br></p>
       <p>Command to grant script execute permissions:
         <input type="text" name="script.scriptPermissions" value="chmod 774"><br></p>
@@ -251,6 +249,8 @@ For fastq, typically “@”.)<h5></p>
       <p>Default header: (Used to set shebang line to define scripts as bash executables, such as "#!/bin/bash"
         scriptDefaultHeader)
         <input type="text" name="script.defaultHeader"><br></p>
+      <p>Set # minutes before direct Java module script will time out and fail
+        <input type="number" min='0' name="java.timeout"><br></p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
       <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
