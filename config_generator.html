@@ -51,6 +51,9 @@
 
   <div id="projectTab" class="tabcontent">
     <form id="project">
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <p>Project name:
         <input id='configFile' type="text" name="project.configFile" required></p>
       <p>Copy input files into the parent directory:
@@ -81,12 +84,16 @@
       <!--<p>Set # minutes before direct Java module script will time out and fail<br>
         <input type="number" name="java.timeout">-->
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <button type='button' class="nextTab hidden">Save and move to next tab</button>
     </form>
   </div>
 
   <div id="moduleTab" class="tabcontent">
     <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+    <button class="createDownload">Create configuration file for download</button>
+    <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
     <button type="button" class="nextTab hidden">Save and move to next tab</button>
     <fieldset>
     <!-- TODO: Link button to currentConfig -->
@@ -109,10 +116,16 @@
         </div>
       </div>
     </fieldset>
+    <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+    <button class="createDownload">Create configuration file for download</button>
+    <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
   </div>
 
   <div id="inputTab" class="tabcontent">
     <form id="input">
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <p>Input directory (or directories): <input type="text" name="input.dirPaths" required>
         <h5>(Input directory must contain files expected by the first module executed.
         Multiple directories must be comma-separated.)</h5></p>
@@ -156,12 +169,17 @@ For fastq, typically “@”.)<h5></p>
         <input type="radio" name="demux.strategy" value="id_in_header">id_in_header
         <input type="radio" name="demux.strategy" value="do_not_demux.">do_not_demux<br></p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <button type="button" class="nextTab hidden">Save and move to next tab</button>
     </form>
   </div>
 
   <div id="metadataTab" class="tabcontent">
     <form id="metadata">
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <p>Metadata column name containing the barcode used for demultiplexing:
         <input type="text" name="metadata.barcodeColumn" value="barcode"><br></p>
       <p>Metadata file path (file must have unique column headers):
@@ -173,6 +191,8 @@ For fastq, typically “@”.)<h5></p>
       <p>Define column delimiter for input.metadata (input.columnDelim)<br>
         <input type="text" name="metadata.columnDelim"></p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <button type="button" class="nextTab hidden">Save and move to next tab</button>
     </form>
     </div>
@@ -180,7 +200,9 @@ For fastq, typically “@”.)<h5></p>
 
   <div id="clusterTab" class="tabcontent">
     <form id="cluster">
-      <button onclick="saveTab('cluster')">Next</button>
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <button type="button" class="nextTab hidden">Save and move to next tab</button>
       <p>Cluster host address (cluster.host):
         <input type="text" name="cluster.host"><br></p>
@@ -205,12 +227,18 @@ For fastq, typically “@”.)<h5></p>
         <input type="radio" name="cluster.validateParams" value="N"> No<br></p>
       <p>Cluster modules to load before execution:
         <input type="text" name="cluster.modules"><br></p>
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
     </form>
   </div>
 
 
   <div id="scriptTab" class="tabcontent">
     <form id="script">
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <p>Exit program if errors in script occur: (script.exitOnError)<br>
         <input type="radio" name="script.exitOnError" value="Y"> Yes<br>
         <input type="radio" name="script.exitOnError" value="N"> No (failures will be logged to failure directory) <br></p>
@@ -224,12 +252,17 @@ For fastq, typically “@”.)<h5></p>
         scriptDefaultHeader)
         <input type="text" name="script.defaultHeader"><br></p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <button type="button" class="nextTab hidden">Save and move to next tab</button>
     </form>
   </div>
 
   <div id="reportTab" class="tabcontent">
     <form id="report">
+    <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+    <button class="createDownload">Create configuration file for download</button>
+    <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <p>Report logbase: (If e, use natural log (base e), otherwise use log base 10):
         <input type="radio" name="report.logBase" value="e"> e
         <input type="radio" name="report.logBase" value="10"> No<br></p>
@@ -255,12 +288,17 @@ For fastq, typically “@”.)<h5></p>
         <input type="checkbox" name="report.taxonomyLevels" value="species">Species<br>
       </p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <button type="button" class="nextTab hidden">Save and move to next tab</button>
     </form>
   </div>
 
   <div id="mailTab" class="tabcontent">
     <form id="mail">
+    <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+    <button class="createDownload">Create configuration file for download</button>
+    <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <p>Encrypted E-mail password:<br>
         <i>(Encrypted password from email.from account.  If BioLockJ is passed a 2nd parameter
           (in addition to the config file), the 2nd parameter should be the clear-text password.
@@ -287,12 +325,17 @@ For fastq, typically “@”.)<h5></p>
           <input type="radio" name="mail.smtp.starttls.enable" value="Y">Yes<br>
           <input type="radio" name="mail.smtp.starttls.enable" value="N">No<br></p>
         <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+        <button class="createDownload">Create configuration file for download</button>
+        <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
         <button type="button" class="nextTab hidden">Save and move to next tab</button>
     </form>
   </div>
 
   <div id="rTab" class="tabcontent">
     <form id="r">
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <p>This is the base color used for labels & headings in the PDF report:
         <input type="text" name="r.colorBase">
       </p>
@@ -363,6 +406,8 @@ For fastq, typically “@”.)<h5></p>
       <p>
       <input type="text" name="" value=""> </p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <button type="button" class="nextTab hidden">Save and move to next tab</button>
     </form>
   </div>
@@ -372,6 +417,9 @@ For fastq, typically “@”.)<h5></p>
     </p>
     <!--Make it so default commands are hints that will not be saved.-->
      <form id="exe">
+       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+       <button class="createDownload">Create configuration file for download</button>
+       <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <p>Define executable awk command if default "awk" is not included in your $PATH:
         <input type="text" name="exe.awk">
       </p>
@@ -425,6 +473,9 @@ For fastq, typically “@”.)<h5></p>
 
   <div id="rdpTab" class="tabcontent">
     <form id="rdp">
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <p>Required RDP minimum threshold score for valid OTUs:
         <input type="text" name="rdp.minThresholdScore">
       </p>
@@ -436,6 +487,9 @@ For fastq, typically “@”.)<h5></p>
 
   <div id="qiimeTab" class="tabcontent">
     <form id="qiime">
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <p>Alpha diverisity metrics: <br> Options listed online:
         <a href="http://scikit-bio.org/docs/latest/generated/skbio.diversity.alpha.html">
           scikit-bio.org/docs/latest/generated/skbio.diversity.alpha.html</a>.<br>
@@ -453,17 +507,23 @@ For fastq, typically “@”.)<h5></p>
 
   <div id="krakenTab" class="tabcontent">
     <form id="kraken">
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <p>Path to Kraken database:
         <input type="text" name="kraken.db">
       </p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a id="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class ="downloadlink" class="hidden">Download configuration file to default directory</a>
     </form>
   </div>
 
   <div id="slimmTab" class="tabcontent">
     <form id="slimm">
+      <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
+      <button class="createDownload">Create configuration file for download</button>
+      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <p>Path to SLIMM database:
         <input type="text" name="slimm.db">
       </p>
@@ -488,6 +548,7 @@ For fastq, typically “@”.)<h5></p>
     <text x="69" y="43" dx="0" font-family="Times">J</text>
     <!--<path d="M70,30 L80,30  M75,30 L75,35 " fill="none" stroke="rgb(0,112,60)" stroke-width="2"/>-->
   </svg>
+  <span class='hidden' id='hackForDownload'></span>
 </div>
 <script type="text/javascript" src="config_generator.js"></script>
 </body>
