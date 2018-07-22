@@ -9,7 +9,7 @@ function newProj() {
   document.getElementById("mainMenu").style.display = "block";
   //reset the forms
   var forms = document.getElementsByTagName('form');
-  for (var i = 1; i < forms.length; i++) { //skips first empty form
+  for (var i = 0; i < forms.length; i++) { //skips first empty form
     forms[i].reset();
   }
 }
@@ -85,19 +85,15 @@ var sendConfigDataToForms = function(configObject) {
             };//end if
           };//end for-loop over domModuleLi
         }
-      } else {
-        //finds item name
+      }else {
+      //finds item name
         var element = document.querySelector("input[name='" + key + "']");
         if (element != null){
           if (element.getAttribute("type") == "text" || element.getAttribute("type") == "number") {
           element.value = configObject[key];
         } else if (element.getAttribute("type") == "radio") {//for radio input
           var elements = document.querySelectorAll("input[name='" + key + "']");
-          for (var i = 0; i < elements.length; i++) {
-            if (elements[i].value == configObject[key].toString() || currentConfig.hasOwnProperty(key)) {
-              elements[i].checked = true;
-            };
-          };
+          Array.apply(null, elements).find(rad => rad.value === configObject[key]).checked = true;
         } else if (element.getAttribute("type") == "checkbox") {//for checkbox input
           var elements = document.querySelectorAll("input[name='" + key + "']");
           var checks = configObject[key].slice(0, -1).split(',');
@@ -110,17 +106,11 @@ var sendConfigDataToForms = function(configObject) {
           }
         }
       }else{//then key must be select box
-          var select = document.querySelector("select[name='" + key + "']");
-          // The below line in PE: set selectBox options as an array; find option who's value === key, select it
-          Array.apply(null, select.options).find(option => option.value === currentConfig[key]).setAttribute('selected', true);
-        //   for (var i = 0; i < select.options.length; i++){
-        //     if (select.options[i].value === currentConfig[key]){
-        //       console.log('found one');
-        //       select.options[i].setAttribute('selected', true);
-        //     }
-        //   }
+        var select = document.querySelector("select[name='" + key + "']");
+        // The below line in PE: set selectBox options as an array; find option who's value === key, select it
+        Array.apply(null, select.options).find(option => option.value === currentConfig[key]).setAttribute('selected', true);
         }//end else (select)
-        document.getElementById("mainMenu").style.display = "block";
+      document.getElementById("mainMenu").style.display = "block";
       }; //end first else
     } catch (err) {
       alert(err + "\n problem with " + key + ".")
@@ -178,7 +168,6 @@ function saveTab() {//function to put move data from form to currentConfig
       //cycle through the form and get the info
       for (i = 0; i < formInputs.length; i++) {
         let inpType = formInputs[i].type;
-        console.log(inpType);
         let prop = formInputs[i].name; //this is the key to the key/value pair
         //skip unchecked radio and checkbox entries
         if (inpType == "radio" && formInputs[i].checked == false) {
@@ -205,8 +194,9 @@ function saveTab() {//function to put move data from form to currentConfig
             currentConfig[prop] = formInputs[i].value.toString().concat(',');
             }
           };
-        if (inpType == "select"){
-          console.log("fond one");
+        if (inpType == "select-one"){
+          //in PE currentC = {get all options of select, findthe one that is selected}.value
+          currentConfig[prop] = Array.apply(null, formInputs[i].options).find(option => option.selected === true).value;
         }
           lastAnswer = prop;
       }//end 2nd for loop
