@@ -119,7 +119,7 @@ var sendConfigDataToForms = function(configObject) {
         //       select.options[i].setAttribute('selected', true);
         //     }
         //   }
-        // }//end else (select)
+        }//end else (select)
         document.getElementById("mainMenu").style.display = "block";
       }; //end first else
     } catch (err) {
@@ -178,6 +178,7 @@ function saveTab() {//function to put move data from form to currentConfig
       //cycle through the form and get the info
       for (i = 0; i < formInputs.length; i++) {
         let inpType = formInputs[i].type;
+        console.log(inpType);
         let prop = formInputs[i].name; //this is the key to the key/value pair
         //skip unchecked radio and checkbox entries
         if (inpType == "radio" && formInputs[i].checked == false) {
@@ -203,7 +204,10 @@ function saveTab() {//function to put move data from form to currentConfig
           if (currentConfig[prop] == undefined || currentConfig[prop] == null) {
             currentConfig[prop] = formInputs[i].value.toString().concat(',');
             }
-          }
+          };
+        if (inpType == "select"){
+          console.log("fond one");
+        }
           lastAnswer = prop;
       }//end 2nd for loop
     }//end if
