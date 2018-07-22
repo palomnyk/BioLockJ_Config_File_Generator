@@ -47,7 +47,6 @@ function loadLocalFile() {//loading from computer
         };
       }; //end for-loop
       try {
-        console.log(provisionalConfigObject);
         sendConfigDataToForms(provisionalConfigObject);
         alert("document accepted");
         document.getElementById("openConfig").style.display = "none";
@@ -83,13 +82,14 @@ var sendConfigDataToForms = function(configObject) {
               alert(err);
             } finally{
               }
-            };
+            };//end if
           };//end for-loop over domModuleLi
         }
       } else {
         //finds item name
         var element = document.querySelector("input[name='" + key + "']");
-        if (element.getAttribute("type") == "text" || element.getAttribute("type") == "number") {
+        if (element != null){
+          if (element.getAttribute("type") == "text" || element.getAttribute("type") == "number") {
           element.value = configObject[key];
         } else if (element.getAttribute("type") == "radio") {//for radio input
           var elements = document.querySelectorAll("input[name='" + key + "']");
@@ -100,19 +100,26 @@ var sendConfigDataToForms = function(configObject) {
           };
         } else if (element.getAttribute("type") == "checkbox") {//for checkbox input
           var elements = document.querySelectorAll("input[name='" + key + "']");
-
           var checks = configObject[key].slice(0, -1).split(',');
-
           for (var i = 0; i < elements.length; i++) {
-
             for (var h = 0; h < checks.length; h++) {
               if (elements[i].value == checks[h]) {
                 elements[i].checked = true;
               };
             };
           }
-        }else{
         }
+      }else{//then key must be select box
+          var select = document.querySelector("select[name='" + key + "']");
+          // The below line in PE: set selectBox options as an array; find option who's value === key, select it
+          Array.apply(null, select.options).find(option => option.value === currentConfig[key]).setAttribute('selected', true);
+        //   for (var i = 0; i < select.options.length; i++){
+        //     if (select.options[i].value === currentConfig[key]){
+        //       console.log('found one');
+        //       select.options[i].setAttribute('selected', true);
+        //     }
+        //   }
+        // }//end else (select)
         document.getElementById("mainMenu").style.display = "block";
       }; //end first else
     } catch (err) {
@@ -289,12 +296,14 @@ function toggleImplicitModules(){
       impliMods[el].disabled = true;
     };
     implicitsHidden = false;
+    currentConfig['project.allowImplicitModules'] = 'N';
   }else{
     for (var el = 0; el < impliMods.length; el++) {
       impliMods[el].classList.remove('hidden');
       impliMods[el].disabled = false;
     };
     implicitsHidden = true;
+    currentConfig['project.allowImplicitModules'] = 'Y';
   }//end else
 }//end toggleImplicitModules
 var implicitsHidden = true;
