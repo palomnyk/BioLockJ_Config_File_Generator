@@ -55,23 +55,28 @@
       <button class="createDownload">Create configuration file for download</button>
       <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <p>Project name:
-        <input id='configFile' type="text" name="project.configFile" required></p>
+        <input id='configFile' type="text" size='35' name="project.configFile" required></p>
       <p>Copy input files into the parent directory:
-        <input type="radio" name="project.copyInput" value="Y" required> Yes
-        <input type="radio" name="project.copyInput" value="N"> No<br></p>
+        <select name='project.copyInput'>
+          <option></option>
+          <option value="Y">Yes</option>
+          <option value="N">No</option><br>
+        </select>
+        <select>
+        </select>
       <p>Delete temporary files:
-        <input type="radio" name="project.deleteTempFiles" value="Y" required> Yes
+        <input type="radio" name="project.deleteTempFiles" value="Y"> Yes
         <input type="radio" name="project.deleteTempFiles" value="N"> No<br></p>
       <p>Path to default properties file:
-        <input type="text" name="project.defaultProps"><br> add file picker here
+        <input type="text" name="project.defaultProps" size='70'><br> add file picker here
         <i>(Path to a default BioLockJ configuration file containing default
         property values that are overridden if defined in the primary
         configuration file.)</i></p>
       <p>Log level: <br><i>Determines log level sensitivity.</i>
-        <input type="radio" name="project.logLevel" value="DEBUG">DEBUG
-        <input type="radio" name="project.logLevel" value="INFO">INFO
-        <input type="radio" name="project.logLevel" value="WARN">WARN
-        <input type="radio" name="project.logLevel" value="ERROR">ERROR<br></p>
+        <input type="radio" name="project.logLevel" value="DEBUG">Include debug output.
+        <input type="radio" name="project.logLevel" value="INFO">Include informative output.
+        <input type="radio" name="project.logLevel" value="WARN">Include only warnings.
+        <input type="radio" name="project.logLevel" value="ERROR">Include only errors.<br></p>
       <p>Project runtime environment:
         <input name='project.env' type="radio" value="aws"> AWS
         <input name='project.env' type="radio" value="cluster"> Cluster
@@ -124,15 +129,15 @@
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
       <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
-      <p>Input directory (or directories): <input type="text" name="input.dirPaths" required>
+      <p>Input directory (or directories): <input type="text" size='70' name="input.dirPaths" required>
         <h5>(Input directory must contain files expected by the first module executed.
         Multiple directories must be comma-separated.)</h5></p>
       <p>Files in input directory to ignore: <input type="text" name="input.ignoreFiles"><br>
         <h5>(Multiple files must be comma-separated.)</h5></p>
       <p>File name suffix to indicate a forward read:
-            <input type="text" name="input.suffixFw"><br>
-            File name suffix to indicate a reverse read.
-            <input type="text" name="input.suffixRw"><br>
+          <input type="text" name="input.suffixFw"><br>
+        File name suffix to indicate a reverse read.
+        <input type="text" name="input.suffixRw"><br>
             </p>
       <p>Trim prefix:
         <input type="text" name="input.trimPrefix">
@@ -156,16 +161,17 @@ For fastq, typically “@”.)<h5></p>
       <p>Randomly select maximum number of sequences per sample use in rarefication:
         <input type="number" name="rarefier.max" min="1"><br></p>
       <p>Path to file containing primers to trim (File must contain only one sequence per line):
-        <input type="text" name="trimPrimers.filePath"><br></p>
+        <input type="text" name="trimPrimers.filePath" size='70'><br></p>
       <p>Discard reads with no primers?
         <input type="radio" name="trimPrimers.requirePrimer" value="Y"> Yes
         <input type="radio" name="trimPrimers.requirePrimer" value="N"> No<br></p>
       <!--add demux -->
       <p>Set the Demultiplexer strategy. If using barcodes, they must be provided in the
-        metadata.filePath with in column name defined by metadata.barcodeColumn. This is only used by the Demultiplexer module.
-        <input type="radio" name="demux.strategy" value="barcode_in_header">barcode_in_header
-        <input type="radio" name="demux.strategy" value="id_in_header">id_in_header
-        <input type="radio" name="demux.strategy" value="do_not_demux.">do_not_demux<br></p>
+        metadata.filePath with in column name defined by metadata.barcodeColumn. This is only used by the Demultiplexer module:
+        <input type="radio" name="demux.strategy" value="barcode_in_header">barcode is in header
+        <input type="radio" name="demux.strategy" value="barcode_in_seq">barcode is in sequence
+        <input type="radio" name="demux.strategy" value="id_in_header">id is in header
+        <input type="radio" name="demux.strategy" value="do_not_demux.">do not demultiplex<br></p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
       <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
@@ -181,12 +187,12 @@ For fastq, typically “@”.)<h5></p>
       <p>Metadata column name containing the barcode used for demultiplexing:
         <input type="text" name="metadata.barcodeColumn" value="barcode"><br></p>
       <p>Metadata file path (file must have unique column headers):
-        <input type="text" name="metadata.filePath"><br></p>
+        <input type="text" name="metadata.filePath" size='70'><br></p>
       <p>Define how comments are represented in metadata:
         <input type="text" name="metadata.commentChar"><br></p>
-      <p>Define how null values are represented in metadata: (input.nullValue)<br>
+      <p>Define how null values are represented in metadata:
         <input type="text" name="metadata.nullValue"></p>
-      <p>Define column delimiter for input.metadata (input.columnDelim)<br>
+      <p>Define column delimiter for input.metadata (input.columnDelim)
         <input type="text" name="metadata.columnDelim"></p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
@@ -207,12 +213,12 @@ For fastq, typically “@”.)<h5></p>
       <p>Batch command to submit jobs on the cluster:
         <input type="text" name="cluster.batchCommand"><br>
       </p>
-      <p>Job script header to define # of nodes, # of cores, RAM, walltime, etc.<br>
+      <p>Job script header to define # of nodes, # of cores, RAM, walltime, etc.
         <input type="text" name="cluster.jobHeader"><br></p>
       <p>Number of classifier threads (Integer value passed to ClassifierModule if it has a number of threads parameter.
         If undefined, script.numThreads will be used instead because classifiers often
         require more resources than other modules.):
-        <input type="number" name="cluster.numClassifierThreads"><br></p>
+        <input type="number" name="cluster.numClassifierThreads" min='1'><br></p>
       <p>Run java as script module: (If Y, each JavaModule will instantiate a clone of the
         application in direct mode on a job node via a single worker script to avoid overworking
         the head node where BioLockJ is deployed):
@@ -241,11 +247,11 @@ For fastq, typically “@”.)<h5></p>
         <input type="radio" name="script.exitOnError" value="Y"> Yes
         <input type="radio" name="script.exitOnError" value="N"> No (failures will be logged to failure directory) <br></p>
       <p>Number of sequence files to process per script:
-        <input type="number" name="script.batchSize"><br></p>
+        <input type="number" min='0' name="script.batchSize"><br></p>
       <p>Command to grant script execute permissions:
         <input type="text" name="script.scriptPermissions" value="chmod 774"><br></p>
       <p>Number of threads:
-        <input type="text" name="script.numThreads"><br></p>
+        <input type="text" min='0' name="script.numThreads"><br></p>
       <p>Default header: (Used to set shebang line to define scripts as bash executables, such as "#!/bin/bash"
         scriptDefaultHeader)
         <input type="text" name="script.defaultHeader"><br></p>
@@ -265,7 +271,7 @@ For fastq, typically “@”.)<h5></p>
     <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <p>Report logbase: (If e, use natural log (base e), otherwise use log base 10):
         <input type="radio" name="report.logBase" value="e"> e
-        <input type="radio" name="report.logBase" value="10"> No<br></p>
+        <input type="radio" name="report.logBase" value="10"> 10<br></p>
       <p>Include number of hits in output: <br>
         <input type="radio" name="report.numHits" value="Y"> Yes<br>
         <input type="radio" name="report.numHits" value="N"> No<br></p>
@@ -315,13 +321,13 @@ For fastq, typically “@”.)<h5></p>
           <p>Email SMTP Host:<br>
             <input type="text" name="mail.smtp.host"><br>
           </p>
-          p>Email SMTP port:<br>
+          <p>Email SMTP port:<br>
           <input type="text" name="mail.smtp.port"><br>
         </p>
-        <p>Set the SMTP authorization property.<br>
+        <p>Set the SMTP authorization property:<br>
           <input type="radio" name="mail.smtp.auth" value="Y">Yes<br>
           <input type="radio" name="mail.smtp.auth" value="N">No<br></p>
-        <p>Set the SMTP start TLS property.<br>
+        <p>Set the SMTP start TLS property:<br>
           <input type="radio" name="mail.smtp.starttls.enable" value="Y">Yes<br>
           <input type="radio" name="mail.smtp.starttls.enable" value="N">No<br></p>
         <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
@@ -374,14 +380,14 @@ For fastq, typically “@”.)<h5></p>
       <p>Format of the pvalue used in R sprintf() function
         <input type="text" name="r.pValFormat" value=""></p>
       <p>Rare OTU threshold: (If > 1, R will filter OTUs below value provided. If < 1, R will interperate the value as a percentage and discard OTUs not found in at least that percentage of samples)
-        <input type="number" name="r.rareOtuThreshold" value=""></p>
+        <input type="number" min='0' name="r.rareOtuThreshold" value=""></p>
       <p>Override field used to explicitly list metadata columns to report in the R scripts. If left undefined, all columns are reported.
       <input type="text" name="r.reportFields" value=""></p>
       <p>Save r data? (If Y, all R script generating BioModules will save R Session data to the module output directory to a file using the extension ".RData")
       <input type="radio" name="r.saveRData" value="Y">Yes
       <input type="radio" name="r.saveRData" value="N">Nod</p>
       <p># minutes before R Script times out:
-        <input type="number" name="r.timeout"><br>
+        <input type="number" min='0' name="r.timeout"><br>
       </p>
       <p>Number of MDS axis to plot:
       <input type="number" min="0" name="rMds.numAxis" value=""> </p>
@@ -511,7 +517,7 @@ For fastq, typically “@”.)<h5></p>
       <button class="createDownload">Create configuration file for download</button>
       <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <p>Path to Kraken database:
-        <input type="text" name="kraken.db">
+        <input type="text" size='70' name="kraken.db">
       </p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
@@ -525,14 +531,14 @@ For fastq, typically “@”.)<h5></p>
       <button class="createDownload">Create configuration file for download</button>
       <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
       <p>Path to SLIMM database:
-        <input type="text" name="slimm.db">
+        <input type="text" size='70' name="slimm.db">
       </p>
       <p>Path the bowtie2 reference genome index:
-        <input type="text" name="slimm.refGenomeIndex">
+        <input type="text" size='70' name="slimm.refGenomeIndex">
       </p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class="downloadlink">Download configuration file to default directory</a>
     </form>
   </div>
 </div>
