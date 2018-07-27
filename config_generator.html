@@ -53,42 +53,52 @@
     <form id="project">
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class="downloadlink hidden">Download configuration file to default directory</a>
       <p>Project name:
         <input id='configFile' type="text" size='35' name="project.configFile" required></p>
       <p>Copy input files into the parent directory:
         <select name='project.copyInput'>
-          <option></option>
+          <option selected default value="">Click for options</option>
           <option value="Y">Yes</option>
-          <option value="N">No</option><br>
-        </select>
-        <select>
-        </select>
+          <option value="N">No</option>
+        </select></p>
       <p>Delete temporary files:
-        <input type="radio" name="project.deleteTempFiles" value="Y"> Yes
-        <input type="radio" name="project.deleteTempFiles" value="N"> No<br></p>
+        <select name="project.deleteTempFiles">
+          <option selected default value="">Click for options</option>
+          <option value="Y">Yes</option>
+          <option value="N">No</option>
+        </select></p>
       <p>Path to default properties file:
         <input type="text" name="project.defaultProps" size='70'><br> add file picker here
         <i>(Path to a default BioLockJ configuration file containing default
         property values that are overridden if defined in the primary
         configuration file.)</i></p>
       <p>Log level: <br><i>Determines log level sensitivity.</i>
-        <input type="radio" name="project.logLevel" value="DEBUG">Include debug output.
-        <input type="radio" name="project.logLevel" value="INFO">Include informative output.
-        <input type="radio" name="project.logLevel" value="WARN">Include only warnings.
-        <input type="radio" name="project.logLevel" value="ERROR">Include only errors.<br></p>
+        <select name="project.logLevel">
+          <option selected default value="">Click for options</option>
+          <option value="DEBUG">Include debug output.</option>
+          <option value="INFO">Include informative output.</option>
+          <option value="WARN">Include only warnings.</option>
+          <option value="ERROR">Include only errors.</option>
+        </select></p>
       <p>Project runtime environment:
-        <input name='project.env' type="radio" value="aws"> AWS
-        <input name='project.env' type="radio" value="cluster"> Cluster
-        <input name='project.env' type="radio" value="local"> Yes<br></p>
+        <select class="" name="project.env">
+          <option selected default value="">Click for options</option>
+          <option value="aws">AWS</option>
+          <option value="cluster">Cluster</option>
+          <option value="local">Local</option>
+        </select></p>
       <p>Run project in Docker:
-        <input type="radio" name="project.runDocker" value="Y"> Yes
-        <input type="radio" name="project.runDocker" value="N"> No</p>
+        <select class="" name="project.runDocker">
+          <option selected default value="">Click for options</option>
+          <option value="Y">Yes</option>
+          <option value="N">No</option>
+        </select></p>
       <p>A directory on the local workstation where the cluster.downloadModule will be downloaded
         <input type="text" name="project.downloadDir"><br></p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class="downloadlink hidden">Download configuration file to default directory</a>
       <button type='button' class="nextTab hidden">Save and move to next tab</button>
     </form>
   </div>
@@ -96,10 +106,16 @@
   <div id="moduleTab" class="tabcontent">
     <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
     <button class="createDownload">Create configuration file for download</button>
-    <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+    <a class="downloadlink hidden">Download configuration file to default directory</a>
     <button type="button" class="nextTab hidden">Save and move to next tab</button>
     <fieldset>
     <!-- TODO: Link button to currentConfig -->
+    <select form='project' class="" name="project.allowImplicitModules">
+      <option selected default value="">Implicit module overide options</option>
+      <option value="Y">Allow implicit modules to be directly added to pipeline</option>
+      <option value="N">Allow BLJ to determine where to add implicit modules in the pipeline</option>
+      <option value=""></option>
+    </select>
     <button type='button' id='implicitOverride'>Config Implicit Override</button>
     <h3 class='hidden' id='implicitWarning'>
       Implicit modules will be added automatically by BioLockJ as needed.</h3>
@@ -121,14 +137,14 @@
     </fieldset>
     <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
     <button class="createDownload">Create configuration file for download</button>
-    <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+    <a class="downloadlink hidden">Download configuration file to default directory</a>
   </div>
 
   <div id="inputTab" class="tabcontent">
     <form id="input">
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class="downloadlink hidden">Download configuration file to default directory</a>
       <p>Input directory (or directories): <input type="text" size='70' name="input.dirPaths" required>
         <h5>(Input directory must contain files expected by the first module executed.
         Multiple directories must be comma-separated.)</h5></p>
@@ -163,18 +179,23 @@ For fastq, typically “@”.)<h5></p>
       <p>Path to file containing primers to trim (File must contain only one sequence per line):
         <input type="text" name="trimPrimers.filePath" size='70'><br></p>
       <p>Discard reads with no primers?
-        <input type="radio" name="trimPrimers.requirePrimer" value="Y"> Yes
-        <input type="radio" name="trimPrimers.requirePrimer" value="N"> No<br></p>
-      <!--add demux -->
+        <select class="" name="trimPrimers.requirePrimer">
+          <option selected default value="">Click for options</option>
+          <option value="Y">Yes</option>
+          <option value="N"> No</option>
+        </select></p>
       <p>Set the Demultiplexer strategy. If using barcodes, they must be provided in the
         metadata.filePath with in column name defined by metadata.barcodeColumn. This is only used by the Demultiplexer module:
-        <input type="radio" name="demux.strategy" value="barcode_in_header">barcode is in header
-        <input type="radio" name="demux.strategy" value="barcode_in_seq">barcode is in sequence
-        <input type="radio" name="demux.strategy" value="id_in_header">id is in header
-        <input type="radio" name="demux.strategy" value="do_not_demux.">do not demultiplex<br></p>
+        <select class="" name="demux.strategy">
+          <option selected default value="">Click for options</option>
+          <option value="barcode_in_header">Barcode is in header</option>
+          <option value="barcode_in_seq">Barcode is in sequence</option>
+          <option value="id_in_header">Sequence ID is in header</option>
+          <option value="do_not_demux.">Do not demultiplex</option>
+        </select></p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class="downloadlink hidden">Download configuration file to default directory</a>
       <button type="button" class="nextTab hidden">Save and move to next tab</button>
     </form>
   </div>
@@ -183,7 +204,7 @@ For fastq, typically “@”.)<h5></p>
     <form id="metadata">
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class="downloadlink hidden">Download configuration file to default directory</a>
       <p>Metadata column name containing the barcode used for demultiplexing:
         <input type="text" name="metadata.barcodeColumn" value="barcode"><br></p>
       <p>Metadata file path (file must have unique column headers):
@@ -196,7 +217,7 @@ For fastq, typically “@”.)<h5></p>
         <input type="text" name="metadata.columnDelim"></p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class="downloadlink hidden">Download configuration file to default directory</a>
       <button type="button" class="nextTab hidden">Save and move to next tab</button>
     </form>
     </div>
@@ -206,7 +227,7 @@ For fastq, typically “@”.)<h5></p>
     <form id="cluster">
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class="downloadlink hidden">Download configuration file to default directory</a>
       <button type="button" class="nextTab hidden">Save and move to next tab</button>
       <p>Cluster host address (cluster.host):
         <input type="text" name="cluster.host"><br></p>
@@ -222,18 +243,24 @@ For fastq, typically “@”.)<h5></p>
       <p>Run java as script module: (If Y, each JavaModule will instantiate a clone of the
         application in direct mode on a job node via a single worker script to avoid overworking
         the head node where BioLockJ is deployed):
-        <input type="radio" name="cluster.runJavaAsScriptModule" value="Y"> Yes
-        <input type="radio" name="cluster.runJavaAsScriptModule" value="N"> No<br></p>
+        <select class="" name="cluster.runJavaAsScriptModule">
+          <option selected default value="">Click for options</option>
+          <option value="Y">Yes</option>
+          <option value="N"> No</option>
+        </select></p>
       <p>Validate cluster parameters: (If Y, validate
         cluster.jobHeader/cluster.classifierHeader "ppn:" or "procs:"
         value matches script.numThreads/cluster.numClassifierThreads)
-        <input type="radio" name="cluster.validateParams" value="Y"> Yes
-        <input type="radio" name="cluster.validateParams" value="N"> No<br></p>
+        <select class="" name="cluster.validateParams">
+          <option selected default value="">Click for options</option>
+          <option value="Y">Yes</option>
+          <option value="N"> No</option>
+        </select></p>
       <p>Cluster modules to load before execution:
         <input type="text" name="cluster.modules"><br></p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class="downloadlink hidden">Download configuration file to default directory</a>
     </form>
   </div>
 
@@ -242,10 +269,13 @@ For fastq, typically “@”.)<h5></p>
     <form id="script">
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class="downloadlink hidden">Download configuration file to default directory</a>
       <p>Exit program if errors in script occur: (script.exitOnError)
-        <input type="radio" name="script.exitOnError" value="Y"> Yes
-        <input type="radio" name="script.exitOnError" value="N"> No (failures will be logged to failure directory) <br></p>
+        <select class="" name="script.exitOnError">
+          <option selected default value="">Click for options</option>
+          <option value="Y">Yes</option>
+          <option value="N">No (failures will be logged to failure directory)</option>
+          </select></p>
       <p>Number of sequence files to process per script:
         <input type="number" min='0' name="script.batchSize"><br></p>
       <p>Command to grant script execute permissions:
@@ -259,7 +289,7 @@ For fastq, typically “@”.)<h5></p>
         <input type="number" min='0' name="java.timeout"><br></p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class="downloadlink hidden">Download configuration file to default directory</a>
       <button type="button" class="nextTab hidden">Save and move to next tab</button>
     </form>
   </div>
@@ -268,16 +298,25 @@ For fastq, typically “@”.)<h5></p>
     <form id="report">
     <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
     <button class="createDownload">Create configuration file for download</button>
-    <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+    <a class="downloadlink hidden">Download configuration file to default directory</a>
       <p>Report logbase: (If e, use natural log (base e), otherwise use log base 10):
-        <input type="radio" name="report.logBase" value="e"> e
-        <input type="radio" name="report.logBase" value="10"> 10<br></p>
-      <p>Include number of hits in output: <br>
-        <input type="radio" name="report.numHits" value="Y"> Yes<br>
-        <input type="radio" name="report.numHits" value="N"> No<br></p>
-      <p>Add number of reads to output: <br>
-        <input type="radio" name="report.numReads" value="Y"> Yes<br>
-        <input type="radio" name="report.numReads" value="N"> No<br></p>
+        <select class="" name="report.logBase">
+          <option selected default value="">Click for options</option>
+          <option value="e">e</option>
+          <option value="10">10</option>
+        </select></p>
+      <p>Include number of hits in output:
+        <select class="" name="report.numHits">
+          <option selected default value="">Click for options</option>
+          <option value="Y">Yes</option>
+          <option value="N"> No</option>
+        </select></p>
+      <p>Add number of reads to output:
+        <select class="" name="report.numReads">
+          <option selected default value="">Click for options</option>
+          <option value="Y">Yes</option>
+          <option value="N"> No</option>
+        </select></p>
       <p>ParserModule ignores OTU counts below this minimum number per sample when building raw count tables:
         <input type="number" min='0' name="report.minOtuCount"><br></p>
       <p>ParserModule ignores OTU counts if the total OTU count for all samples falls below this minimum number when building raw count tables:
@@ -295,7 +334,7 @@ For fastq, typically “@”.)<h5></p>
       </p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class="downloadlink hidden">Download configuration file to default directory</a>
       <button type="button" class="nextTab hidden">Save and move to next tab</button>
     </form>
   </div>
@@ -304,7 +343,7 @@ For fastq, typically “@”.)<h5></p>
     <form id="mail">
     <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
     <button class="createDownload">Create configuration file for download</button>
-    <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+    <a class="downloadlink hidden">Download configuration file to default directory</a>
       <p>Encrypted E-mail password:<br>
         <i>(Encrypted password from email.from account.  If BioLockJ is passed a 2nd parameter
           (in addition to the config file), the 2nd parameter should be the clear-text password.
@@ -325,14 +364,20 @@ For fastq, typically “@”.)<h5></p>
           <input type="text" name="mail.smtp.port"><br>
         </p>
         <p>Set the SMTP authorization property:<br>
-          <input type="radio" name="mail.smtp.auth" value="Y">Yes<br>
-          <input type="radio" name="mail.smtp.auth" value="N">No<br></p>
-        <p>Set the SMTP start TLS property:<br>
-          <input type="radio" name="mail.smtp.starttls.enable" value="Y">Yes<br>
-          <input type="radio" name="mail.smtp.starttls.enable" value="N">No<br></p>
+          <select class="" name="mail.smtp.auth">
+            <option selected default value="">Click for options</option>
+            <option value="Y">Yes</option>
+            <option value="N"> No</option>
+          </select></p>
+        <p>Set the SMTP start TLS property:
+          <select class="" name="mail.smtp.starttls.enable">
+            <option selected default value="">Click for options</option>
+            <option value="Y">Yes</option>
+            <option value="N"> No</option>
+          </select></p>
         <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
         <button class="createDownload">Create configuration file for download</button>
-        <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+        <a class="downloadlink hidden">Download configuration file to default directory</a>
         <button type="button" class="nextTab hidden">Save and move to next tab</button>
     </form>
   </div>
@@ -341,7 +386,7 @@ For fastq, typically “@”.)<h5></p>
     <form id="r">
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class="downloadlink hidden">Download configuration file to default directory</a>
       <p>This is the base color used for labels & headings in the PDF report:
         <input type="text" name="r.colorBase">
       </p>
@@ -352,9 +397,11 @@ For fastq, typically “@”.)<h5></p>
         <input type="text" name="r.colorPoint">
       </p>
       <p>Generate R Script log files:
-        <input type="radio" name="r.debug" value="Y">Yes
-        <input type="radio" name="r.debug" value="N">No <br>
-      </p>
+        <select class="" name="r.debug">
+          <option selected default value="">Click for options</option>
+          <option value="Y">Yes</option>
+          <option value="N"> No</option>
+        </select></p>
       <p>List metadata columns to exclude from R script reports (comma separated)
         <input type="text" name='r.excludeFields'></p>
       <p>Filter fields: (Ordered list of metadata fields that together with r.filterOperators and r.filterValues
@@ -384,8 +431,11 @@ For fastq, typically “@”.)<h5></p>
       <p>Override field used to explicitly list metadata columns to report in the R scripts. If left undefined, all columns are reported.
       <input type="text" name="r.reportFields" value=""></p>
       <p>Save r data? (If Y, all R script generating BioModules will save R Session data to the module output directory to a file using the extension ".RData")
-      <input type="radio" name="r.saveRData" value="Y">Yes
-      <input type="radio" name="r.saveRData" value="N">Nod</p>
+        <select class="" name="r.saveRData">
+          <option selected default value="">Click for options</option>
+          <option value="Y">Yes</option>
+          <option value="N"> No</option>
+        </select></p>
       <p># minutes before R Script times out:
         <input type="number" min='0' name="r.timeout"><br>
       </p>
@@ -394,26 +444,30 @@ For fastq, typically “@”.)<h5></p>
       <p>Override field used to explicitly list metadata columns to build MDS plots. If left undefined, all columns are reported
       <input type="text" name="rMds.reportFields" value=""> </p>
       <p>P-value adjustment scope: Used to set the p.adjust "n" parameter for how many simultaneous p-value calculations:
-        <input type="radio" name="rStats.adjPvalsScope" value="GLOBAL">GLOBAL
-        <input type="radio" name="rStats.adjPvalsScope" value="LOCAL">LOCAL
-        <input type="radio" name="rStats.adjPvalsScope" value="TAXA">TAXA
-        <input type="radio" name="rStats.adjPvalsScope" value="ATTRIBUTE">ATTRIBUTE
-      </p>
+        <select class="" name="rStats.adjPvalsScope">
+          <option selected default value="">Click for options</option>
+          <option value="GLOBAL">GLOBAL</option>
+          <option value="LOCAL">LOCAL</option>
+          <option value="TAXA">TAXA</option>
+          <option value="ATTRIBUTE">ATTRIBUTE</option>
+        </select></p>
       <p>Sets the p.adjust "method" parameter:<a href=https://stat.ethz.ch/R-manual/R-devel/library/stats/html/p.adjust.html>More info</a><br>
-        <input type="radio" name="rStats.pAdjMethod" value="holm">Holm
-        <input type="radio" name="rStats.pAdjMethod" value="hochberg">Hochberg
-        <input type="radio" name="rStats.pAdjMethod" value="hommel">Hommel
-        <input type="radio" name="rStatsr.pAdjMethod" value="bonferroni">Honferroni
-        <input type="radio" name="rStatsr.pAdjMethod" value="BH">Benjamini & Hochberg (BH)
-        <input type="radio" name="rStats.pAdjMethod" value="BY">Benjamini & Yekutieli (BY)
-        <input type="radio" name="rStats.pAdjMethod" value="fdr">FDR
-        <input type="radio" name="rStats.pAdjMethod" value="none">none
-      </p>
+        <select class="" name="rStats.adjPvalsScope">
+          <option selected default value="rStats.pAdjMethod">Click for options</option>
+          <option value="holm">Holm</option>
+          <option value="hochberg">Hochberg</option>
+          <option value="hommel">Hommel</option>
+          <option value="bonferroni">Bonferroni</option>
+          <option value="BH">Benjamini & Hochberg (BH)</option>
+          <option value="BY">Benjamini & Yekutieli (BY)</option>
+          <option value="fdr">FDR</option>
+          <option value="none">none</option>
+        </select></p>
       <p>
       <input type="text" name="" value=""> </p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class="downloadlink hidden">Download configuration file to default directory</a>
       <button type="button" class="nextTab hidden">Save and move to next tab</button>
     </form>
   </div>
@@ -425,7 +479,7 @@ For fastq, typically “@”.)<h5></p>
      <form id="exe">
        <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
        <button class="createDownload">Create configuration file for download</button>
-       <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+       <a class="downloadlink hidden">Download configuration file to default directory</a>
       <p>Define executable awk command if default "awk" is not included in your $PATH:
         <input type="text" name="exe.awk">
       </p>
@@ -472,7 +526,7 @@ For fastq, typically “@”.)<h5></p>
       </p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class="downloadlink hidden">Download configuration file to default directory</a>
       <button type="button" class="nextTab hidden">Save and move to next tab</button>
     </form>
   </div>
@@ -481,13 +535,13 @@ For fastq, typically “@”.)<h5></p>
     <form id="rdp">
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class="downloadlink hidden">Download configuration file to default directory</a>
       <p>Required RDP minimum threshold score for valid OTUs:
         <input type="text" name="rdp.minThresholdScore">
       </p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class="downloadlink hidden">Download configuration file to default directory</a>
     </form>
   </div>
 
@@ -495,19 +549,22 @@ For fastq, typically “@”.)<h5></p>
     <form id="qiime">
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class="downloadlink hidden">Download configuration file to default directory</a>
       <p>Alpha diverisity metrics: <br> Options listed online:
         <a href="http://scikit-bio.org/docs/latest/generated/skbio.diversity.alpha.html">
           scikit-bio.org/docs/latest/generated/skbio.diversity.alpha.html</a>.<br>
         <input type="text" name="qiime.alphaDiversityMetrics">
       </p>
       <p>Remove chimeras after open or de novo OTU picking:<br>
-        <input type="radio" name="qiime.removeChimeras" value="Y">Yes<br>
-        <input type="radio" name="qiime.removeChimeras" value="N">No <br>
+        <select class="" name="r.saveRData">
+          <option selected default value="qiime.removeChimeras">Click for options</option>
+          <option value="Y">Yes</option>
+          <option value="N">No</option>
+        </select></p>
       </p>
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class="downloadlink hidden">Download configuration file to default directory</a>
     </form>
   </div>
 
@@ -515,7 +572,7 @@ For fastq, typically “@”.)<h5></p>
     <form id="kraken">
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class="downloadlink hidden">Download configuration file to default directory</a>
       <p>Path to Kraken database:
         <input type="text" size='70' name="kraken.db">
       </p>
@@ -529,7 +586,7 @@ For fastq, typically “@”.)<h5></p>
     <form id="slimm">
       <button onclick="saveTab(this.parentNode.id)">Save Progress</button>
       <button class="createDownload">Create configuration file for download</button>
-      <a class="downloadlink" class="hidden">Download configuration file to default directory</a>
+      <a class="downloadlink hidden">Download configuration file to default directory</a>
       <p>Path to SLIMM database:
         <input type="text" size='70' name="slimm.db">
       </p>
