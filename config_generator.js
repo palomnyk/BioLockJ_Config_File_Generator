@@ -9,8 +9,12 @@ function newProj() {
   document.getElementById("mainMenu").style.display = "block";
   //reset the forms
   var forms = document.getElementsByTagName('form');
-  for (var i = 0; i < forms.length; i++) { //skips first empty form
+  for (var i = 1; i < forms.length; i++) { //skips first empty form
     forms[i].reset();
+  }
+  var selects = document.getElementsByTagName('select')
+  for (var s = 0; s < selects.length; s++){
+    selects[s].value = '';
   }
 }
 
@@ -107,8 +111,9 @@ var sendConfigDataToForms = function(configObject) {
         }
       }else{//then key must be select box
         var select = document.querySelector("select[name='" + key + "']");
-        // The below line in PE: set selectBox options as an array; find option who's value === key, select it
-        Array.apply(null, select.options).find(option => option.value === currentConfig[key]).setAttribute('selected', true);
+        // The below line in PE: set selectBox options as an array; find option who's value === key,
+        var opt = Array.apply(null, select.options).find(option => option.value === currentConfig[key]);
+        if (opt.value != undefined){ opt.setAttribute('selected', true); };//select opt if not undefined
         }//end else (select)
       document.getElementById("mainMenu").style.display = "block";
       }; //end first else
@@ -195,8 +200,8 @@ function saveTab() {//function to put move data from form to currentConfig
             }
           };
         if (inpType == "select-one"){
-          //in PE currentC = {get all options of select, findthe one that is selected}.value
-          currentConfig[prop] = Array.apply(null, formInputs[i].options).find(option => option.selected === true).value;
+          var sel = Array.apply(null, formInputs[i].options).find(option => option.selected === true).value;
+          if (sel != '') {currentConfig[prop] = sel}
         }
           lastAnswer = prop;
       }//end 2nd for loop
