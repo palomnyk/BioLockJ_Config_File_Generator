@@ -108,17 +108,13 @@
     <button class="createDownload">Create configuration file for download</button>
     <a class="downloadlink hidden">Download configuration file to default directory</a>
     <button type="button" class="nextTab hidden">Save and move to next tab</button>
-    <fieldset>
-    <!-- TODO: Link button to currentConfig -->
-    <select form='project' class="" name="project.allowImplicitModules">
-      <option selected default value="">Implicit module overide options</option>
-      <option value="Y">Allow implicit modules to be directly added to pipeline</option>
-      <option value="N">Allow BLJ to determine where to add implicit modules in the pipeline</option>
-      <option value=""></option>
+    <p>BioLockJ automatically adds implicit modules as they are needed, but you may override this behavior and force it to run an implicit module.</p>
+    <select id='allowImplicitModules' form='project' class="" name="project.allowImplicitModules">
+      <option class='noOverrideImplicit' selected default value="">Click for options</option>
+      <option id='yesOverrideImplicit' value="Y">Allow implicit modules to be directly added to pipeline</option>
+      <option class='noOverrideImplicit' value="N">Allow BLJ to determine where to add implicit modules in the pipeline</option>
     </select>
-    <button type='button' id='implicitOverride'>Config Implicit Override</button>
-    <h3 class='hidden' id='implicitWarning'>
-      Implicit modules will be added automatically by BioLockJ as needed.</h3>
+    <fieldset>
       <legend>Module options</legend>
       <div id="module">
         <span> <center> Drag module options to reorder them.<br>

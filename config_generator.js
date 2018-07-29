@@ -286,27 +286,6 @@ function parseBljModuleJavaClass(text){
   return(modDescrip)
 }//end parseBljModuleJavaClass
 
-//functions for module tabButtons
-function toggleImplicitModules(){
-  var impliMods = document.getElementsByClassName('implicit');
-  if (implicitsHidden === true){
-    for (var el = 0; el < impliMods.length; el++){
-      impliMods[el].classList.add('hidden');
-      impliMods[el].disabled = true;
-    };
-    implicitsHidden = false;
-    currentConfig['project.allowImplicitModules'] = 'N';
-  }else{
-    for (var el = 0; el < impliMods.length; el++) {
-      impliMods[el].classList.remove('hidden');
-      impliMods[el].disabled = false;
-    };
-    implicitsHidden = true;
-    currentConfig['project.allowImplicitModules'] = 'Y';
-  }//end else
-}//end toggleImplicitModules
-var implicitsHidden = true;
-
 //section for module related functions
 function modulesToCurrentConfig() {
   mods = document.getElementById('module').getElementsByTagName('li');
@@ -454,11 +433,11 @@ for (var t = 0; t < tabButtons.length; t++) {
 //list of modules with their java classes and their javascript classes
 //has the format of nested array, with the first item of the nested array being the java class
 const moduleLinkAndClass = [
-  ['biolockj/module/implicit/ImportMetadata.java', 'implicit'],
-  ['biolockj/module/implicit/Demultiplexer.java', 'implicit'],
+  ['biolockj/module/implicit/ImportMetadata.java', 'implicit', 'hidden'],
+  ['biolockj/module/implicit/Demultiplexer.java', 'implicit', 'hidden'],
   ['biolockj/module/classifier/r16s/qiime/PickClosedRefOtus.java', 'qiimeClass'],
   ['biolockj/module/classifier/r16s/RdpClassifier.java', 'rdpClass'],
-  ['biolockj/module/implicit/parser/r16s/RdpParser.java', 'rdpClass', 'implicit'],
+  ['biolockj/module/implicit/parser/r16s/RdpParser.java', 'rdpClass', 'implicit', 'hidden'],
   ['biolockj/module/classifier/r16s/qiime/PickDeNovoOtus.java', 'qiimeClass'],
   ['biolockj/module/classifier/r16s/qiime/PickOpenRefOtus.java', 'qiimeClass'],
   ['biolockj/module/classifier/wgs/KrakenClassifier.java', 'krakenClass'],
@@ -547,21 +526,17 @@ function runModuleFunctions() {//large function to build module li and counters
   var slimmModuleCounter = new moduleCounter([qiimeClassModNodes, krakenClassModNodes, rdpClassModNodes, metaphlanClassModNodes]);
   var metaphlanModuleCounter = new moduleCounter([slimmClassModNodes, krakenClassModNodes, rdpClassModNodes, qiimeClassModNodes]);
 
-  document.getElementById('implicitOverride').addEventListener('click', function(){toggleImplicitModules()});
-  document.getElementById('implicitOverride').click();//automatiically hide everything
-  document.getElementById('implicitOverride').addEventListener('mouseover', function(){
-    document.getElementById('implicitWarning').classList.remove('hidden');
+  document.getElementById('allowImplicitModules').addEventListener('change', function(evt){
+    var choice = document.getElementById('allowImplicitModules').value;
+    const implicits = Array.from(document.getElementsByClassName('implicit'));
+    if (choice === 'Y'){ implicits.forEach(imp => {imp.classList.remove('hidden')});
+    }else{implicits.forEach(imp => imp.classList.add('hidden'));}
   });
-  document.getElementById('implicitOverride').addEventListener('mouseout', function(){
-    document.getElementById('implicitWarning').classList.add('hidden');
-  });
-};
+};//end runModuleFunctions
 runModuleFunctions();
 
-function displayImplicitWarning(){
-  console.log(this);
-  this.classList.remove('hidden');
-}
+
+//this.classList.remove('hidden')
 
 //Function for creating downloadable config file
 (function() {
